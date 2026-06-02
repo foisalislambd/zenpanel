@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ZenPanel
 
-## Getting Started
+Reusable **Next.js admin panel** cloned from a production portfolio CMS. Use it as a standalone starter or copy `src/app/admin`, `src/components/admin`, `src/config`, `src/lib/admin-api`, and `src/context` into any Next.js project.
 
-First, run the development server:
+## Quick start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo login
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Field    | Value              |
+| -------- | ------------------ |
+| Username | `admin`            |
+| Email    | `admin@zenpanel.dev` |
+| Password | `demo1234`         |
 
-## Learn More
+Demo mode stores the session in `localStorage` — no backend required.
 
-To learn more about Next.js, take a look at the following resources:
+## Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Path | Description |
+| ---- | ----------- |
+| `/admin` | Dashboard (stats + recent users) |
+| `/admin/login` | Sign in |
+| `/admin/projects` … `/admin/settings` | CMS sections (demo data) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Connect a real API
 
-## Deploy on Vercel
+1. Copy `.env.example` → `.env.local`
+2. Set your backend URL:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+NEXT_PUBLIC_ADMIN_API_URL=http://localhost:4000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Implement these routes on your API (cookie-based session, same as portfolio backend):
+
+- `POST /api/admin/auth/login`
+- `POST /api/admin/auth/logout`
+- `GET /api/admin/auth/me`
+- `GET /api/admin/stats`
+- `GET /api/admin/users`
+
+Extend `src/lib/admin-api/client.ts` for additional resources (projects, blog, etc.).
+
+## Customize per project
+
+Edit **`src/config/admin.config.ts`**:
+
+- `brand.name`, `brand.tagline`, `brand.letter`, `brand.siteUrl`
+- `demo.credentials` (demo login)
+- `adminNavItems` (sidebar menu)
+
+## Project structure
+
+```
+src/
+├── app/admin/           # App Router: /admin routes
+├── components/admin/    # UI: auth, layout, dashboard, shared
+├── config/admin.config.ts
+├── context/admin-sidebar-context.tsx
+└── lib/admin-api/       # Demo + HTTP client
+```
+
+## Tech stack
+
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
+- next-themes (dark mode)
+- lucide-react
+
+## Reuse in another repo
+
+1. Copy the folders listed above into your Next.js `src/`
+2. Merge `globals.css` brand colors (or import a shared theme)
+3. Add `ThemeProvider` to your root layout if missing
+4. Install: `lucide-react clsx tailwind-merge next-themes`
+5. Adjust `admin.config.ts` for your product
+
+## License
+
+Private / use per your team policy.
