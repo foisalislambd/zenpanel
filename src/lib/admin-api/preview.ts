@@ -23,23 +23,23 @@ function writeSession(admin: PublicAdmin | null) {
   }
 }
 
-const demoAdmin: PublicAdmin = {
-  id: "demo-admin-1",
-  username: adminConfig.demo.credentials.username,
-  email: adminConfig.demo.credentials.email,
-  role: "superadmin",
+const previewAdmin: PublicAdmin = {
+  id: "preview-admin-1",
+  username: adminConfig.previewLogin.username,
+  email: adminConfig.previewLogin.email,
+  role: "admin",
   lastLoginAt: new Date().toISOString(),
   createdAt: "2024-01-01T00:00:00.000Z",
 };
 
-export const demoStats: DashboardStats = {
+export const previewStats: DashboardStats = {
   totalUsers: 1284,
   usersByProvider: { email: 620, google: 410, apple: 154, discord: 100 },
   newUsersLast7Days: 87,
   totalAdmins: 3,
 };
 
-export const demoUsers: PortalUserRow[] = [
+export const previewUsers: PortalUserRow[] = [
   {
     id: "u1",
     name: "Sarah Chen",
@@ -98,42 +98,41 @@ export const demoUsers: PortalUserRow[] = [
   },
 ];
 
-function delay(ms = 280) {
+function delay(ms = 200) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-export async function demoLogin(username: string, password: string) {
+export async function previewLogin(username: string, password: string) {
   await delay();
-  const { username: demoUser, email, password: demoPass } = adminConfig.demo.credentials;
+  const { username: user, email, password: pass } = adminConfig.previewLogin;
   const normalized = username.trim().toLowerCase();
-  const validUser =
-    normalized === demoUser.toLowerCase() ||
-    normalized === email.trim().toLowerCase();
-  if (!validUser || password !== demoPass) {
+  const valid =
+    normalized === user.toLowerCase() || normalized === email.trim().toLowerCase();
+  if (!valid || password !== pass) {
     throw new Error("Invalid username or password");
   }
-  const admin = { ...demoAdmin, lastLoginAt: new Date().toISOString() };
+  const admin = { ...previewAdmin, lastLoginAt: new Date().toISOString() };
   writeSession(admin);
   return { success: true as const, admin };
 }
 
-export async function demoLogout() {
-  await delay(120);
+export async function previewLogout() {
+  await delay(100);
   writeSession(null);
   return { success: true as const };
 }
 
-export async function demoFetchCurrentAdmin(): Promise<PublicAdmin | null> {
-  await delay(150);
+export async function previewFetchCurrentAdmin(): Promise<PublicAdmin | null> {
+  await delay(120);
   return readSession();
 }
 
-export async function demoFetchStats() {
+export async function previewFetchStats() {
   await delay();
-  return { success: true as const, stats: demoStats };
+  return { success: true as const, stats: previewStats };
 }
 
-export async function demoFetchUsers() {
+export async function previewFetchUsers() {
   await delay();
-  return { success: true as const, users: demoUsers };
+  return { success: true as const, users: previewUsers };
 }

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ZenPanel",
-  description: "Reusable Next.js admin panel with demo login",
+  title: "ZenPanel — Frontend Admin Demo",
+  description: "Admin UI/UX kit — layouts and sample data only. No backend.",
 };
 
 export default function RootLayout({

@@ -15,38 +15,33 @@ import {
   Users,
 } from "lucide-react";
 
-/** Central configuration — customize per project when reusing ZenPanel */
+/**
+ * ZenPanel — UI/UX only (no backend in this repo).
+ *
+ * Mock login + sample tables live in the browser for preview.
+ * When you build a real product: copy these components into that project
+ * and wire your own pages + API there (separate codebase).
+ */
 export const adminConfig = {
   brand: {
     name: "ZenPanel",
-    tagline: "Admin CMS",
+    tagline: "Admin UI kit",
     letter: "Z",
     siteUrl: "/",
   },
 
-  /**
-   * Demo mode when NEXT_PUBLIC_ADMIN_API_URL is unset.
-   * Note: Next.js inlines this at build time — restart dev / rebuild after changing env.
-   */
-  demo: {
-    enabled: !process.env.NEXT_PUBLIC_ADMIN_API_URL?.trim(),
-    credentials: {
-      username: "admin",
-      email: "admin@zenpanel.dev",
-      password: "demo1234",
-    },
-  },
-
-  api: {
-    baseUrl: process.env.NEXT_PUBLIC_ADMIN_API_URL ?? "",
-    prefix: "/api/admin",
+  /** Fake login for previewing the admin shell */
+  previewLogin: {
+    username: "admin",
+    email: "admin@zenpanel.dev",
+    password: "demo1234",
   },
 
   storageKeys: {
     session: "zenpanel-admin-session",
     sidebarExpanded: "zenpanel-sidebar-expanded",
   },
-} as const;
+};
 
 export type AdminNavItem = {
   name: string;

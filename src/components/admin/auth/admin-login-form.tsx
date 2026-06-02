@@ -2,7 +2,6 @@
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
-import { isDemoMode } from "@/lib/admin-api";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,8 +19,8 @@ export function AdminLoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { username: demoUser, email: demoEmail, password: demoPass } =
-    adminConfig.demo.credentials;
+  const { username: previewUser, email: previewEmail, password: previewPass } =
+    adminConfig.previewLogin;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,9 +39,9 @@ export function AdminLoginForm() {
     }
   }
 
-  function fillDemo() {
-    setUsername(demoUser);
-    setPassword(demoPass);
+  function fillPreview() {
+    setUsername(previewUser);
+    setPassword(previewPass);
   }
 
   return (
@@ -52,7 +51,7 @@ export function AdminLoginForm() {
           href="/"
           className="inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          ← Back to site
+          ← Back
         </Link>
 
         <div className="mt-8 lg:mt-10">
@@ -60,32 +59,30 @@ export function AdminLoginForm() {
             {adminConfig.brand.letter}
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
-            Sign in
+            Admin sign in
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Use your administrator username or email to access the dashboard.
+            Preview the admin shell — mock login only, nothing is sent to a server.
           </p>
         </div>
 
-        {isDemoMode() && (
-          <div className="mt-6 rounded-xl border border-brand-200 bg-brand-50/80 px-4 py-3 dark:border-brand-500/30 dark:bg-brand-500/10">
-            <p className="text-sm font-medium text-brand-800 dark:text-brand-300">
-              Demo mode
-            </p>
-            <p className="mt-1 text-xs leading-relaxed text-brand-700/90 dark:text-brand-400/90">
-              <span className="font-mono">{demoUser}</span> or{" "}
-              <span className="font-mono">{demoEmail}</span> · password{" "}
-              <span className="font-mono">{demoPass}</span>
-            </p>
-            <button
-              type="button"
-              onClick={fillDemo}
-              className="mt-3 text-xs font-semibold text-brand-600 underline-offset-2 hover:underline dark:text-brand-400"
-            >
-              Fill demo credentials
-            </button>
-          </div>
-        )}
+        <div className="mt-6 rounded-xl border border-violet-200 bg-violet-50/80 px-4 py-3 dark:border-violet-500/30 dark:bg-violet-500/10">
+          <p className="text-sm font-medium text-violet-800 dark:text-violet-300">
+            UI kit login
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-violet-700/90 dark:text-violet-400/90">
+            <span className="font-mono">{previewUser}</span> or{" "}
+            <span className="font-mono">{previewEmail}</span> ·{" "}
+            <span className="font-mono">{previewPass}</span>
+          </p>
+          <button
+            type="button"
+            onClick={fillPreview}
+            className="mt-3 text-xs font-semibold text-violet-600 underline-offset-2 hover:underline dark:text-violet-400"
+          >
+            Fill preview credentials
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           {error && (
@@ -114,7 +111,7 @@ export function AdminLoginForm() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin or admin@zenpanel.dev"
+                placeholder="admin"
                 className={inputClass}
               />
             </div>
@@ -136,7 +133,7 @@ export function AdminLoginForm() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 className={`${inputClass} pr-11`}
               />
               <button
@@ -159,13 +156,9 @@ export function AdminLoginForm() {
             disabled={submitting || !username.trim() || !password}
             className="flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 focus:ring-2 focus:ring-brand-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? "Signing in…" : "Sign in to dashboard"}
+            {submitting ? "Opening preview…" : "Enter admin UI"}
           </button>
         </form>
-
-        <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          Admin access only. Unauthorized use is prohibited.
-        </p>
       </div>
     </div>
   );

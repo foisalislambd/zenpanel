@@ -13,20 +13,28 @@ const statusStyles: Record<DemoResource["status"], string> = {
 type Props = {
   items: DemoResource[];
   resourceLabel: string;
-  onAdd?: () => void;
 };
 
-export function ResourceList({ items, resourceLabel, onAdd }: Props) {
+function uiOnlyAction(label: string) {
+  window.alert(`${label} — UI only. Wire this button when you build the real page + API.`);
+}
+
+export function ResourceList({ items, resourceLabel }: Props) {
   return (
     <div className="admin-card w-full overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:border-gray-800">
-        <p className="text-sm text-gray-500">
-          {items.length} {resourceLabel}
-          {items.length === 1 ? "" : "s"}
-        </p>
+        <div>
+          <p className="text-sm text-gray-500">
+            {items.length} sample {resourceLabel}
+            {items.length === 1 ? "" : "s"}
+          </p>
+          <p className="mt-0.5 text-xs text-violet-600 dark:text-violet-400">
+            Static examples — not stored
+          </p>
+        </div>
         <button
           type="button"
-          onClick={onAdd}
+          onClick={() => uiOnlyAction("Add new")}
           className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600"
         >
           <Plus className="h-4 w-4" />
@@ -36,7 +44,7 @@ export function ResourceList({ items, resourceLabel, onAdd }: Props) {
 
       {items.length === 0 ? (
         <div className="admin-card-body py-16 text-center text-sm text-gray-500">
-          No {resourceLabel.toLowerCase()} yet
+          No sample {resourceLabel.toLowerCase()} in this UI kit
         </div>
       ) : (
         <div className="admin-scrollbar overflow-x-auto">
@@ -84,6 +92,7 @@ export function ResourceList({ items, resourceLabel, onAdd }: Props) {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         type="button"
+                        onClick={() => uiOnlyAction("Edit")}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
                         aria-label={`Edit ${item.title}`}
                       >
@@ -91,6 +100,7 @@ export function ResourceList({ items, resourceLabel, onAdd }: Props) {
                       </button>
                       <button
                         type="button"
+                        onClick={() => uiOnlyAction("More")}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
                         aria-label={`More actions for ${item.title}`}
                       >
@@ -98,6 +108,7 @@ export function ResourceList({ items, resourceLabel, onAdd }: Props) {
                       </button>
                       <button
                         type="button"
+                        onClick={() => uiOnlyAction("Delete")}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-error-500 hover:bg-error-50 dark:hover:bg-error-500/10"
                         aria-label={`Delete ${item.title}`}
                       >

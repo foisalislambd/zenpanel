@@ -26,13 +26,3 @@ export type PortalUserRow = {
   authProvider: string;
   createdAt: string;
 };
-
-export class AdminApiError extends Error {
-  constructor(
-    message: string,
-    readonly status: number = 0,
-  ) {
-    super(message);
-    this.name = "AdminApiError";
-  }
-}

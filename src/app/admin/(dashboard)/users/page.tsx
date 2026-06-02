@@ -2,33 +2,19 @@
 
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { DemoModeBanner } from "@/components/admin/shared/demo-mode-banner";
-import {
-  AdminApiError,
-  fetchPortalUsers,
-  type PortalUserRow,
-} from "@/lib/admin-api";
-import { useRouter } from "next/navigation";
+import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
+import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 import { useEffect, useState } from "react";
 
 export default function AdminUsersPage() {
-  const router = useRouter();
   const [users, setUsers] = useState<PortalUserRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchPortalUsers()
+    previewFetchUsers()
       .then((res) => setUsers(res.users))
-      .catch((err) => {
-        if (err instanceof AdminApiError && err.status === 401) {
-          router.replace("/admin/login");
-          return;
-        }
-        setError(err instanceof Error ? err.message : "Failed to load users");
-      })
       .finally(() => setLoading(false));
-  }, [router]);
+  }, []);
 
   if (loading) {
     return (
@@ -38,19 +24,13 @@ export default function AdminUsersPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="admin-card admin-card-body text-sm text-error-500">{error}</div>
-    );
-  }
-
   return (
     <div className="admin-content space-y-6">
       <AdminPageHeader
         title="Users"
-        description="Portal accounts and authentication providers."
+        description="Example user table for UI review."
       />
-      <DemoModeBanner />
+      <UiPreviewBanner />
       <RecentUsersTable users={users} />
     </div>
   );

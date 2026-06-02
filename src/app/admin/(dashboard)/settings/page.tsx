@@ -2,15 +2,13 @@
 
 import { AccountSettings } from "@/components/admin/settings/account-settings";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { DemoModeBanner } from "@/components/admin/shared/demo-mode-banner";
-import { adminConfig } from "@/config/admin.config";
+import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
 import { cn } from "@/lib/cn";
 import { useState } from "react";
 
 const tabs = [
   { id: "account", label: "Account" },
-  { id: "site", label: "Site" },
-  { id: "integrations", label: "Integrations" },
+  { id: "site", label: "Branding" },
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -22,9 +20,9 @@ export default function AdminSettingsPage() {
     <div className="admin-content space-y-6">
       <AdminPageHeader
         title="Settings"
-        description="Configure your admin panel and connected services."
+        description="UI placeholders — connect real settings in your product later."
       />
-      <DemoModeBanner />
+      <UiPreviewBanner />
 
       <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800">
         {tabs.map((tab) => (
@@ -47,37 +45,19 @@ export default function AdminSettingsPage() {
       {activeTab === "account" && <AccountSettings />}
 
       {activeTab === "site" && (
-        <div className="admin-card admin-card-body">
+        <div className="admin-card admin-card-body space-y-3">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-            Site settings
-          </h3>
-          <p className="mt-2 text-sm text-gray-500">
-            Customize <code className="text-xs">src/config/admin.config.ts</code> for
-            branding, navigation, and demo credentials when reusing {adminConfig.brand.name}{" "}
-            in another project.
-          </p>
-        </div>
-      )}
-
-      {activeTab === "integrations" && (
-        <div className="admin-card admin-card-body space-y-4">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-            API integration
+            Branding & menu
           </h3>
           <p className="text-sm text-gray-500">
-            Point ZenPanel at your Express (or compatible) admin API:
+            Edit <code className="text-xs">src/config/admin.config.ts</code> — name, logo
+            letter, sidebar links, preview login.
           </p>
-          <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100">
-            {`# .env.local
-NEXT_PUBLIC_ADMIN_API_URL=http://localhost:4000
-
-# Expected routes (cookie auth):
-POST   /api/admin/auth/login
-POST   /api/admin/auth/logout
-GET    /api/admin/auth/me
-GET    /api/admin/stats
-GET    /api/admin/users`}
-          </pre>
+          <p className="text-sm text-gray-500">
+            When you start a real project: copy <code className="text-xs">src/components/admin</code>{" "}
+            and <code className="text-xs">src/app/admin</code>, then add your own pages and
+            backend in that repo.
+          </p>
         </div>
       )}
     </div>

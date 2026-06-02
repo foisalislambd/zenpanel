@@ -1,6 +1,15 @@
 # ZenPanel
 
-Reusable **Next.js admin panel** cloned from a production portfolio CMS. Use it as a standalone starter or copy `src/app/admin`, `src/components/admin`, `src/config`, `src/lib/admin-api`, and `src/context` into any Next.js project.
+**Admin UI / UX kit** — Next.js components and pages for previewing an admin dashboard.  
+No backend, no database, no real save/delete.
+
+Use this repo to:
+
+- Review layout, sidebar, dark mode, tables, and login screen
+- Copy `src/app/admin` + `src/components/admin` into another project
+- Customize branding in `src/config/admin.config.ts`
+
+When you build a real product later, that product gets its **own backend** and **own pages** — wire them separately; this repo stays a design reference.
 
 ## Quick start
 
@@ -11,78 +20,50 @@ npm run dev
 
 Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-### Demo login
+### Preview login
 
-| Field    | Value              |
-| -------- | ------------------ |
-| Username | `admin`            |
+| Field    | Value                |
+| -------- | -------------------- |
+| Username | `admin`              |
 | Email    | `admin@zenpanel.dev` |
-| Password | `demo1234`         |
+| Password | `demo1234`           |
 
-Demo mode stores the session in `localStorage` — no backend required.
+Session is stored in `localStorage` only so you can click through the UI.
 
-## Routes
+## What is included
 
-| Path | Description |
-| ---- | ----------- |
-| `/admin` | Dashboard (stats + recent users) |
-| `/admin/login` | Sign in |
-| `/admin/projects` … `/admin/settings` | CMS sections (demo data) |
+| Area | Notes |
+| ---- | ----- |
+| Layout | Sidebar, header, responsive shell |
+| Dashboard | Sample stat cards + user table |
+| Sections | Projects, blog, payments, etc. — **static sample rows** |
+| Actions | Buttons show alerts — not functional |
+| Settings | Branding notes + preview profile |
 
-## Connect a real API
+## What is NOT included
 
-1. Copy `.env.example` → `.env.local`
-2. Set your backend URL:
+- API client or env-based API URL
+- Create/edit forms that persist data
+- Auth that hits a server
 
-```env
-NEXT_PUBLIC_ADMIN_API_URL=http://localhost:4000
-```
+## Customize UI
 
-3. Implement these routes on your API (cookie-based session, same as portfolio backend):
+`src/config/admin.config.ts`:
 
-- `POST /api/admin/auth/login`
-- `POST /api/admin/auth/logout`
-- `GET /api/admin/auth/me`
-- `GET /api/admin/stats`
-- `GET /api/admin/users`
+- `brand` — name, tagline, letter
+- `adminNavItems` — sidebar links
+- `previewLogin` — fake credentials
 
-Extend `src/lib/admin-api/client.ts` for additional resources (projects, blog, etc.).
+Sample table data: `src/lib/demo-data/resources.ts`  
+Mock auth/session: `src/lib/admin-api/preview.ts`
 
-## Customize per project
+## Copy into another project
 
-Edit **`src/config/admin.config.ts`**:
+1. Copy `src/app/admin`, `src/components/admin`, `src/config`, `src/context`, `src/lib/admin-api`, `src/lib/demo-data`
+2. Merge admin styles from `src/app/admin/admin.css` and brand colors in `globals.css`
+3. Install: `lucide-react`, `clsx`, `tailwind-merge`, `next-themes`
+4. In the **product** repo: add backend + real pages when ready
 
-- `brand.name`, `brand.tagline`, `brand.letter`, `brand.siteUrl`
-- `demo.credentials` (demo login)
-- `adminNavItems` (sidebar menu)
+## Tech
 
-## Project structure
-
-```
-src/
-├── app/admin/           # App Router: /admin routes
-├── components/admin/    # UI: auth, layout, dashboard, shared
-├── config/admin.config.ts
-├── context/admin-sidebar-context.tsx
-└── lib/admin-api/       # Demo + HTTP client
-```
-
-## Tech stack
-
-- Next.js 16 (App Router)
-- React 19
-- Tailwind CSS 4
-- next-themes (dark mode)
-- lucide-react
-
-## Reuse in another repo
-
-1. Copy the folders listed above into your Next.js `src/`
-2. Merge `globals.css` brand colors (or import a shared theme)
-3. Add `ThemeProvider` to your root layout if missing
-4. Install: `lucide-react clsx tailwind-merge next-themes`
-5. Adjust `admin.config.ts` for your product
-
-## License
-
-Private / use per your team policy.
+Next.js 16 · React 19 · Tailwind 4 · next-themes · lucide-react

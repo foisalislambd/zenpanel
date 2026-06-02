@@ -1,7 +1,7 @@
 "use client";
 
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { DemoModeBanner } from "@/components/admin/shared/demo-mode-banner";
+import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
 import { demoMessages } from "@/lib/demo-data/resources";
 import { MessageCircle } from "lucide-react";
 
@@ -10,9 +10,9 @@ export default function AdminMessagesPage() {
     <div className="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
       <AdminPageHeader
         title="Messages"
-        description="Customer conversations and support inbox."
+        description="Inbox layout sample — not connected to chat."
       />
-      <DemoModeBanner />
+      <UiPreviewBanner />
 
       <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
         <aside className="admin-card flex w-full max-w-xs shrink-0 flex-col overflow-hidden md:max-w-sm">
@@ -38,9 +38,9 @@ export default function AdminMessagesPage() {
 
         <div className="admin-card hidden min-w-0 flex-1 flex-col items-center justify-center md:flex">
           <MessageCircle className="h-12 w-12 text-gray-300 dark:text-gray-600" />
-          <p className="mt-4 text-sm text-gray-500">Select a conversation</p>
+          <p className="mt-4 text-sm text-gray-500">Conversation view</p>
           <p className="mt-1 max-w-sm text-center text-xs text-gray-400">
-            Connect your messaging API to enable real-time chat in production.
+            Build message thread UI in your product when the backend is ready.
           </p>
         </div>
       </div>

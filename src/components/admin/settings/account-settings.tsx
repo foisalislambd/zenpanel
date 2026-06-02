@@ -2,19 +2,19 @@
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
-import { isDemoMode } from "@/lib/admin-api";
 
 export function AccountSettings() {
   const { admin } = useAdminAuth();
+  const { username, password } = adminConfig.previewLogin;
 
   return (
     <div className="admin-card admin-card-body space-y-6">
       <div>
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-          Account
+          Preview profile
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          Signed-in administrator profile
+          Shown after mock sign-in — not a real account
         </p>
       </div>
 
@@ -55,13 +55,10 @@ export function AccountSettings() {
         </div>
       </dl>
 
-      {isDemoMode() && (
-        <p className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-          Demo credentials:{" "}
-          <span className="font-mono">{adminConfig.demo.credentials.username}</span> /{" "}
-          <span className="font-mono">{adminConfig.demo.credentials.password}</span>
-        </p>
-      )}
+      <p className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
+        Preview login: <span className="font-mono">{username}</span> /{" "}
+        <span className="font-mono">{password}</span>
+      </p>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  adminLogin,
-  adminLogout,
-  fetchCurrentAdmin,
+  previewFetchCurrentAdmin,
+  previewLogin,
+  previewLogout,
   type PublicAdmin,
 } from "@/lib/admin-api";
 import {
@@ -30,7 +30,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    const current = await fetchCurrentAdmin();
+    const current = await previewFetchCurrentAdmin();
     setAdmin(current);
   }, []);
 
@@ -39,7 +39,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
     async function loadAdmin() {
       try {
-        const current = await fetchCurrentAdmin();
+        const current = await previewFetchCurrentAdmin();
         if (!cancelled) setAdmin(current);
       } catch {
         if (!cancelled) setAdmin(null);
@@ -55,13 +55,13 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
-    const res = await adminLogin(username, password);
+    const res = await previewLogin(username, password);
     setAdmin(res.admin);
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await adminLogout();
+      await previewLogout();
     } finally {
       setAdmin(null);
     }
