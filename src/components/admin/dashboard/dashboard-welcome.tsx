@@ -53,10 +53,10 @@ export function DashboardWelcome() {
         <div className="flex shrink-0 flex-wrap gap-2">
           <Link
             href="/admin/projects"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-brand-50 dark:bg-white dark:text-brand-700 dark:hover:bg-brand-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-brand-600 shadow-sm transition hover:bg-brand-50"
           >
-            <Plus className="h-4 w-4 text-brand-700" />
-            New project
+            <Plus className="h-4 w-4 shrink-0 text-brand-600" />
+            <span className="text-brand-600">New project</span>
           </Link>
           <Link
             href="/admin/settings"
