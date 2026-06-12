@@ -1,6 +1,7 @@
 "use client";
 
 import type { PortalUserRow } from "@/lib/admin-api";
+import Link from "next/link";
 
 const providerStyles: Record<string, string> = {
   email: "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400",
@@ -24,10 +25,21 @@ function ProviderBadge({ provider }: { provider: string }) {
 export function RecentUsersTable({ users }: { users: PortalUserRow[] }) {
   return (
     <div className="admin-card w-full overflow-hidden">
-      <div className="border-b border-gray-200 px-4 py-4 sm:px-6 dark:border-gray-800">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">
-          Recent users
-        </h3>
+      <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-4 sm:px-6 dark:border-gray-800">
+        <div>
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">
+            Recent users
+          </h3>
+          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+            Newest sign-ups on your platform
+          </p>
+        </div>
+        <Link
+          href="/admin/users"
+          className="shrink-0 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+        >
+          View all
+        </Link>
       </div>
 
       {users.length === 0 ? (

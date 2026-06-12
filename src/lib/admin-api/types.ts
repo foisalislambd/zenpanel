@@ -17,6 +17,14 @@ export type DashboardStats = {
   };
   newUsersLast7Days: number;
   totalAdmins: number;
+  totalRevenue: number;
+  revenueChangePercent: number;
+  newOrdersLast7Days: number;
+  ordersChangePercent: number;
+  unreadMessages: number;
+  totalProjects: number;
+  newsletterSubscribers: number;
+  publishedPosts: number;
 };
 
 export type PortalUserRow = {
@@ -24,5 +32,39 @@ export type PortalUserRow = {
   name: string;
   email: string;
   authProvider: string;
+  createdAt: string;
+};
+
+export type ChartDataPoint = {
+  label: string;
+  revenue: number;
+  orders: number;
+};
+
+export type ActivityType =
+  | "user"
+  | "order"
+  | "payment"
+  | "message"
+  | "blog"
+  | "newsletter";
+
+export type ActivityItem = {
+  id: string;
+  type: ActivityType;
+  title: string;
+  description: string;
+  timestamp: string;
+  meta?: string;
+};
+
+export type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
+
+export type RecentOrder = {
+  id: string;
+  customer: string;
+  service: string;
+  amount: number;
+  status: OrderStatus;
   createdAt: string;
 };
