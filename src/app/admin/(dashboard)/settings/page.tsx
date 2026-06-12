@@ -2,7 +2,6 @@
 
 import { AccountSettings } from "@/components/admin/settings/account-settings";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
 import { cn } from "@/lib/cn";
 import { useState } from "react";
 
@@ -20,9 +19,8 @@ export default function AdminSettingsPage() {
     <div className="admin-content space-y-6">
       <AdminPageHeader
         title="Settings"
-        description="UI placeholders — connect real settings in your product later."
+        description="Account and site branding for the admin panel."
       />
-      <UiPreviewBanner />
 
       <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800">
         {tabs.map((tab) => (
@@ -47,16 +45,11 @@ export default function AdminSettingsPage() {
       {activeTab === "site" && (
         <div className="admin-card admin-card-body space-y-3">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-            Branding & menu
+            Branding & navigation
           </h3>
           <p className="text-sm text-gray-500">
-            Edit <code className="text-xs">src/config/admin.config.ts</code> — name, logo
-            letter, sidebar links, preview login.
-          </p>
-          <p className="text-sm text-gray-500">
-            When you start a real project: copy <code className="text-xs">src/components/admin</code>{" "}
-            and <code className="text-xs">src/app/admin</code>, then add your own pages and
-            backend in that repo.
+            Edit <code className="text-xs">src/config/admin.config.ts</code> for panel name,
+            logo letter, and sidebar links.
           </p>
         </div>
       )}

@@ -1,9 +1,9 @@
 "use client";
 
-import type { DemoResource } from "@/lib/demo-data/resources";
+import type { AdminResource } from "@/lib/admin-data/resources";
 import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 
-const statusStyles: Record<DemoResource["status"], string> = {
+const statusStyles: Record<AdminResource["status"], string> = {
   published:
     "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500",
   draft: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
@@ -11,31 +11,22 @@ const statusStyles: Record<DemoResource["status"], string> = {
 };
 
 type Props = {
-  items: DemoResource[];
+  items: AdminResource[];
   resourceLabel: string;
 };
-
-function uiOnlyAction(label: string) {
-  window.alert(`${label} — UI only. Wire this button when you build the real page + API.`);
-}
 
 export function ResourceList({ items, resourceLabel }: Props) {
   return (
     <div className="admin-card w-full overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:border-gray-800">
-        <div>
-          <p className="text-sm text-gray-500">
-            {items.length} sample {resourceLabel}
-            {items.length === 1 ? "" : "s"}
-          </p>
-          <p className="mt-0.5 text-xs text-violet-600 dark:text-violet-400">
-            Static examples — not stored
-          </p>
-        </div>
+        <p className="text-sm text-gray-500">
+          {items.length} {resourceLabel}
+          {items.length === 1 ? "" : "s"}
+        </p>
         <button
           type="button"
-          onClick={() => uiOnlyAction("Add new")}
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600"
+          disabled
+          className="inline-flex h-9 cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-brand-500/60 px-4 text-sm font-semibold text-white"
         >
           <Plus className="h-4 w-4" />
           Add new
@@ -44,7 +35,7 @@ export function ResourceList({ items, resourceLabel }: Props) {
 
       {items.length === 0 ? (
         <div className="admin-card-body py-16 text-center text-sm text-gray-500">
-          No sample {resourceLabel.toLowerCase()} in this UI kit
+          No {resourceLabel.toLowerCase()} yet. Connect your API to list items here.
         </div>
       ) : (
         <div className="admin-scrollbar overflow-x-auto">
@@ -92,24 +83,24 @@ export function ResourceList({ items, resourceLabel }: Props) {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         type="button"
-                        onClick={() => uiOnlyAction("Edit")}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                        disabled
+                        className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-lg text-gray-400"
                         aria-label={`Edit ${item.title}`}
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => uiOnlyAction("More")}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                        disabled
+                        className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-lg text-gray-400"
                         aria-label={`More actions for ${item.title}`}
                       >
                         <MoreHorizontal className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => uiOnlyAction("Delete")}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-error-500 hover:bg-error-50 dark:hover:bg-error-500/10"
+                        disabled
+                        className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-lg text-gray-400"
                         aria-label={`Delete ${item.title}`}
                       >
                         <Trash2 className="h-4 w-4" />

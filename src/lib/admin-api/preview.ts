@@ -23,116 +23,73 @@ function writeSession(admin: PublicAdmin | null) {
   }
 }
 
-const previewAdmin: PublicAdmin = {
-  id: "preview-admin-1",
-  username: adminConfig.previewLogin.username,
-  email: adminConfig.previewLogin.email,
-  role: "admin",
-  lastLoginAt: new Date().toISOString(),
-  createdAt: "2024-01-01T00:00:00.000Z",
+const emptyStats: DashboardStats = {
+  totalUsers: 0,
+  usersByProvider: { email: 0, google: 0, apple: 0, discord: 0 },
+  newUsersLast7Days: 0,
+  totalAdmins: 0,
 };
 
-export const previewStats: DashboardStats = {
-  totalUsers: 1284,
-  usersByProvider: { email: 620, google: 410, apple: 154, discord: 100 },
-  newUsersLast7Days: 87,
-  totalAdmins: 3,
-};
+function getCredentials() {
+  const username = process.env.NEXT_PUBLIC_ADMIN_USER?.trim() ?? "";
+  const email = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.trim() ?? "";
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "";
+  return { username, email, password };
+}
 
-export const previewUsers: PortalUserRow[] = [
-  {
-    id: "u1",
-    name: "Sarah Chen",
-    email: "sarah.chen@example.com",
-    authProvider: "google",
-    createdAt: "2026-05-28T10:00:00.000Z",
-  },
-  {
-    id: "u2",
-    name: "James Wilson",
-    email: "james@example.com",
-    authProvider: "email",
-    createdAt: "2026-05-27T14:30:00.000Z",
-  },
-  {
-    id: "u3",
-    name: "Maria Garcia",
-    email: "maria.g@example.com",
-    authProvider: "discord",
-    createdAt: "2026-05-26T09:15:00.000Z",
-  },
-  {
-    id: "u4",
-    name: "Alex Kim",
-    email: "alex.kim@example.com",
-    authProvider: "apple",
-    createdAt: "2026-05-25T16:45:00.000Z",
-  },
-  {
-    id: "u5",
-    name: "Emma Brown",
-    email: "emma@example.com",
-    authProvider: "email",
-    createdAt: "2026-05-24T11:20:00.000Z",
-  },
-  {
-    id: "u6",
-    name: "David Lee",
-    email: "david.lee@example.com",
-    authProvider: "google",
-    createdAt: "2026-05-23T08:00:00.000Z",
-  },
-  {
-    id: "u7",
-    name: "Lisa Anderson",
-    email: "lisa.a@example.com",
-    authProvider: "email",
-    createdAt: "2026-05-22T13:30:00.000Z",
-  },
-  {
-    id: "u8",
-    name: "Tom Harris",
-    email: "tom@example.com",
-    authProvider: "google",
-    createdAt: "2026-05-21T17:00:00.000Z",
-  },
-];
-
-function delay(ms = 200) {
+function delay(ms = 120) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
 export async function previewLogin(username: string, password: string) {
   await delay();
-  const { username: user, email, password: pass } = adminConfig.previewLogin;
+  const { username: user, email, password: pass } = getCredentials();
+
+  if (!user || !pass) {
+    throw new Error(
+      "Admin login is not configured. Set NEXT_PUBLIC_ADMIN_USER and NEXT_PUBLIC_ADMIN_PASSWORD.",
+    );
+  }
+
   const normalized = username.trim().toLowerCase();
   const valid =
-    normalized === user.toLowerCase() || normalized === email.trim().toLowerCase();
+    normalized === user.toLowerCase() ||
+    (email.length > 0 && normalized === email.toLowerCase());
+
   if (!valid || password !== pass) {
     throw new Error("Invalid username or password");
   }
-  const admin = { ...previewAdmin, lastLoginAt: new Date().toISOString() };
+
+  const admin: PublicAdmin = {
+    id: "admin-1",
+    username: user,
+    email: email || `${user}@localhost`,
+    role: "admin",
+    lastLoginAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  };
+
   writeSession(admin);
   return { success: true as const, admin };
 }
 
 export async function previewLogout() {
-  await delay(100);
+  await delay(80);
   writeSession(null);
   return { success: true as const };
 }
 
 export async function previewFetchCurrentAdmin(): Promise<PublicAdmin | null> {
-  await delay(120);
+  await delay(80);
   return readSession();
 }
 
 export async function previewFetchStats() {
   await delay();
-  return { success: true as const, stats: previewStats };
+  return { success: true as const, stats: emptyStats };
 }
 
 export async function previewFetchUsers() {
   await delay();
-  return { success: true as const, users: previewUsers };
+  return { success: true as const, users: [] as PortalUserRow[] };
 }

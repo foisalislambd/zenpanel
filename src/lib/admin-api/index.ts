@@ -1,6 +1,5 @@
 /**
- * Browser-only mock auth & dashboard data for UI preview.
- * Replace with real fetch logic in your product repo when backend exists.
+ * Client-side admin session (localStorage) until a real API is wired.
  */
 export type {
   DashboardStats,

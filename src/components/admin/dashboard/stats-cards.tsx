@@ -41,7 +41,10 @@ function StatCard({
 }
 
 export function StatsCards({ stats }: Props) {
-  const providerHint = `Email ${stats.usersByProvider.email} · Google ${stats.usersByProvider.google} · Apple ${stats.usersByProvider.apple} · Discord ${stats.usersByProvider.discord}`;
+  const providerHint =
+    stats.totalUsers > 0
+      ? `Email ${stats.usersByProvider.email} · Google ${stats.usersByProvider.google} · Apple ${stats.usersByProvider.apple} · Discord ${stats.usersByProvider.discord}`
+      : undefined;
 
   return (
     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">

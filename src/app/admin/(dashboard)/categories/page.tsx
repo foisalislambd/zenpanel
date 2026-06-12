@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoCategories } from "@/lib/demo-data/resources";
+import { adminCategories } from "@/lib/admin-data/resources";
 
 export default function AdminCategoriesPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminCategoriesPage() {
       title="Categories"
       description="Organize content with categories and subcategories."
       resourceLabel="category"
-      items={demoCategories}
+      items={adminCategories}
     />
   );
 }

@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoPayments } from "@/lib/demo-data/resources";
+import { adminPayments } from "@/lib/admin-data/resources";
 
 export default function AdminPaymentsPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminPaymentsPage() {
       title="Payments"
       description="Deposits, payment providers, and settlement status."
       resourceLabel="payment"
-      items={demoPayments}
+      items={adminPayments}
     />
   );
 }

@@ -19,9 +19,6 @@ export function AdminLoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { username: previewUser, email: previewEmail, password: previewPass } =
-    adminConfig.previewLogin;
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -39,11 +36,6 @@ export function AdminLoginForm() {
     }
   }
 
-  function fillPreview() {
-    setUsername(previewUser);
-    setPassword(previewPass);
-  }
-
   return (
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
       <div className="mx-auto w-full max-w-[400px]">
@@ -51,7 +43,7 @@ export function AdminLoginForm() {
           href="/"
           className="inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          ← Back
+          ← Back to site
         </Link>
 
         <div className="mt-8 lg:mt-10">
@@ -62,26 +54,9 @@ export function AdminLoginForm() {
             Admin sign in
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Preview the admin shell — mock login only, nothing is sent to a server.
+            Sign in to manage {adminConfig.brand.name}. Credentials are set via environment
+            variables on the server.
           </p>
-        </div>
-
-        <div className="mt-6 rounded-xl border border-violet-200 bg-violet-50/80 px-4 py-3 dark:border-violet-500/30 dark:bg-violet-500/10">
-          <p className="text-sm font-medium text-violet-800 dark:text-violet-300">
-            UI kit login
-          </p>
-          <p className="mt-1 text-xs leading-relaxed text-violet-700/90 dark:text-violet-400/90">
-            <span className="font-mono">{previewUser}</span> or{" "}
-            <span className="font-mono">{previewEmail}</span> ·{" "}
-            <span className="font-mono">{previewPass}</span>
-          </p>
-          <button
-            type="button"
-            onClick={fillPreview}
-            className="mt-3 text-xs font-semibold text-violet-600 underline-offset-2 hover:underline dark:text-violet-400"
-          >
-            Fill preview credentials
-          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -111,7 +86,6 @@ export function AdminLoginForm() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
                 className={inputClass}
               />
             </div>
@@ -133,7 +107,6 @@ export function AdminLoginForm() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
                 className={`${inputClass} pr-11`}
               />
               <button
@@ -156,7 +129,7 @@ export function AdminLoginForm() {
             disabled={submitting || !username.trim() || !password}
             className="flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 focus:ring-2 focus:ring-brand-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? "Opening preview…" : "Enter admin UI"}
+            {submitting ? "Signing in…" : "Sign in"}
           </button>
         </form>
       </div>

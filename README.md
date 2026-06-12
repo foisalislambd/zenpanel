@@ -1,15 +1,8 @@
 # ZenPanel
 
-**Admin UI / UX kit** — Next.js components and pages for previewing an admin dashboard.  
-No backend, no database, no real save/delete.
+Admin UI shell for Next.js — sidebar, dashboard, resource tables, login, dark mode.
 
-Use this repo to:
-
-- Review layout, sidebar, dark mode, tables, and login screen
-- Copy `src/app/admin` + `src/components/admin` into another project
-- Customize branding in `src/config/admin.config.ts`
-
-When you build a real product later, that product gets its **own backend** and **own pages** — wire them separately; this repo stays a design reference.
+No backend included. Tables start empty; connect your API in each product repo.
 
 ## Quick start
 
@@ -20,49 +13,30 @@ npm run dev
 
 Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-### Preview login
+### Environment (required for sign-in)
 
-| Field    | Value                |
-| -------- | -------------------- |
-| Username | `admin`              |
-| Email    | `admin@zenpanel.dev` |
-| Password | `demo1234`           |
+```env
+NEXT_PUBLIC_ADMIN_USER=admin
+NEXT_PUBLIC_ADMIN_PASSWORD=your-secret
+# optional
+NEXT_PUBLIC_ADMIN_EMAIL=admin@example.com
+```
 
-Session is stored in `localStorage` only so you can click through the UI.
+Session is stored in `localStorage` until you replace auth with a real API.
 
-## What is included
+## Copy into a project
 
-| Area | Notes |
-| ---- | ----- |
-| Layout | Sidebar, header, responsive shell |
-| Dashboard | Sample stat cards + user table |
-| Sections | Projects, blog, payments, etc. — **static sample rows** |
-| Actions | Buttons show alerts — not functional |
-| Settings | Branding notes + preview profile |
+Use `web-projects-script/scripts/sync-zenpanel-to-projects.py` to copy into all product frontends, or manually:
 
-## What is NOT included
+1. `src/app/admin`, `src/components/admin`, `src/components/theme`
+2. `src/config/admin.config.ts`, `src/context`, `src/lib/admin-api`, `src/lib/admin-data`, `src/lib/cn.ts`
+3. Merge admin styles into `globals.css` (see script snippet)
+4. Wrap root layout with `ThemeProvider`
+5. Install: `lucide-react`, `clsx`, `tailwind-merge`, `next-themes`
 
-- API client or env-based API URL
-- Create/edit forms that persist data
-- Auth that hits a server
+## Customize
 
-## Customize UI
-
-`src/config/admin.config.ts`:
-
-- `brand` — name, tagline, letter
-- `adminNavItems` — sidebar links
-- `previewLogin` — fake credentials
-
-Sample table data: `src/lib/demo-data/resources.ts`  
-Mock auth/session: `src/lib/admin-api/preview.ts`
-
-## Copy into another project
-
-1. Copy `src/app/admin`, `src/components/admin`, `src/config`, `src/context`, `src/lib/admin-api`, `src/lib/demo-data`
-2. Merge admin styles from `src/app/admin/admin.css` and brand colors in `globals.css`
-3. Install: `lucide-react`, `clsx`, `tailwind-merge`, `next-themes`
-4. In the **product** repo: add backend + real pages when ready
+`src/config/admin.config.ts` — brand name, sidebar links.
 
 ## Tech
 

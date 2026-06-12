@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoTransactions } from "@/lib/demo-data/resources";
+import { adminTransactions } from "@/lib/admin-data/resources";
 
 export default function AdminTransactionsPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminTransactionsPage() {
       title="Transactions"
       description="Wallet credits, debits, and ledger activity."
       resourceLabel="transaction"
-      items={demoTransactions}
+      items={adminTransactions}
     />
   );
 }

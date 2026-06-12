@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoBlogPosts } from "@/lib/demo-data/resources";
+import { adminBlogPosts } from "@/lib/admin-data/resources";
 
 export default function AdminBlogPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminBlogPage() {
       title="Blog"
       description="Publish and manage blog posts."
       resourceLabel="post"
-      items={demoBlogPosts}
+      items={adminBlogPosts}
     />
   );
 }

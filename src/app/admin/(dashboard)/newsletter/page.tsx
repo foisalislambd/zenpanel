@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoNewsletter } from "@/lib/demo-data/resources";
+import { adminNewsletter } from "@/lib/admin-data/resources";
 
 export default function AdminNewsletterPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminNewsletterPage() {
       title="Newsletter"
       description="Subscriber list and email campaign audience."
       resourceLabel="subscriber"
-      items={demoNewsletter}
+      items={adminNewsletter}
     />
   );
 }

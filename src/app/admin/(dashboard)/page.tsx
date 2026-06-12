@@ -3,7 +3,6 @@
 import { StatsCards } from "@/components/admin/dashboard/stats-cards";
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
 import {
   previewFetchStats,
   previewFetchUsers,
@@ -22,10 +21,10 @@ export default function AdminDashboardPage() {
     Promise.all([previewFetchStats(), previewFetchUsers()])
       .then(([statsRes, usersRes]) => {
         setStats(statsRes.stats);
-        setUsers(usersRes.users.slice(0, 8));
+        setUsers(usersRes.users);
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load preview data");
+        setError(err instanceof Error ? err.message : "Failed to load dashboard");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -48,9 +47,8 @@ export default function AdminDashboardPage() {
     <div className="admin-content space-y-6 sm:space-y-8">
       <AdminPageHeader
         title="Dashboard"
-        description="Sample layout — numbers and users are static preview data."
+        description="Overview metrics and recent users — connect your API to populate this page."
       />
-      <UiPreviewBanner />
       {stats && <StatsCards stats={stats} />}
       <RecentUsersTable users={users} />
     </div>

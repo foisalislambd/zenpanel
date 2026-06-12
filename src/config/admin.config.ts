@@ -16,30 +16,20 @@ import {
 } from "lucide-react";
 
 /**
- * ZenPanel — UI/UX only (no backend in this repo).
- *
- * Mock login + sample tables live in the browser for preview.
- * When you build a real product: copy these components into that project
- * and wire your own pages + API there (separate codebase).
+ * Admin shell — layout, navigation, branding.
+ * Auth: set NEXT_PUBLIC_ADMIN_USER, NEXT_PUBLIC_ADMIN_PASSWORD (and optional NEXT_PUBLIC_ADMIN_EMAIL).
  */
 export const adminConfig = {
   brand: {
-    name: "ZenPanel",
-    tagline: "Admin UI kit",
-    letter: "Z",
+    name: "Admin",
+    tagline: "Control panel",
+    letter: "A",
     siteUrl: "/",
   },
 
-  /** Fake login for previewing the admin shell */
-  previewLogin: {
-    username: "admin",
-    email: "admin@zenpanel.dev",
-    password: "demo1234",
-  },
-
   storageKeys: {
-    session: "zenpanel-admin-session",
-    sidebarExpanded: "zenpanel-sidebar-expanded",
+    session: "admin-session",
+    sidebarExpanded: "admin-sidebar-expanded",
   },
 };
 

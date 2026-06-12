@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoProducts } from "@/lib/demo-data/resources";
+import { adminProducts } from "@/lib/admin-data/resources";
 
 export default function AdminProductsPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminProductsPage() {
       title="Products"
       description="Digital products, downloads, and storefront items."
       resourceLabel="product"
-      items={demoProducts}
+      items={adminProducts}
     />
   );
 }

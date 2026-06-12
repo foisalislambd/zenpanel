@@ -1,5 +1,5 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
-import { demoServiceOrders } from "@/lib/demo-data/resources";
+import { adminServiceOrders } from "@/lib/admin-data/resources";
 
 export default function AdminServiceOrdersPage() {
   return (
@@ -7,7 +7,7 @@ export default function AdminServiceOrdersPage() {
       title="Service orders"
       description="Track customer service purchases and fulfillment."
       resourceLabel="order"
-      items={demoServiceOrders}
+      items={adminServiceOrders}
     />
   );
 }

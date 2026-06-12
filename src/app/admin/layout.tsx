@@ -9,8 +9,8 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Admin · ZenPanel Demo",
-  description: "Admin UI kit preview — no backend",
+  title: "Admin",
+  description: "Site administration",
 };
 
 export default function AdminRootLayout({

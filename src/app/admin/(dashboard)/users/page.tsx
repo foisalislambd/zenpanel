@@ -2,7 +2,6 @@
 
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { UiPreviewBanner } from "@/components/admin/shared/ui-preview-banner";
 import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 import { useEffect, useState } from "react";
 
@@ -28,9 +27,8 @@ export default function AdminUsersPage() {
     <div className="admin-content space-y-6">
       <AdminPageHeader
         title="Users"
-        description="Example user table for UI review."
+        description="Registered users — connect your API to load accounts."
       />
-      <UiPreviewBanner />
       <RecentUsersTable users={users} />
     </div>
   );
