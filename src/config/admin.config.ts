@@ -21,10 +21,17 @@ import {
  */
 export const adminConfig = {
   brand: {
-    name: "Admin",
+    name: "ZenPanel",
     tagline: "Control panel",
-    letter: "A",
+    letter: "Z",
     siteUrl: "/",
+    loginDescription:
+      "Professional control panel for your platform — monitor users, review activity, and manage everything securely.",
+    loginFeatures: [
+      "Real-time portal analytics",
+      "Secure admin-only access",
+      "Works on desktop and mobile",
+    ],
   },
 
   storageKeys: {

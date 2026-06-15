@@ -51,11 +51,10 @@ export function AdminLoginForm() {
             {adminConfig.brand.letter}
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
-            Admin sign in
+            Sign in
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Sign in to manage {adminConfig.brand.name}. Credentials are set via environment
-            variables on the server.
+            Use your administrator username or email to access the dashboard.
           </p>
         </div>
 
@@ -86,6 +85,7 @@ export function AdminLoginForm() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                placeholder="admin or admin@example.com"
                 className={inputClass}
               />
             </div>
@@ -107,6 +107,7 @@ export function AdminLoginForm() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
                 className={`${inputClass} pr-11`}
               />
               <button
@@ -129,9 +130,13 @@ export function AdminLoginForm() {
             disabled={submitting || !username.trim() || !password}
             className="flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 focus:ring-2 focus:ring-brand-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? "Signing in…" : "Sign in"}
+            {submitting ? "Signing in…" : "Sign in to dashboard"}
           </button>
         </form>
+
+        <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
+          Admin access only. Unauthorized use is prohibited.
+        </p>
       </div>
     </div>
   );
