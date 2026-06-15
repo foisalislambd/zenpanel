@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
 
       {stats && <StatsCards stats={stats} />}
 
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className="grid items-start gap-6 xl:grid-cols-3">
         <div className="space-y-6 xl:col-span-2">
           {chart.length > 0 && <RevenueChart data={chart} />}
           <ActivityFeed items={activity} />

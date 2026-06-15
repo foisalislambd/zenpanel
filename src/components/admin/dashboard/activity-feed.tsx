@@ -64,7 +64,7 @@ function formatRelativeTime(iso: string) {
 
 export function ActivityFeed({ items }: Props) {
   return (
-    <div className="admin-card flex h-full flex-col overflow-hidden">
+    <div className="admin-card overflow-hidden">
       <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-4 sm:px-6 dark:border-gray-800">
         <div>
           <h3 className="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">
@@ -83,11 +83,11 @@ export function ActivityFeed({ items }: Props) {
       </div>
 
       {items.length === 0 ? (
-        <div className="admin-card-body flex flex-1 items-center justify-center py-12 text-sm text-gray-500">
+        <div className="admin-card-body py-12 text-center text-sm text-gray-500">
           No recent activity
         </div>
       ) : (
-        <ul className="admin-scrollbar max-h-[420px] flex-1 divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
+        <ul className="admin-scrollbar max-h-[420px] divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
           {items.map((item) => {
             const config = activityConfig[item.type];
             if (!config) return null;
