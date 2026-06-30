@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardSectionHeader } from "@/components/admin/dashboard/dashboard-section-header";
 import type { ActivityItem, ActivityType } from "@/lib/admin-api";
 import {
   CreditCard,
@@ -8,7 +9,6 @@ import {
   ShoppingCart,
   UserPlus,
 } from "lucide-react";
-import Link from "next/link";
 
 type Props = {
   items: ActivityItem[];
@@ -54,40 +54,25 @@ function formatRelativeTime(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
   if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return `${minutes}m`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
+  if (days < 7) return `${days}d`;
   return new Date(iso).toLocaleDateString();
 }
 
 export function ActivityFeed({ items }: Props) {
   return (
     <div className="admin-card overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-4 sm:px-6 dark:border-gray-800">
-        <div>
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">
-            Recent activity
-          </h3>
-          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
-            Latest events across your site
-          </p>
-        </div>
-        <Link
-          href="/admin/transactions"
-          className="shrink-0 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
-        >
-          View all
-        </Link>
-      </div>
+      <DashboardSectionHeader title="Activity" href="/admin/transactions" />
 
       {items.length === 0 ? (
-        <div className="admin-card-body py-12 text-center text-sm text-gray-500">
+        <div className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
           No recent activity
         </div>
       ) : (
-        <ul className="admin-scrollbar max-h-[420px] divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
+        <ul className="admin-scrollbar max-h-[380px] divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
           {items.map((item) => {
             const config = activityConfig[item.type];
             if (!config) return null;
@@ -95,31 +80,24 @@ export function ActivityFeed({ items }: Props) {
             return (
               <li
                 key={item.id}
-                className="flex gap-4 px-4 py-4 transition-colors hover:bg-gray-50/80 sm:px-6 dark:hover:bg-white/[0.02]"
+                className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
               >
                 <span
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${config.bg}`}
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${config.bg}`}
                 >
-                  <Icon className={`h-4 w-4 ${config.color}`} />
+                  <Icon className={`h-3.5 w-3.5 ${config.color}`} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {item.title}
-                    </p>
-                    {item.meta && (
-                      <span className="shrink-0 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                        {item.meta}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-0.5 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
-                    {item.description}
-                  </p>
-                  <p className="mt-1.5 text-xs text-gray-400">
-                    {formatRelativeTime(item.timestamp)}
-                  </p>
+                  <p className="truncate text-sm text-gray-900 dark:text-white">{item.title}</p>
                 </div>
+                {item.meta && (
+                  <span className="shrink-0 text-sm font-medium text-gray-900 dark:text-white">
+                    {item.meta}
+                  </span>
+                )}
+                <span className="shrink-0 text-xs tabular-nums text-gray-400">
+                  {formatRelativeTime(item.timestamp)}
+                </span>
               </li>
             );
           })}

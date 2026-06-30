@@ -35,7 +35,7 @@
 }
 
 .admin-card {
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   border: 1px solid #e4e7ec;
   background-color: #ffffff;
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);

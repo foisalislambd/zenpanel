@@ -34,7 +34,7 @@ function StatCard({
   iconBg: string;
 }) {
   return (
-    <div className="admin-card group overflow-hidden transition-shadow hover:shadow-md dark:hover:shadow-none">
+    <div className="admin-card overflow-hidden">
       <div className="flex items-center justify-between gap-3 p-4">
         <div className="min-w-0">
           <p className="truncate text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -45,7 +45,7 @@ function StatCard({
           </p>
         </div>
         <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${iconBg}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconBg}`}
         >
           {icon}
         </div>

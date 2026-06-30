@@ -69,13 +69,13 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="admin-content space-y-6 sm:space-y-8">
+    <div className="admin-content space-y-5">
       <DashboardWelcome />
 
       {stats && <StatsCards stats={stats} />}
 
-      <div className="grid items-start gap-6 xl:grid-cols-3">
-        <div className="space-y-6 xl:col-span-2">
+      <div className="grid items-start gap-5 xl:grid-cols-3">
+        <div className="space-y-5 xl:col-span-2">
           {chart.length > 0 && <RevenueChart data={chart} />}
           <ActivityFeed items={activity} />
         </div>
@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         <RecentOrdersTable orders={orders} />
         <RecentUsersTable users={users} />
       </div>
