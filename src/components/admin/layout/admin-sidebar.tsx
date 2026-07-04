@@ -90,7 +90,8 @@ export function AdminSidebar() {
               href={item.href}
               onClick={closeMobileSidebar}
               title={!showLabels ? item.name : undefined}
-              className={`group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all ${
+              aria-current={active ? "page" : undefined}
+              className={`group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
                 active
                   ? "bg-brand-500 text-white shadow-md shadow-brand-500/25"
                   : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8"

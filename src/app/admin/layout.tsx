@@ -19,7 +19,7 @@ export default function AdminRootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`${outfit.className} min-h-dvh w-full`}>
+    <div className={`${outfit.variable} admin-shell min-h-dvh w-full`}>
       <AdminAuthProvider>
         <AdminSidebarProvider>{children}</AdminSidebarProvider>
       </AdminAuthProvider>

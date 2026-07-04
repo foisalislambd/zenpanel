@@ -1,4 +1,5 @@
 import { AdminLoginForm } from "@/components/admin/auth/admin-login-form";
+import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
 import { adminConfig } from "@/config/admin.config";
 
 function BrandPanel({ className = "" }: { className?: string }) {
@@ -41,7 +42,10 @@ function BrandPanel({ className = "" }: { className?: string }) {
 
 export default function AdminLoginPage() {
   return (
-    <div className="grid min-h-dvh w-full lg:grid-cols-2">
+    <div className="relative grid min-h-dvh w-full lg:grid-cols-2">
+      <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
+        <AdminThemeToggle />
+      </div>
       <AdminLoginForm />
       <BrandPanel className="hidden min-h-dvh lg:flex" />
     </div>

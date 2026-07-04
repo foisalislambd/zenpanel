@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 
 const quickLinks = [
-  { name: "Add project", href: "/admin/projects", icon: FolderKanban },
+  { name: "Manage projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Manage services", href: "/admin/services", icon: Briefcase },
   { name: "View messages", href: "/admin/messages", icon: MessageCircle },
   { name: "Write blog post", href: "/admin/blog", icon: Newspaper },

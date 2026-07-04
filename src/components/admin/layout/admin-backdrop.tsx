@@ -1,9 +1,23 @@
 "use client";
 
 import { useAdminSidebar } from "@/context/admin-sidebar-context";
+import { useEffect } from "react";
 
 export function AdminBackdrop() {
   const { isMobileOpen, isDesktop, closeMobileSidebar } = useAdminSidebar();
+
+  useEffect(() => {
+    if (!isMobileOpen || isDesktop) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        closeMobileSidebar();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileOpen, isDesktop, closeMobileSidebar]);
 
   if (!isMobileOpen || isDesktop) return null;
 

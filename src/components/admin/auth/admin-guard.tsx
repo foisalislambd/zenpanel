@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
+import { AdminLoading } from "@/components/admin/ui/admin-loading";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -15,14 +16,12 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   }, [admin, loading, router]);
 
   if (loading) {
-    return (
-      <div className="flex h-dvh w-full items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
-      </div>
-    );
+    return <AdminLoading message="Verifying session…" fullHeight />;
   }
 
-  if (!admin) return null;
+  if (!admin) {
+    return <AdminLoading message="Redirecting to sign in…" fullHeight />;
+  }
 
   return <>{children}</>;
 }

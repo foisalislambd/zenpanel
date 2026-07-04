@@ -2,7 +2,7 @@
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
-import { CalendarDays, Plus, Settings } from "lucide-react";
+import { CalendarDays, FolderKanban, Settings } from "lucide-react";
 import Link from "next/link";
 
 function getGreeting() {
@@ -53,14 +53,14 @@ export function DashboardWelcome() {
         <div className="flex shrink-0 flex-wrap gap-2">
           <Link
             href="/admin/projects"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-brand-600 shadow-sm transition hover:bg-brand-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-brand-600 shadow-sm transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
-            <Plus className="h-4 w-4 shrink-0 text-brand-600" />
-            <span className="text-brand-600">New project</span>
+            <FolderKanban className="h-4 w-4 shrink-0 text-brand-600" aria-hidden />
+            <span className="text-brand-600">Manage projects</span>
           </Link>
           <Link
             href="/admin/settings"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
           >
             <Settings className="h-4 w-4" />
             Settings

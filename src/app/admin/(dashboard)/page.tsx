@@ -7,6 +7,7 @@ import { RecentOrdersTable } from "@/components/admin/dashboard/recent-orders-ta
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { RevenueChart } from "@/components/admin/dashboard/revenue-chart";
 import { StatsCards } from "@/components/admin/dashboard/stats-cards";
+import { AdminLoading } from "@/components/admin/ui/admin-loading";
 import {
   previewFetchActivity,
   previewFetchChartData,
@@ -52,14 +53,7 @@ export default function AdminDashboardPage() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
-          <p className="text-sm text-gray-500 dark:text-gray-400">Loading dashboard…</p>
-        </div>
-      </div>
-    );
+    return <AdminLoading message="Loading dashboard…" />;
   }
 
   if (error) {

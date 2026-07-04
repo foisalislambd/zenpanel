@@ -19,6 +19,7 @@ export function RevenueChart({ data }: Props) {
   const maxRevenue = Math.max(...data.map((d) => d.revenue), 1);
   const totalRevenue = data.reduce((sum, d) => sum + d.revenue, 0);
   const totalOrders = data.reduce((sum, d) => sum + d.orders, 0);
+  const chartSummary = `7-day revenue ${formatCurrency(totalRevenue)} across ${totalOrders} orders`;
 
   return (
     <div className="admin-card w-full overflow-hidden">
@@ -41,7 +42,11 @@ export function RevenueChart({ data }: Props) {
       />
 
       <div className="px-5 py-4">
-        <div className="flex h-44 items-end justify-between gap-1.5 sm:h-48 sm:gap-2">
+        <div
+          role="img"
+          aria-label={chartSummary}
+          className="flex h-44 items-end justify-between gap-1.5 sm:h-48 sm:gap-2"
+        >
           {data.map((point) => {
             const height = Math.max((point.revenue / maxRevenue) * 100, 6);
             return (
@@ -54,9 +59,10 @@ export function RevenueChart({ data }: Props) {
                     className="w-full rounded-sm bg-brand-500 transition-colors group-hover:bg-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-400"
                     style={{ height: `${height}%` }}
                     title={`${point.label}: ${formatCurrency(point.revenue)}`}
+                    aria-hidden
                   />
                 </div>
-                <span className="text-[10px] font-medium text-gray-500 sm:text-xs dark:text-gray-400">
+                <span className="text-[10px] font-medium text-gray-500 sm:text-xs dark:text-gray-400" aria-hidden>
                   {point.label}
                 </span>
               </div>
