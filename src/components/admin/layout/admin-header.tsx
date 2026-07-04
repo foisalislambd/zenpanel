@@ -3,12 +3,15 @@
 import { adminConfig } from "@/config/admin.config";
 import { AdminUserMenu } from "@/components/admin/layout/admin-user-menu";
 import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
+import { useAdminChatPanel } from "@/context/admin-chat-panel-context";
 import { useAdminSidebar } from "@/context/admin-sidebar-context";
-import { Menu, Search, X } from "lucide-react";
+import { cn } from "@/lib/cn";
+import { Menu, PanelRightOpen, Search, X } from "lucide-react";
 import Link from "next/link";
 
 export function AdminHeader() {
   const { isMobileOpen, isDesktop, toggleMobileSidebar } = useAdminSidebar();
+  const { isOpen: isChatOpen, togglePanel: toggleChatPanel } = useAdminChatPanel();
 
   return (
     <header className="admin-topbar sticky top-0 z-30 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-gray-900/95 dark:supports-[backdrop-filter]:bg-gray-900/80">
@@ -54,6 +57,21 @@ export function AdminHeader() {
         </div>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={toggleChatPanel}
+            className={cn(
+              "flex h-10 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
+              isChatOpen
+                ? "border-brand-300 bg-brand-50 text-brand-700 dark:border-brand-500/40 dark:bg-brand-500/10 dark:text-brand-300"
+                : "border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5",
+            )}
+            aria-label="Toggle AI assistant"
+            aria-expanded={isChatOpen}
+          >
+            <PanelRightOpen className="h-4 w-4" aria-hidden />
+            <span className="hidden sm:inline">AI</span>
+          </button>
           <AdminThemeToggle />
           <AdminUserMenu />
         </div>

@@ -37,6 +37,7 @@ export const adminConfig = {
   storageKeys: {
     session: "admin-session",
     sidebarExpanded: "admin-sidebar-expanded",
+    chatPanelOpen: "admin-chat-panel-open",
   },
 };
 

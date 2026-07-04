@@ -85,3 +85,152 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.admin-content-editor-panel {
+  border-left: 1px solid #e4e7ec;
+  background-color: #ffffff;
+  color: #101828;
+  min-height: 0;
+}
+
+.dark .admin-content-editor-panel {
+  border-left-color: #344054;
+  background-color: #101828;
+  color: #f9fafb;
+}
+
+.admin-content-editor-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4e7ec;
+  padding: 0.75rem 1rem;
+}
+
+.dark .admin-content-editor-panel-header {
+  border-bottom-color: #344054;
+}
+
+.admin-content-editor-panel-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #101828;
+}
+
+.dark .admin-content-editor-panel-title {
+  color: #f9fafb;
+}
+
+.admin-content-editor-panel-close {
+  border-radius: 0.5rem;
+  padding: 0.375rem;
+  color: #475467;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-content-editor-panel-close:hover {
+  background-color: #f2f4f7;
+  color: #101828;
+}
+
+.dark .admin-content-editor-panel-close {
+  color: #98a2b3;
+}
+
+.dark .admin-content-editor-panel-close:hover {
+  background-color: #344054;
+  color: #f9fafb;
+}
+
+.admin-chat-panel {
+  min-height: 0;
+}
+
+.dark .admin-chat-panel {
+  background-color: #101828;
+}
+
+.admin-chip {
+  border-radius: 0.5rem;
+  border: 1px solid #e4e7ec;
+  background-color: #ffffff;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #344054;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.admin-chip:hover:not(:disabled) {
+  border-color: #9cb9ff;
+  background-color: #ecf3ff;
+  color: #1d2939;
+}
+
+.admin-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dark .admin-shell .admin-chip {
+  border-color: #344054;
+  background-color: #1d2939;
+  color: #e4e7ec;
+}
+
+.dark .admin-shell .admin-chip:hover:not(:disabled) {
+  border-color: #7592ff;
+  background-color: #344054;
+  color: #f9fafb;
+}
+
+.admin-chip-pill {
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+}
+
+.admin-chat-bubble {
+  animation: admin-chat-fade-in 0.2s ease-out;
+}
+
+@keyframes admin-chat-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-chat-typing-dot {
+  animation: admin-chat-typing 1s ease-in-out infinite;
+}
+
+@keyframes admin-chat-typing {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.admin-chat-markdown code {
+  border-radius: 0.25rem;
+  background-color: rgba(16, 24, 40, 0.06);
+  padding: 0.125rem 0.375rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125em;
+}
+
+.dark .admin-chat-markdown code {
+  background-color: #344054;
+  color: #ecf3ff;
+}

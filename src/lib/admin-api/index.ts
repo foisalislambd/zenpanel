@@ -22,3 +22,6 @@ export {
   previewFetchActivity,
   previewFetchRecentOrders,
 } from "./preview";
+
+export { previewSendAdminChatMessage } from "./chat";
+export type { ChatMessageInput, AdminChatPageContextPayload } from "./chat";

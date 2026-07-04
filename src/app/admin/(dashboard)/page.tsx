@@ -8,6 +8,7 @@ import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-tabl
 import { RevenueChart } from "@/components/admin/dashboard/revenue-chart";
 import { StatsCards } from "@/components/admin/dashboard/stats-cards";
 import { AdminLoading } from "@/components/admin/ui/admin-loading";
+import { useAdminChatPageContext } from "@/hooks/use-admin-chat-page-context";
 import {
   previewFetchActivity,
   previewFetchChartData,
@@ -30,6 +31,43 @@ export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useAdminChatPageContext({
+    pageId: "dashboard",
+    title: "Dashboard",
+    route: "/admin",
+    description:
+      "Analyze metrics, summarize revenue and orders, or get suggestions for your admin workflow.",
+    getSnapshot: () =>
+      stats
+        ? {
+            totalUsers: stats.totalUsers,
+            totalRevenue: stats.totalRevenue,
+            newOrdersLast7Days: stats.newOrdersLast7Days,
+            unreadMessages: stats.unreadMessages,
+            totalProjects: stats.totalProjects,
+            newsletterSubscribers: stats.newsletterSubscribers,
+            newUsersLast7Days: stats.newUsersLast7Days,
+          }
+        : {},
+    quickActions: [
+      {
+        id: "growth",
+        label: "Analyze growth",
+        prompt: "Analyze our user growth metrics and summarize key trends",
+      },
+      {
+        id: "revenue",
+        label: "Revenue summary",
+        prompt: "Summarize revenue and order performance for this week",
+      },
+      {
+        id: "messages",
+        label: "Unread messages",
+        prompt: "How many unread messages do we have and what should I prioritize?",
+      },
+    ],
+  });
 
   useEffect(() => {
     Promise.all([

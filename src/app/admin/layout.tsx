@@ -1,4 +1,5 @@
 import { AdminAuthProvider } from "@/components/admin/auth/admin-auth-provider";
+import { AdminChatPanelProvider } from "@/context/admin-chat-panel-context";
 import { AdminSidebarProvider } from "@/context/admin-sidebar-context";
 import { Outfit } from "next/font/google";
 import "./admin.css";
@@ -21,7 +22,9 @@ export default function AdminRootLayout({
   return (
     <div className={`${outfit.variable} admin-shell min-h-dvh w-full`}>
       <AdminAuthProvider>
-        <AdminSidebarProvider>{children}</AdminSidebarProvider>
+        <AdminSidebarProvider>
+          <AdminChatPanelProvider>{children}</AdminChatPanelProvider>
+        </AdminSidebarProvider>
       </AdminAuthProvider>
     </div>
   );
