@@ -2,7 +2,7 @@
 
 Admin UI shell for Next.js — sidebar, dashboard, resource tables, login, dark mode.
 
-No backend included. Tables start empty; connect your API in each product repo.
+No backend included. The dashboard shows sample preview data so you can review the UI; resource list pages start empty until you connect your API.
 
 ## Quick start
 
@@ -13,16 +13,7 @@ npm run dev
 
 Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-### Environment (required for sign-in)
-
-```env
-NEXT_PUBLIC_ADMIN_USER=admin
-NEXT_PUBLIC_ADMIN_PASSWORD=your-secret
-# optional
-NEXT_PUBLIC_ADMIN_EMAIL=admin@example.com
-```
-
-Session is stored in `localStorage` until you replace auth with a real API.
+Login is prefilled (`admin` / `admin`) — click **Sign in** to open the dashboard. No `.env` or persisted session — auth lives in memory for the UI preview only.
 
 ## Copy into a project
 

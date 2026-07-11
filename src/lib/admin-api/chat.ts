@@ -1,4 +1,6 @@
 import { adminConfig } from "@/config/admin.config";
+import { delay } from "@/lib/delay";
+import { formatCurrency, formatNumber } from "@/lib/format";
 
 export type ChatMessageInput = {
   role: "user" | "assistant";
@@ -12,26 +14,20 @@ export type AdminChatPageContextPayload = {
   data?: Record<string, unknown>;
 };
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function formatNumber(value: unknown): string {
-  return typeof value === "number" ? value.toLocaleString() : "—";
+function isDashboardPage(pageId: string) {
+  return pageId === "dashboard";
 }
 
 function buildDashboardReply(data: Record<string, unknown>, prompt: string): string {
   const lower = prompt.toLowerCase();
 
-  if (/growth|analyze|metric|stat|revenue|order|user/.test(lower)) {
+  if (/growth|analyze|metric|stat|revenue|order|user|message/.test(lower)) {
     const users = formatNumber(data.totalUsers);
     const revenue = data.totalRevenue;
     const orders = formatNumber(data.newOrdersLast7Days);
     const messages = formatNumber(data.unreadMessages);
     const revenueText =
-      typeof revenue === "number"
-        ? new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(revenue)
-        : "—";
+      typeof revenue === "number" ? formatCurrency(revenue) : "—";
 
     return `Here's a quick read on your dashboard metrics:
 
@@ -96,7 +92,12 @@ export async function previewSendAdminChatMessage(input: {
 
   let reply: string;
 
-  if (page?.pageId === "dashboard" && page.data && Object.keys(page.data).length > 0) {
+  if (
+    page &&
+    isDashboardPage(page.pageId) &&
+    page.data &&
+    Object.keys(page.data).length > 0
+  ) {
     reply = buildDashboardReply(page.data, prompt);
   } else if (page) {
     reply = buildPageReply(page, prompt);

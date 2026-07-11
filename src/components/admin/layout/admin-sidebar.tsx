@@ -6,6 +6,7 @@ import {
   SIDEBAR_WIDTH_EXPANDED,
   useAdminSidebar,
 } from "@/context/admin-sidebar-context";
+import { isAdminNavActive } from "@/lib/admin-nav";
 import { ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -78,10 +79,7 @@ export function AdminSidebar() {
           </p>
         )}
         {adminNavItems.map((item) => {
-          const active =
-            item.href === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(item.href);
+          const active = isAdminNavActive(pathname, item.href);
           const Icon = item.icon;
 
           return (

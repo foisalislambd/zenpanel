@@ -7,8 +7,8 @@ import {
   type AdminChatMessage,
   type AdminChatQuickAction,
 } from "@/context/admin-chat-panel-context";
-import { previewSendAdminChatMessage } from "@/lib/admin-api/chat";
 import { adminConfig } from "@/config/admin.config";
+import { previewSendAdminChatMessage } from "@/lib/admin-api";
 import { cn } from "@/lib/cn";
 import {
   ArrowRight,
@@ -145,12 +145,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
     try {
       await runChat(text);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      setError(msg);
-      addMessage({
-        role: "assistant",
-        content: `Sorry, I couldn't complete that request.\n\n${msg}`,
-      });
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsGenerating(false);
     }
@@ -166,9 +161,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
       try {
         await runChat(actionPrompt);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Something went wrong";
-        setError(msg);
-        addMessage({ role: "assistant", content: `Sorry — ${msg}` });
+        setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
         setIsGenerating(false);
       }
@@ -184,7 +177,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
   };
 
   const defaultQuickActions: AdminChatQuickAction[] =
-    pageContext?.pageId === "dashboard" || pageContext?.pageId === "dashboard-loading"
+    pageContext?.pageId === "dashboard"
       ? [
           {
             id: "growth",

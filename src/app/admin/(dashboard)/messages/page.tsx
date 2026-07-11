@@ -33,7 +33,7 @@ export default function AdminMessagesPage() {
           <AdminEmptyState
             icon={MessageCircle}
             title="Select a conversation"
-            description="Choose a thread from the inbox to read and reply. On mobile, open a message from the list to view the full conversation."
+            description="Choose a thread from the inbox to read and reply."
           />
         </div>
       </div>

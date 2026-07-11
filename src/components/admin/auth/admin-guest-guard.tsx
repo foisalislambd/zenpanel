@@ -17,7 +17,7 @@ export function AdminGuestGuard({ children }: { children: React.ReactNode }) {
   }, [admin, loading, router]);
 
   if (loading) {
-    return <AdminLoading message="Checking session…" fullHeight />;
+    return <AdminLoading message="Loading…" fullHeight />;
   }
 
   if (admin) {

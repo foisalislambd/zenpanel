@@ -13,18 +13,28 @@ import { useEffect, useRef } from "react";
 export function useAdminChatPageContext(ctx: AdminChatPageContext) {
   const { setPageContext } = useAdminChatPanel();
   const ctxRef = useRef(ctx);
-  ctxRef.current = ctx;
+
+  useEffect(() => {
+    ctxRef.current = ctx;
+  });
 
   useEffect(() => {
     setPageContext({
-      pageId: ctxRef.current.pageId,
-      title: ctxRef.current.title,
-      description: ctxRef.current.description,
-      route: ctxRef.current.route,
-      quickActions: ctxRef.current.quickActions,
+      pageId: ctx.pageId,
+      title: ctx.title,
+      description: ctx.description,
+      route: ctx.route,
+      quickActions: ctx.quickActions,
       getSnapshot: () => ctxRef.current.getSnapshot?.() ?? {},
     });
 
     return () => setPageContext(null);
-  }, [ctx.pageId, ctx.title, ctx.description, ctx.route, setPageContext]);
+  }, [
+    ctx.pageId,
+    ctx.title,
+    ctx.description,
+    ctx.route,
+    ctx.quickActions,
+    setPageContext,
+  ]);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import type { DashboardStats } from "@/lib/admin-api";
+import { formatCurrency } from "@/lib/format";
 import {
   DollarSign,
   FolderKanban,
@@ -14,12 +15,9 @@ type Props = {
   stats: DashboardStats;
 };
 
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(amount);
+function formatChange(percent: number) {
+  const sign = percent > 0 ? "+" : "";
+  return `${sign}${percent.toFixed(1)}%`;
 }
 
 function StatCard({
@@ -64,21 +62,21 @@ export function StatsCards({ stats }: Props) {
     <div className="grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-6">
       <StatCard
         label="Revenue"
-        sublabel="All time"
+        sublabel={`All time · ${formatChange(stats.revenueChangePercent)}`}
         value={formatCurrency(stats.totalRevenue)}
         icon={<DollarSign className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
         iconBg="bg-brand-50 dark:bg-brand-500/15"
       />
       <StatCard
         label="Users"
-        sublabel="Registered"
+        sublabel={`+${stats.newUsersLast7Days.toLocaleString()} last 7 days`}
         value={stats.totalUsers.toLocaleString()}
         icon={<Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />}
         iconBg="bg-blue-50 dark:bg-blue-500/15"
       />
       <StatCard
         label="Orders"
-        sublabel="Last 7 days"
+        sublabel={`Last 7 days · ${formatChange(stats.ordersChangePercent)}`}
         value={stats.newOrdersLast7Days.toLocaleString()}
         icon={<ShoppingCart className="h-5 w-5 text-violet-600 dark:text-violet-400" />}
         iconBg="bg-violet-50 dark:bg-violet-500/15"

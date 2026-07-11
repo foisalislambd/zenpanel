@@ -38,9 +38,9 @@ export function AdminUserMenu() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
-  async function handleLogout() {
+  function handleLogout() {
     setOpen(false);
-    await logout();
+    logout();
     router.replace("/admin/login");
   }
 

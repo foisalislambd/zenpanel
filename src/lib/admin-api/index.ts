@@ -1,5 +1,5 @@
 /**
- * Client-side admin session (localStorage) until a real API is wired.
+ * In-memory preview helpers for the admin UI shell.
  */
 export type {
   ActivityItem,
@@ -14,8 +14,6 @@ export type {
 
 export {
   previewLogin,
-  previewLogout,
-  previewFetchCurrentAdmin,
   previewFetchStats,
   previewFetchUsers,
   previewFetchChartData,

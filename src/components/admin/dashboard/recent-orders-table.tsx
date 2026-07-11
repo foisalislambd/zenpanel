@@ -2,6 +2,7 @@
 
 import { DashboardSectionHeader } from "@/components/admin/dashboard/dashboard-section-header";
 import type { OrderStatus, RecentOrder } from "@/lib/admin-api";
+import { formatCurrency } from "@/lib/format";
 
 const statusStyles: Record<OrderStatus, string> = {
   pending:
@@ -14,18 +15,14 @@ const statusStyles: Record<OrderStatus, string> = {
     "bg-gray-100 text-gray-600 ring-gray-500/20 dark:bg-gray-800 dark:text-gray-400",
 };
 
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
+const fallbackStatusStyle =
+  "bg-gray-100 text-gray-600 ring-gray-500/20 dark:bg-gray-800 dark:text-gray-400";
 
-function StatusBadge({ status }: { status: OrderStatus }) {
+function StatusBadge({ status }: { status: string }) {
+  const style = statusStyles[status as OrderStatus] ?? fallbackStatusStyle;
   return (
     <span
-      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${statusStyles[status]}`}
+      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${style}`}
     >
       {status}
     </span>

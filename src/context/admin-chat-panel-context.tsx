@@ -1,14 +1,12 @@
 "use client";
 
-import { adminConfig } from "@/config/admin.config";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
-  useSyncExternalStore,
 } from "react";
 
 export const CHAT_PANEL_WIDTH = 400;
@@ -51,22 +49,6 @@ type ChatPanelContextValue = {
 
 const ChatPanelContext = createContext<ChatPanelContextValue | null>(null);
 
-const DESKTOP_BREAKPOINT = 1024;
-const STORAGE_KEY = adminConfig.storageKeys.chatPanelOpen;
-
-function subscribeDesktop(onStoreChange: () => void) {
-  window.addEventListener("resize", onStoreChange);
-  return () => window.removeEventListener("resize", onStoreChange);
-}
-
-function getDesktopSnapshot() {
-  return window.innerWidth >= DESKTOP_BREAKPOINT;
-}
-
-function getServerDesktopSnapshot() {
-  return false;
-}
-
 let messageSeq = 0;
 function nextId() {
   messageSeq += 1;
@@ -74,30 +56,15 @@ function nextId() {
 }
 
 export function AdminChatPanelProvider({ children }: { children: React.ReactNode }) {
-  const isDesktop = useSyncExternalStore(
-    subscribeDesktop,
-    getDesktopSnapshot,
-    getServerDesktopSnapshot,
-  );
-
+  const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<AdminChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [pageContext, setPageContext] = useState<AdminChatPageContext | null>(null);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "true") setIsOpen(true);
-  }, []);
-
-  const persistOpen = useCallback((open: boolean) => {
-    setIsOpen(open);
-    localStorage.setItem(STORAGE_KEY, String(open));
-  }, []);
-
-  const openPanel = useCallback(() => persistOpen(true), [persistOpen]);
-  const closePanel = useCallback(() => persistOpen(false), [persistOpen]);
-  const togglePanel = useCallback(() => persistOpen(!isOpen), [isOpen, persistOpen]);
+  const openPanel = useCallback(() => setIsOpen(true), []);
+  const closePanel = useCallback(() => setIsOpen(false), []);
+  const togglePanel = useCallback(() => setIsOpen((open) => !open), []);
 
   const addMessage = useCallback((msg: Omit<AdminChatMessage, "id">) => {
     const id = nextId();

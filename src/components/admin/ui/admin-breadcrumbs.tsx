@@ -1,25 +1,13 @@
 "use client";
 
-import { adminNavItems } from "@/config/admin.config";
+import { matchAdminNavItem } from "@/lib/admin-nav";
 import { ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-function getPageTitle(pathname: string): string | null {
-  if (pathname === "/admin") return null;
-
-  const sorted = [...adminNavItems].sort((a, b) => b.href.length - a.href.length);
-
-  const match = sorted.find((item) =>
-    item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href),
-  );
-
-  return match?.name ?? null;
-}
-
 export function AdminBreadcrumbs() {
   const pathname = usePathname();
-  const pageTitle = getPageTitle(pathname);
+  const pageTitle = pathname === "/admin" ? null : (matchAdminNavItem(pathname)?.name ?? null);
 
   if (!pageTitle) return null;
 

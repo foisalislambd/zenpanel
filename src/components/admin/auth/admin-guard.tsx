@@ -16,7 +16,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   }, [admin, loading, router]);
 
   if (loading) {
-    return <AdminLoading message="Verifying session…" fullHeight />;
+    return <AdminLoading message="Loading…" fullHeight />;
   }
 
   if (!admin) {

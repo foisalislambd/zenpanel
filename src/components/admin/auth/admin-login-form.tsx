@@ -7,30 +7,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const DEMO_USERNAME = "admin";
+const DEMO_PASSWORD = "admin";
+
 const inputClass =
   "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
 export function AdminLoginForm() {
   const { login } = useAdminAuth();
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(DEMO_USERNAME);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setSubmitting(true);
 
     try {
-      await login(username.trim().toLowerCase(), password);
+      await login(username.trim() || DEMO_USERNAME);
       router.replace("/admin");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Sign in failed. Please try again.",
-      );
     } finally {
       setSubmitting(false);
     }
@@ -40,7 +37,7 @@ export function AdminLoginForm() {
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
       <div className="mx-auto w-full max-w-[400px]">
         <Link
-          href="/"
+          href={adminConfig.brand.siteUrl}
           className="inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
           ← Back to site
@@ -54,38 +51,26 @@ export function AdminLoginForm() {
             Sign in
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Use your administrator username or email to access the dashboard.
+            Preview UI — credentials are prefilled. Click sign in to open the dashboard.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg border border-error-500/30 bg-error-50 px-4 py-3 text-sm text-error-600 dark:bg-error-500/10 dark:text-error-400"
-            >
-              {error}
-            </div>
-          )}
-
           <div>
             <label
               htmlFor="admin-username"
               className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Username or email
+              Username
             </label>
             <div className="relative">
               <User className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 id="admin-username"
                 type="text"
-                required
-                autoFocus
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin or admin@example.com"
                 className={inputClass}
               />
             </div>
@@ -103,11 +88,9 @@ export function AdminLoginForm() {
               <input
                 id="admin-password"
                 type={showPassword ? "text" : "password"}
-                required
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
                 className={`${inputClass} pr-11`}
               />
               <button
@@ -127,7 +110,7 @@ export function AdminLoginForm() {
 
           <button
             type="submit"
-            disabled={submitting || !username.trim() || !password}
+            disabled={submitting}
             className="flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 focus:ring-2 focus:ring-brand-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? "Signing in…" : "Sign in to dashboard"}
@@ -135,7 +118,7 @@ export function AdminLoginForm() {
         </form>
 
         <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          Admin access only. Unauthorized use is prohibited.
+          UI preview only — no real authentication.
         </p>
       </div>
     </div>

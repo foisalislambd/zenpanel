@@ -1,6 +1,6 @@
 "use client";
 
-import { adminConfig } from "@/config/admin.config";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import {
   createContext,
   useCallback,
@@ -8,7 +8,6 @@ import {
   useEffect,
   useMemo,
   useState,
-  useSyncExternalStore,
 } from "react";
 
 export const SIDEBAR_WIDTH_EXPANDED = 260;
@@ -26,65 +25,20 @@ type SidebarContextValue = {
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
 
-const DESKTOP_BREAKPOINT = 1024;
-const STORAGE_KEY = adminConfig.storageKeys.sidebarExpanded;
-
-function subscribeDesktop(onStoreChange: () => void) {
-  window.addEventListener("resize", onStoreChange);
-  return () => window.removeEventListener("resize", onStoreChange);
-}
-
-function getDesktopSnapshot() {
-  return window.innerWidth >= DESKTOP_BREAKPOINT;
-}
-
-function getServerDesktopSnapshot() {
-  return false;
-}
-
 export function AdminSidebarProvider({ children }: { children: React.ReactNode }) {
-  const isDesktop = useSyncExternalStore(
-    subscribeDesktop,
-    getDesktopSnapshot,
-    getServerDesktopSnapshot,
-  );
-
+  const isDesktop = useIsDesktop();
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored !== null) setIsExpanded(stored === "true");
-    });
-
-    const onResize = () => {
-      if (window.innerWidth >= DESKTOP_BREAKPOINT) {
-        setIsMobileOpen(false);
-      } else {
-        setIsExpanded(true);
-      }
-    };
-
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
+  const effectiveExpanded = isDesktop ? isExpanded : true;
+  const effectiveMobileOpen = isDesktop ? false : isMobileOpen;
 
   useEffect(() => {
-    if (isDesktop) {
-      localStorage.setItem(STORAGE_KEY, String(isExpanded));
-    }
-  }, [isExpanded, isDesktop]);
-
-  useEffect(() => {
-    document.body.style.overflow = isMobileOpen && !isDesktop ? "hidden" : "";
+    document.body.style.overflow = effectiveMobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMobileOpen, isDesktop]);
+  }, [effectiveMobileOpen]);
 
   const toggleSidebar = useCallback(() => {
     setIsExpanded((v) => !v);
@@ -95,15 +49,22 @@ export function AdminSidebarProvider({ children }: { children: React.ReactNode }
 
   const value = useMemo(
     () => ({
-      isExpanded,
-      isMobileOpen,
+      isExpanded: effectiveExpanded,
+      isMobileOpen: effectiveMobileOpen,
       isDesktop,
       toggleSidebar,
       toggleMobileSidebar,
       closeMobileSidebar,
       setExpanded: setIsExpanded,
     }),
-    [isExpanded, isMobileOpen, isDesktop, toggleSidebar, toggleMobileSidebar, closeMobileSidebar],
+    [
+      effectiveExpanded,
+      effectiveMobileOpen,
+      isDesktop,
+      toggleSidebar,
+      toggleMobileSidebar,
+      closeMobileSidebar,
+    ],
   );
 
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>;

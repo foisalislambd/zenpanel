@@ -35,7 +35,7 @@ export function AdminHeader() {
             {adminConfig.brand.letter}
           </span>
           <span className="text-base font-semibold text-gray-900 dark:text-white">
-            Admin
+            {adminConfig.brand.name}
           </span>
         </Link>
 

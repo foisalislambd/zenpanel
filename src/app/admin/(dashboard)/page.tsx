@@ -23,6 +23,24 @@ import {
 } from "@/lib/admin-api";
 import { useEffect, useState } from "react";
 
+const DASHBOARD_QUICK_ACTIONS = [
+  {
+    id: "growth",
+    label: "Analyze growth",
+    prompt: "Analyze our user growth metrics and summarize key trends",
+  },
+  {
+    id: "revenue",
+    label: "Revenue summary",
+    prompt: "Summarize revenue and order performance for this week",
+  },
+  {
+    id: "help",
+    label: "What can you do?",
+    prompt: "What can you help me with on the dashboard?",
+  },
+];
+
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [users, setUsers] = useState<PortalUserRow[]>([]);
@@ -50,23 +68,7 @@ export default function AdminDashboardPage() {
             newUsersLast7Days: stats.newUsersLast7Days,
           }
         : {},
-    quickActions: [
-      {
-        id: "growth",
-        label: "Analyze growth",
-        prompt: "Analyze our user growth metrics and summarize key trends",
-      },
-      {
-        id: "revenue",
-        label: "Revenue summary",
-        prompt: "Summarize revenue and order performance for this week",
-      },
-      {
-        id: "messages",
-        label: "Unread messages",
-        prompt: "How many unread messages do we have and what should I prioritize?",
-      },
-    ],
+    quickActions: DASHBOARD_QUICK_ACTIONS,
   });
 
   useEffect(() => {

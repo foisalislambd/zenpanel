@@ -3,6 +3,7 @@
 import { DashboardSectionHeader } from "@/components/admin/dashboard/dashboard-section-header";
 import type { ActivityItem, ActivityType } from "@/lib/admin-api";
 import {
+  Activity,
   CreditCard,
   Mail,
   Newspaper,
@@ -50,6 +51,12 @@ const activityConfig: Record<
   },
 };
 
+const fallbackConfig = {
+  icon: Activity,
+  color: "text-gray-600 dark:text-gray-400",
+  bg: "bg-gray-100 dark:bg-gray-800",
+};
+
 function formatRelativeTime(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
@@ -65,7 +72,7 @@ function formatRelativeTime(iso: string) {
 export function ActivityFeed({ items }: Props) {
   return (
     <div className="admin-card overflow-hidden">
-      <DashboardSectionHeader title="Activity" href="/admin/transactions" />
+      <DashboardSectionHeader title="Activity" />
 
       {items.length === 0 ? (
         <div className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -74,21 +81,25 @@ export function ActivityFeed({ items }: Props) {
       ) : (
         <ul className="admin-scrollbar max-h-[380px] divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
           {items.map((item) => {
-            const config = activityConfig[item.type];
-            if (!config) return null;
+            const config = activityConfig[item.type] ?? fallbackConfig;
             const Icon = config.icon;
             return (
               <li
                 key={item.id}
-                className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
+                className="flex items-start gap-3 px-5 py-3 transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
               >
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${config.bg}`}
+                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${config.bg}`}
                 >
                   <Icon className={`h-3.5 w-3.5 ${config.color}`} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm text-gray-900 dark:text-white">{item.title}</p>
+                  {item.description && (
+                    <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
                 {item.meta && (
                   <span className="shrink-0 text-sm font-medium text-gray-900 dark:text-white">

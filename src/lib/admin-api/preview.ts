@@ -1,4 +1,4 @@
-import { adminConfig } from "@/config/admin.config";
+import { delay } from "@/lib/delay";
 import type {
   ActivityItem,
   ChartDataPoint,
@@ -8,27 +8,7 @@ import type {
   RecentOrder,
 } from "./types";
 
-const SESSION_KEY = adminConfig.storageKeys.session;
-
-function readSession(): PublicAdmin | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as PublicAdmin;
-  } catch {
-    return null;
-  }
-}
-
-function writeSession(admin: PublicAdmin | null) {
-  if (typeof window === "undefined") return;
-  if (admin) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(admin));
-  } else {
-    localStorage.removeItem(SESSION_KEY);
-  }
-}
+const ADMIN_ACCOUNT_CREATED_AT = "2024-01-15T10:00:00.000Z";
 
 function daysAgo(days: number, hour = 12) {
   const d = new Date();
@@ -37,6 +17,10 @@ function daysAgo(days: number, hour = 12) {
   return d.toISOString();
 }
 
+/**
+ * Dashboard preview sample data.
+ * Counts that belong to empty resource pages (messages, projects, newsletter, blog) stay at 0.
+ */
 const demoStats: DashboardStats = {
   totalUsers: 2847,
   usersByProvider: { email: 1420, google: 890, apple: 312, discord: 225 },
@@ -46,10 +30,10 @@ const demoStats: DashboardStats = {
   revenueChangePercent: 12.4,
   newOrdersLast7Days: 42,
   ordersChangePercent: 8.2,
-  unreadMessages: 7,
-  totalProjects: 18,
-  newsletterSubscribers: 1204,
-  publishedPosts: 42,
+  unreadMessages: 0,
+  totalProjects: 0,
+  newsletterSubscribers: 0,
+  publishedPosts: 0,
 };
 
 const demoUsers: PortalUserRow[] = [
@@ -126,24 +110,26 @@ const demoActivity: ActivityItem[] = [
   },
   {
     id: "a-4",
-    type: "message",
-    title: "New contact message",
-    description: "Inquiry about enterprise pricing from TechFlow Ltd",
-    timestamp: daysAgo(1, 15),
+    type: "order",
+    title: "Order completed",
+    description: "SEO Audit for TechFlow Ltd marked complete",
+    timestamp: daysAgo(1, 14),
+    meta: "$450",
   },
   {
     id: "a-5",
-    type: "blog",
-    title: "Blog post published",
-    description: "“10 Tips for Better UX” is now live",
-    timestamp: daysAgo(1, 10),
+    type: "user",
+    title: "New user registered",
+    description: "James Chen signed up via email",
+    timestamp: daysAgo(1, 14),
   },
   {
     id: "a-6",
-    type: "newsletter",
-    title: "Newsletter subscriber",
-    description: "alex.k@startup.io joined the mailing list",
-    timestamp: daysAgo(2, 13),
+    type: "payment",
+    title: "Payment received",
+    description: "Invoice settled for Brand Identity package",
+    timestamp: daysAgo(2, 10),
+    meta: "$1,800",
   },
 ];
 
@@ -190,58 +176,20 @@ const demoOrders: RecentOrder[] = [
   },
 ];
 
-function getCredentials() {
-  const username = process.env.NEXT_PUBLIC_ADMIN_USER?.trim() ?? "";
-  const email = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.trim() ?? "";
-  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "";
-  return { username, email, password };
-}
-
-function delay(ms = 120) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-export async function previewLogin(username: string, password: string) {
+export async function previewLogin(username = "admin") {
   await delay();
-  const { username: user, email, password: pass } = getCredentials();
 
-  if (!user || !pass) {
-    throw new Error(
-      "Admin login is not configured. Set NEXT_PUBLIC_ADMIN_USER and NEXT_PUBLIC_ADMIN_PASSWORD.",
-    );
-  }
-
-  const normalized = username.trim().toLowerCase();
-  const valid =
-    normalized === user.toLowerCase() ||
-    (email.length > 0 && normalized === email.toLowerCase());
-
-  if (!valid || password !== pass) {
-    throw new Error("Invalid username or password");
-  }
-
+  const name = username.trim() || "admin";
   const admin: PublicAdmin = {
     id: "admin-1",
-    username: user,
-    email: email || `${user}@localhost`,
+    username: name,
+    email: `${name}@example.com`,
     role: "admin",
     lastLoginAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    createdAt: ADMIN_ACCOUNT_CREATED_AT,
   };
 
-  writeSession(admin);
   return { success: true as const, admin };
-}
-
-export async function previewLogout() {
-  await delay(80);
-  writeSession(null);
-  return { success: true as const };
-}
-
-export async function previewFetchCurrentAdmin(): Promise<PublicAdmin | null> {
-  await delay(80);
-  return readSession();
 }
 
 export async function previewFetchStats() {

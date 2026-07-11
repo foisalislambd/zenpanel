@@ -1,34 +1,25 @@
 "use client";
 
-import { adminNavItems } from "@/config/admin.config";
 import { useAdminChatPanel } from "@/context/admin-chat-panel-context";
+import { matchAdminNavItem } from "@/lib/admin-nav";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
  * Sets a default page label for the AI panel based on the current route.
- * Page-specific hooks override this on mount.
+ * Page-specific hooks (e.g. dashboard) own `/admin` and override this.
  */
 export function AdminChatRouteBridge() {
   const pathname = usePathname();
   const { setPageContext } = useAdminChatPanel();
 
   useEffect(() => {
+    // Dashboard registers rich context via useAdminChatPageContext — do not overwrite it.
     if (pathname === "/admin") {
-      setPageContext({
-        pageId: "dashboard-loading",
-        title: "Dashboard",
-        description: "Loading dashboard metrics…",
-        route: pathname,
-        getSnapshot: () => ({ route: pathname }),
-      });
-      return () => setPageContext(null);
+      return;
     }
 
-    const sorted = [...adminNavItems].sort((a, b) => b.href.length - a.href.length);
-    const nav = sorted.find((item) =>
-      item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href),
-    );
+    const nav = matchAdminNavItem(pathname);
 
     setPageContext({
       pageId: pathname,

@@ -17,7 +17,7 @@ import {
 
 /**
  * Admin shell — layout, navigation, branding.
- * Auth: set NEXT_PUBLIC_ADMIN_USER, NEXT_PUBLIC_ADMIN_PASSWORD (and optional NEXT_PUBLIC_ADMIN_EMAIL).
+ * Login is a UI preview only (no env credentials required).
  */
 export const adminConfig = {
   brand: {
@@ -28,16 +28,10 @@ export const adminConfig = {
     loginDescription:
       "Professional control panel for your platform — monitor users, review activity, and manage everything securely.",
     loginFeatures: [
-      "Real-time portal analytics",
+      "Portal analytics overview",
       "Secure admin-only access",
       "Works on desktop and mobile",
     ],
-  },
-
-  storageKeys: {
-    session: "admin-session",
-    sidebarExpanded: "admin-sidebar-expanded",
-    chatPanelOpen: "admin-chat-panel-open",
   },
 };
 
