@@ -39,7 +39,7 @@ export function AdminHeader() {
           </span>
         </Link>
 
-        <div className="hidden flex-1 md:block md:max-w-md lg:max-w-lg">
+        <div className="hidden flex-1 lg:block lg:max-w-lg">
           <label className="relative block">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <input
