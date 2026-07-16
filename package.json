@@ -1,6 +1,6 @@
 {
   "name": "zenpanel",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Open-source admin UI shell for Next.js — sidebar, dashboard, resource tables, login, and dark mode.",
   "license": "MIT",
   "author": "Foisal Islam",

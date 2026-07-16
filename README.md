@@ -3,20 +3,30 @@
 [![CI](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml/badge.svg)](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Open-source **admin UI shell** for Next.js — sidebar, dashboard, resource tables, login, and dark mode.
+Open-source admin UI shell for Next.js — sidebar, dashboard, resource tables, login, and dark mode.
 
-No backend included. The dashboard shows sample preview data so you can review the UI; resource list pages start empty until you connect your API.
+No backend included. The dashboard ships with sample preview data so you can review the UI; connect your own API when you are ready.
+
+<p align="center">
+  <img src="docs/images/light-panel-image.png" alt="ZenPanel dashboard in light mode" width="100%" />
+</p>
+
+<p align="center">
+  <img src="docs/images/dark-panel-image.png" alt="ZenPanel dashboard in dark mode" width="100%" />
+</p>
 
 ## Features
 
-- Responsive admin layout (sidebar, header, breadcrumbs)
-- Dashboard with stats, charts, and activity preview
+- Responsive admin layout with sidebar, header, and breadcrumbs
+- Dashboard overview — stats, revenue chart, activity feed, quick actions
 - Resource list pages ready to wire to your API
-- Login UI with preview auth (in-memory only)
-- Light / dark theme via `next-themes`
-- Configurable brand + navigation in one config file
+- Login screen with preview auth (in-memory only)
+- Light and dark themes via `next-themes`
+- Brand name, tagline, and navigation in one config file
 
 ## Quick start
+
+**Requirements:** Node.js 20+
 
 ```bash
 git clone https://github.com/Foisalislambd/zenpanel.git
@@ -27,38 +37,53 @@ npm run dev
 
 Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-Login is prefilled (`admin` / `admin`) — click **Sign in** to open the dashboard. No `.env` or persisted session — auth lives in memory for the UI preview only.
-
-**Requirements:** Node.js 20+
+Demo login is prefilled (`admin` / `admin`) — click **Sign in** to open the dashboard. No `.env` file and no persisted session; auth is in memory for UI preview only.
 
 ## Customize
 
-Edit `src/config/admin.config.ts` for brand name, tagline, and sidebar links.
+Edit [`src/config/admin.config.ts`](./src/config/admin.config.ts) to change:
 
-## Copy into a project
+- Brand name, tagline, and logo letter
+- Login page copy and feature bullets
+- Sidebar navigation links
 
-Use `web-projects-script/scripts/sync-zenpanel-to-projects.py` to copy into product frontends, or manually:
+## Project structure
 
-1. `src/app/admin`, `src/components/admin`, `src/components/theme`
-2. `src/config/admin.config.ts`, `src/context`, `src/lib/admin-api`, `src/lib/admin-data`, `src/lib/cn.ts`
-3. Merge admin styles into `globals.css` (see script snippet)
-4. Wrap root layout with `ThemeProvider`
-5. Install: `lucide-react`, `clsx`, `tailwind-merge`, `next-themes`
+```text
+src/
+├── app/admin/           # Admin routes (login + dashboard pages)
+├── components/admin/    # Layout, dashboard widgets, shared UI
+├── components/theme/    # Theme provider
+├── config/              # Branding + navigation
+├── context/             # Sidebar, chat panel state
+└── lib/admin-api/       # Preview data + API stubs
+```
 
-## Tech
+## Copy into another project
 
-Next.js 16 · React 19 · Tailwind 4 · next-themes · lucide-react
+1. Copy `src/app/admin`, `src/components/admin`, `src/components/theme`
+2. Copy `src/config/admin.config.ts`, `src/context`, `src/lib/admin-api`, `src/lib/admin-data`, `src/lib/cn.ts`
+3. Merge admin styles from `globals.css` / `admin.css` into your app styles
+4. Wrap the root layout with `ThemeProvider`
+5. Install peer deps: `lucide-react`, `clsx`, `tailwind-merge`, `next-themes`
+
+## Tech stack
+
+| Package | Role |
+| --- | --- |
+| Next.js 16 | App Router |
+| React 19 | UI |
+| Tailwind CSS 4 | Styling |
+| next-themes | Light / dark mode |
+| lucide-react | Icons |
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) and the [Code of Conduct](./CODE_OF_CONDUCT.md).
+Contributions are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md) and the [Code of Conduct](./CODE_OF_CONDUCT.md).
 
-- Bug reports & features: [Issues](https://github.com/Foisalislambd/zenpanel/issues)
+- Issues: [github.com/Foisalislambd/zenpanel/issues](https://github.com/Foisalislambd/zenpanel/issues)
 - Security: [SECURITY.md](./SECURITY.md)
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md).
+- Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
 ## License
 
