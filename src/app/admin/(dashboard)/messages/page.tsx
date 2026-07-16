@@ -9,10 +9,7 @@ export default function AdminMessagesPage() {
   return (
     <div className="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
       <AdminBreadcrumbs />
-      <AdminPageHeader
-        title="Messages"
-        description="Inbox and conversation threads."
-      />
+      <AdminPageHeader title="Messages" />
 
       <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
         <aside className="admin-card flex w-full max-w-xs shrink-0 flex-col overflow-hidden md:max-w-sm">

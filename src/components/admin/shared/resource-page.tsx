@@ -7,16 +7,15 @@ import type { AdminResource } from "@/lib/admin-data/resources";
 
 type Props = {
   title: string;
-  description: string;
   resourceLabel: string;
   items: AdminResource[];
 };
 
-export function ResourcePage({ title, description, resourceLabel, items }: Props) {
+export function ResourcePage({ title, resourceLabel, items }: Props) {
   return (
     <div className="admin-content space-y-6">
       <AdminBreadcrumbs />
-      <AdminPageHeader title={title} description={description} />
+      <AdminPageHeader title={title} />
       <ResourceList items={items} resourceLabel={resourceLabel} />
     </div>
   );

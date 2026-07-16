@@ -5,7 +5,6 @@ export default function AdminServiceOrdersPage() {
   return (
     <ResourcePage
       title="Service orders"
-      description="Track customer service purchases and fulfillment."
       resourceLabel="order"
       items={adminServiceOrders}
     />

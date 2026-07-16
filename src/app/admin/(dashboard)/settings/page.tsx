@@ -20,10 +20,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="admin-content space-y-6">
       <AdminBreadcrumbs />
-      <AdminPageHeader
-        title="Settings"
-        description="Account and site branding for the admin panel."
-      />
+      <AdminPageHeader title="Settings" />
 
       <div
         role="tablist"

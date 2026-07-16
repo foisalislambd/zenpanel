@@ -5,7 +5,6 @@ export default function AdminCategoriesPage() {
   return (
     <ResourcePage
       title="Categories"
-      description="Organize content with categories and subcategories."
       resourceLabel="category"
       items={adminCategories}
     />

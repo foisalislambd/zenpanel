@@ -5,7 +5,6 @@ export default function AdminProductsPage() {
   return (
     <ResourcePage
       title="Products"
-      description="Digital products, downloads, and storefront items."
       resourceLabel="product"
       items={adminProducts}
     />

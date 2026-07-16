@@ -5,7 +5,6 @@ export default function AdminServicesPage() {
   return (
     <ResourcePage
       title="Services"
-      description="Manage service offerings and pricing."
       resourceLabel="service"
       items={adminServices}
     />

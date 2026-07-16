@@ -5,7 +5,6 @@ export default function AdminProjectsPage() {
   return (
     <ResourcePage
       title="Projects"
-      description="Manage portfolio projects and case studies."
       resourceLabel="project"
       items={adminProjects}
     />

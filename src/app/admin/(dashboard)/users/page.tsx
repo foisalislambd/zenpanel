@@ -36,10 +36,7 @@ export default function AdminUsersPage() {
   return (
     <div className="admin-content space-y-6">
       <AdminBreadcrumbs />
-      <AdminPageHeader
-        title="Users"
-        description="Registered users — connect your API to load and manage accounts."
-      />
+      <AdminPageHeader title="Users" />
       <RecentUsersTable users={users} />
     </div>
   );
