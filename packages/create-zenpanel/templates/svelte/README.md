@@ -1,6 +1,6 @@
 # ZenPanel (Svelte)
 
-Admin UI shell for **Svelte 5** + Vite — SPA with a client-side router.
+Admin UI shell for **Svelte 5** + Vite — same design and UX as the Next.js and Solid templates, built with native Svelte runes (not React).
 
 Based on the latest Vite Svelte scaffold (`svelte@^5`, `vite@^8`, `@sveltejs/vite-plugin-svelte`).
 
@@ -19,4 +19,4 @@ Preview credentials: `admin` / `admin`.
 
 ## Customize
 
-Edit `src/lib/config.ts` for branding and sidebar links.
+Edit `src/config/admin.config.ts` for branding and sidebar links.

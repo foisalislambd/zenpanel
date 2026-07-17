@@ -9,7 +9,12 @@
     "noEmit": true,
     "allowJs": true,
     "checkJs": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
 }

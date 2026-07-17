@@ -1,75 +1,77 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { getAdmin } from "./lib/auth";
-  import {
-    matchRoute,
-    normalizePath,
-    type MatchedRoute,
-  } from "./lib/router";
-  import HomePage from "./routes/HomePage.svelte";
-  import LoginPage from "./routes/LoginPage.svelte";
-  import DashboardPage from "./routes/DashboardPage.svelte";
-  import SettingsPage from "./routes/SettingsPage.svelte";
-  import ResourcePage from "./routes/ResourcePage.svelte";
-  import AdminShell from "./lib/AdminShell.svelte";
+  import ThemeProvider from "@/components/theme/ThemeProvider.svelte";
+  import HomePage from "@/pages/HomePage.svelte";
+  import AdminRootLayout from "@/layouts/AdminRootLayout.svelte";
+  import AdminAuthLayout from "@/layouts/AdminAuthLayout.svelte";
+  import AdminDashboardLayout from "@/layouts/AdminDashboardLayout.svelte";
+  import LoginPage from "@/pages/admin/LoginPage.svelte";
+  import DashboardPage from "@/pages/admin/DashboardPage.svelte";
+  import ProjectsPage from "@/pages/admin/ProjectsPage.svelte";
+  import ServicesPage from "@/pages/admin/ServicesPage.svelte";
+  import ServiceOrdersPage from "@/pages/admin/ServiceOrdersPage.svelte";
+  import TransactionsPage from "@/pages/admin/TransactionsPage.svelte";
+  import PaymentsPage from "@/pages/admin/PaymentsPage.svelte";
+  import BlogPage from "@/pages/admin/BlogPage.svelte";
+  import ProductsPage from "@/pages/admin/ProductsPage.svelte";
+  import CategoriesPage from "@/pages/admin/CategoriesPage.svelte";
+  import MessagesPage from "@/pages/admin/MessagesPage.svelte";
+  import NewsletterPage from "@/pages/admin/NewsletterPage.svelte";
+  import UsersPage from "@/pages/admin/UsersPage.svelte";
+  import SettingsPage from "@/pages/admin/SettingsPage.svelte";
+  import { navigate, usePathname } from "@/lib/router.svelte";
 
-  /** Resolve unknown /admin/* without depending on a popstate listener. */
-  function resolveRoute(): MatchedRoute {
-    let next = matchRoute();
-    if (next.id !== "admin-unknown") return next;
+  const pathname = usePathname();
+  const route = $derived(pathname.route);
 
-    const target = getAdmin() ? "/admin" : "/admin/login";
-    if (normalizePath(window.location.pathname) !== normalizePath(target)) {
-      window.history.replaceState({}, "", target);
+  $effect(() => {
+    if (route.id === "not-found") {
+      navigate("/", { replace: true });
     }
-    return matchRoute();
-  }
-
-  function applyRoute(next: MatchedRoute) {
-    route = next;
-    document.body.classList.toggle("admin-shell", next.id !== "home");
-
-    const titles: Record<string, string> = {
-      home: "ZenPanel — Svelte",
-      login: "Sign in — ZenPanel",
-      dashboard: "Dashboard — ZenPanel",
-      settings: "Settings — ZenPanel",
-    };
-    if (next.id === "resource") {
-      document.title = `${next.title} — ZenPanel`;
-    } else {
-      document.title = titles[next.id] ?? "ZenPanel";
-    }
-  }
-
-  function syncRoute() {
-    applyRoute(resolveRoute());
-  }
-
-  let route = $state<MatchedRoute>(resolveRoute());
-
-  onMount(() => {
-    const onPop = () => syncRoute();
-    window.addEventListener("popstate", onPop);
-    syncRoute();
-    return () => window.removeEventListener("popstate", onPop);
   });
 </script>
 
-{#if route.id === "home"}
-  <HomePage />
-{:else if route.id === "login"}
-  <LoginPage />
-{:else if route.id === "dashboard"}
-  <AdminShell pageTitle="Dashboard">
-    <DashboardPage />
-  </AdminShell>
-{:else if route.id === "settings"}
-  <AdminShell pageTitle="Settings">
-    <SettingsPage />
-  </AdminShell>
-{:else if route.id === "resource"}
-  <AdminShell pageTitle={route.title}>
-    <ResourcePage resourceKey={route.key} title={route.title} />
-  </AdminShell>
-{/if}
+<ThemeProvider>
+  {#if route.id === "home"}
+    <HomePage />
+  {:else if route.id === "admin-login"}
+    <AdminRootLayout>
+      <AdminAuthLayout>
+        <LoginPage />
+      </AdminAuthLayout>
+    </AdminRootLayout>
+  {:else if route.id.startsWith("admin-")}
+    <AdminRootLayout>
+      <AdminDashboardLayout>
+        {#if route.id === "admin-dashboard"}
+          <DashboardPage />
+        {:else if route.id === "admin-projects"}
+          <ProjectsPage />
+        {:else if route.id === "admin-services"}
+          <ServicesPage />
+        {:else if route.id === "admin-service-orders"}
+          <ServiceOrdersPage />
+        {:else if route.id === "admin-transactions"}
+          <TransactionsPage />
+        {:else if route.id === "admin-payments"}
+          <PaymentsPage />
+        {:else if route.id === "admin-blog"}
+          <BlogPage />
+        {:else if route.id === "admin-products"}
+          <ProductsPage />
+        {:else if route.id === "admin-categories"}
+          <CategoriesPage />
+        {:else if route.id === "admin-messages"}
+          <div class="flex h-full min-h-0 flex-1 flex-col">
+            <MessagesPage />
+          </div>
+        {:else if route.id === "admin-newsletter"}
+          <NewsletterPage />
+        {:else if route.id === "admin-users"}
+          <UsersPage />
+        {:else if route.id === "admin-settings"}
+          <SettingsPage />
+        {/if}
+      </AdminDashboardLayout>
+    </AdminRootLayout>
+  {/if}
+</ThemeProvider>
