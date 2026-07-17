@@ -104,3 +104,26 @@ jobs:
 
       - name: Verify admin pages exist
         run: test -f admin/login.html && test -f admin/index.html && test -f js/config.js
+
+  astro-template:
+    name: Build Astro template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/astro
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/astro/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build

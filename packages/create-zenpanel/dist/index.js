@@ -64,6 +64,7 @@ function detectFrameworkFromPackage(pkg2) {
     ...pkg2.devDependencies
   };
   if (deps.next) return "nextjs";
+  if (deps.astro) return "astro";
   if (deps.vite || deps["@vitejs/plugin-react"]) return "vite";
   return "unknown";
 }
@@ -202,13 +203,13 @@ async function createApp(options = {}) {
           hint: "Plain HTML, CSS, and JavaScript"
         },
         {
-          value: "remix",
-          label: "Remix",
-          hint: "Coming soon"
-        },
-        {
           value: "astro",
           label: "Astro",
+          hint: "Astro 7 + vanilla HTML/CSS/JS"
+        },
+        {
+          value: "remix",
+          label: "Remix",
           hint: "Coming soon"
         }
       ]
@@ -219,9 +220,9 @@ async function createApp(options = {}) {
     }
     framework = result;
   }
-  if (framework !== "nextjs" && framework !== "vite" && framework !== "html") {
+  if (framework !== "nextjs" && framework !== "vite" && framework !== "html" && framework !== "astro") {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, or HTML.`
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, HTML, or Astro.`
     );
     process.exit(1);
   }
@@ -238,7 +239,7 @@ async function createApp(options = {}) {
     await fs3.copy(templateDir, targetDir, {
       filter: (src) => {
         const base = path4.basename(src);
-        return base !== "node_modules" && base !== "dist" && base !== ".next";
+        return base !== "node_modules" && base !== "dist" && base !== ".next" && base !== ".astro";
       }
     });
     await updatePackageName(targetDir, packageName);
@@ -264,7 +265,7 @@ async function createApp(options = {}) {
   const relative = path4.relative(cwd, targetDir) || ".";
   const cd = relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}
 `;
-  const loginUrl = framework === "html" ? "http://localhost:5173/admin/login" : framework === "vite" ? "http://localhost:5173/admin/login" : "http://localhost:3000/admin/login";
+  const loginUrl = framework === "html" || framework === "vite" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : "http://localhost:3000/admin/login";
   p.note(
     `${cd}  ${getRunCommand(packageManager, "dev")}
 
@@ -311,6 +312,14 @@ var VITE_COPY_PATHS = [
   "src/lib/format.ts",
   "src/admin.css",
   "src/zenpanel-admin-routes.example.tsx"
+];
+var ASTRO_COPY_PATHS = [
+  "src/components/AdminResourcePage.astro",
+  "src/layouts/AdminLayout.astro",
+  "src/pages/admin",
+  "src/scripts",
+  "src/styles/admin.css",
+  "src/zenpanel-admin.example.ts"
 ];
 var HTML_COPY_PATHS = [
   "admin",
@@ -365,6 +374,7 @@ async function installIntoExisting(options = {}) {
       options: [
         { value: "nextjs", label: "Next.js" },
         { value: "vite", label: "Vite (React)" },
+        { value: "astro", label: "Astro" },
         { value: "html", label: "HTML (static)" }
       ]
     });
@@ -378,6 +388,10 @@ async function installIntoExisting(options = {}) {
   }
   const templateDir = path5.join(getTemplatesDir(), framework);
   const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : framework === "vite" ? VITE_COPY_PATHS.map((rel) => ({
+    src: path5.join(templateDir, rel),
+    dest: path5.join(cwd, rel),
+    label: rel
+  })) : framework === "astro" ? ASTRO_COPY_PATHS.map((rel) => ({
     src: path5.join(templateDir, rel),
     dest: path5.join(cwd, rel),
     label: rel
@@ -455,6 +469,10 @@ async function installIntoExisting(options = {}) {
     "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
     "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
     "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+    "Preview credentials: admin / admin."
+  ] : framework === "astro" ? [
+    "Admin pages were copied to src/pages/admin \u2014 open /admin/login after `npm run dev`.",
+    "Customize branding in src/scripts/config.js.",
     "Preview credentials: admin / admin."
   ] : [
     "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
@@ -567,17 +585,17 @@ async function main() {
     "Project name / directory (omit to install into the current project when package.json exists)"
   ).option(
     "-f, --framework <framework>",
-    "Framework template: nextjs | vite | html"
+    "Framework template: nextjs | vite | html | astro"
   ).option("--use-npm", "Use npm").option("--use-pnpm", "Use pnpm").option("--use-yarn", "Use yarn").option("--use-bun", "Use bun").option("--skip-install", "Skip installing dependencies").option("--force", "Overwrite existing admin files when installing into a project").option(
     "--install",
     "Force install-into-existing mode (requires package.json in cwd)"
   ).action(async (projectDirectory, opts) => {
     const packageManager = resolvePackageManager(opts);
     const framework = opts.framework;
-    if (framework && framework !== "nextjs" && framework !== "vite" && framework !== "html") {
+    if (framework && framework !== "nextjs" && framework !== "vite" && framework !== "html" && framework !== "astro") {
       console.error(
         pc3.red(
-          `Unsupported framework "${framework}". Available now: nextjs, vite, html.`
+          `Unsupported framework "${framework}". Available now: nextjs, vite, html, astro.`
         )
       );
       process.exit(1);

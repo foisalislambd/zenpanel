@@ -16,6 +16,7 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 - `packages/create-zenpanel/templates/nextjs` — Next.js template
 - `packages/create-zenpanel/templates/vite` — Vite + React template
 - `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
+- `packages/create-zenpanel/templates/astro` — Astro 7 + vanilla JS template
 
 ## Development setup
 
@@ -40,10 +41,10 @@ npm install
 npm run dev
 ```
 
-Or for Vite:
+Or for Astro:
 
 ```bash
-cd packages/create-zenpanel/templates/vite
+cd packages/create-zenpanel/templates/astro
 npm install
 npm run dev
 ```

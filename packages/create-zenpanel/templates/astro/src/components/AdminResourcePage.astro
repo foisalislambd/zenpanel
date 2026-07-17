@@ -1,0 +1,60 @@
+---
+import AdminLayout from "../layouts/AdminLayout.astro";
+
+interface Props {
+  title: string;
+  resourceKey: string;
+  emptyLabel: string;
+}
+
+const { title, resourceKey, emptyLabel } = Astro.props;
+---
+
+<AdminLayout title={title}>
+  <div id="layout-root"></div>
+  <div id="page-content" hidden>
+    <h1 class="page-title">{title}</h1>
+    <div class="admin-card">
+      <div
+        style="padding:1rem 1.25rem;border-bottom:1px solid var(--gray-200);font-weight:600;font-size:0.875rem"
+      >
+        {title}
+      </div>
+      <ul id="resource-list" style="list-style:none;margin:0;padding:0"></ul>
+      <p
+        id="empty-state"
+        class="muted"
+        style="padding:2.5rem 1.25rem;text-align:center;font-size:0.875rem;display:none"
+      >
+        {emptyLabel}
+      </p>
+    </div>
+  </div>
+</AdminLayout>
+
+<script
+  define:vars={{
+    pageTitle: title,
+    resourceKey,
+  }}
+>
+  import { mountAdminLayout } from "../scripts/layout.js";
+  import { resourceSamples } from "../scripts/data.js";
+
+  mountAdminLayout({ title: pageTitle });
+
+  const items = resourceSamples[resourceKey] || [];
+  const list = document.getElementById("resource-list");
+  const empty = document.getElementById("empty-state");
+
+  if (!items.length) {
+    if (empty) empty.style.display = "block";
+  } else if (list) {
+    list.innerHTML = items
+      .map(
+        (item) =>
+          `<li style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--gray-100);font-size:0.875rem">${String(item)}</li>`,
+      )
+      .join("");
+  }
+</script>

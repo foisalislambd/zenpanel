@@ -54,6 +54,15 @@ const VITE_COPY_PATHS = [
   "src/zenpanel-admin-routes.example.tsx",
 ] as const;
 
+const ASTRO_COPY_PATHS = [
+  "src/components/AdminResourcePage.astro",
+  "src/layouts/AdminLayout.astro",
+  "src/pages/admin",
+  "src/scripts",
+  "src/styles/admin.css",
+  "src/zenpanel-admin.example.ts",
+] as const;
+
 const HTML_COPY_PATHS = [
   "admin",
   "css",
@@ -107,7 +116,7 @@ export async function installIntoExisting(
     process.exit(1);
   }
 
-  let framework: "nextjs" | "vite" | "html" | "unknown" =
+  let framework: "nextjs" | "vite" | "html" | "astro" | "unknown" =
     detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
@@ -116,6 +125,7 @@ export async function installIntoExisting(
       options: [
         { value: "nextjs" as const, label: "Next.js" },
         { value: "vite" as const, label: "Vite (React)" },
+        { value: "astro" as const, label: "Astro" },
         { value: "html" as const, label: "HTML (static)" },
       ],
     });
@@ -125,7 +135,7 @@ export async function installIntoExisting(
       process.exit(0);
     }
 
-    framework = result as "nextjs" | "vite" | "html";
+    framework = result as "nextjs" | "vite" | "html" | "astro";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -141,11 +151,17 @@ export async function installIntoExisting(
             dest: path.join(cwd, rel),
             label: rel,
           }))
-        : HTML_COPY_PATHS.map((rel) => ({
-            src: path.join(templateDir, rel),
-            dest: path.join(cwd, rel),
-            label: rel,
-          }));
+        : framework === "astro"
+          ? ASTRO_COPY_PATHS.map((rel) => ({
+              src: path.join(templateDir, rel),
+              dest: path.join(cwd, rel),
+              label: rel,
+            }))
+          : HTML_COPY_PATHS.map((rel) => ({
+              src: path.join(templateDir, rel),
+              dest: path.join(cwd, rel),
+              label: rel,
+            }));
 
   const conflicts = [];
   for (const job of copyJobs) {
@@ -231,11 +247,17 @@ export async function installIntoExisting(
             "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
             "Preview credentials: admin / admin.",
           ]
-        : [
-            "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
-            "Open /admin/login — preview credentials: admin / admin.",
-            "Customize branding in js/config.js.",
-          ];
+        : framework === "astro"
+          ? [
+              "Admin pages were copied to src/pages/admin — open /admin/login after `npm run dev`.",
+              "Customize branding in src/scripts/config.js.",
+              "Preview credentials: admin / admin.",
+            ]
+          : [
+              "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
+              "Open /admin/login — preview credentials: admin / admin.",
+              "Customize branding in js/config.js.",
+            ];
 
   p.note(tips.map((t) => `• ${t}`).join("\n"), "Next steps");
   p.outro(pc.green("ZenPanel admin shell installed."));

@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `create-zenpanel` CLI (`npx create-zenpanel@latest`)
-- Framework selection: Next.js, Vite, and HTML (Remix / Astro coming soon)
+- Framework selection: Next.js, Vite, HTML, and Astro 7 vanilla (Remix coming soon)
+- Astro template based on latest `create-astro` (`astro@^7`, Node `>=22.12`) with plain HTML/CSS/JS admin
 - Install-into-existing mode when `package.json` is already present
 - Monorepo layout under `packages/create-zenpanel` with framework templates
 

@@ -24,7 +24,7 @@ async function main() {
     )
     .option(
       "-f, --framework <framework>",
-      "Framework template: nextjs | vite | html",
+      "Framework template: nextjs | vite | html | astro",
     )
     .option("--use-npm", "Use npm")
     .option("--use-pnpm", "Use pnpm")
@@ -44,11 +44,12 @@ async function main() {
         framework &&
         framework !== "nextjs" &&
         framework !== "vite" &&
-        framework !== "html"
+        framework !== "html" &&
+        framework !== "astro"
       ) {
         console.error(
           pc.red(
-            `Unsupported framework "${framework}". Available now: nextjs, vite, html.`,
+            `Unsupported framework "${framework}". Available now: nextjs, vite, html, astro.`,
           ),
         );
         process.exit(1);

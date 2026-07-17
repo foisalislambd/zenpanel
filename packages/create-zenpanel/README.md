@@ -13,12 +13,13 @@ npx create-zenpanel@latest
 You will be prompted for:
 
 1. Project name
-2. Framework — **Next.js**, **Vite**, **HTML** (Remix / Astro coming soon)
+2. Framework — **Next.js**, **Vite**, **HTML**, **Astro** (Remix coming soon)
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
 npx create-zenpanel@latest my-admin --framework vite
 npx create-zenpanel@latest my-admin --framework html
+npx create-zenpanel@latest my-admin --framework astro
 ```
 
 ### Install into an existing project
@@ -40,7 +41,7 @@ npx create-zenpanel@latest --install
 
 | Flag | Description |
 | --- | --- |
-| `-f, --framework <name>` | `nextjs`, `vite`, or `html` |
+| `-f, --framework <name>` | `nextjs`, `vite`, `html`, or `astro` |
 | `--use-npm` / `--use-pnpm` / `--use-yarn` / `--use-bun` | Package manager |
 | `--skip-install` | Skip dependency installation |
 | `--force` | Overwrite existing admin files (install mode) |
@@ -50,8 +51,8 @@ npx create-zenpanel@latest --install
 
 | Framework | URL |
 | --- | --- |
-| Next.js | `/admin/login` |
-| Vite | `/admin/login` |
-| HTML | `/admin/login` |
+| Next.js | `http://localhost:3000/admin/login` |
+| Vite / HTML | `http://localhost:5173/admin/login` |
+| Astro | `http://localhost:4321/admin/login` |
 
 Username / password: `admin` / `admin`

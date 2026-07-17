@@ -44,13 +44,14 @@ export async function readPackageJson(
 
 export function detectFrameworkFromPackage(
   pkg: Record<string, unknown>,
-): "nextjs" | "vite" | "unknown" {
+): "nextjs" | "vite" | "astro" | "unknown" {
   const deps = {
     ...(pkg.dependencies as Record<string, string> | undefined),
     ...(pkg.devDependencies as Record<string, string> | undefined),
   };
 
   if (deps.next) return "nextjs";
+  if (deps.astro) return "astro";
   if (deps.vite || deps["@vitejs/plugin-react"]) return "vite";
   return "unknown";
 }

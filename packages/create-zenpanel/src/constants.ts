@@ -41,14 +41,14 @@ export const FRAMEWORKS: FrameworkOption[] = [
     available: true,
   },
   {
-    id: "remix",
-    label: "Remix",
-    hint: "Coming soon",
-    available: false,
-  },
-  {
     id: "astro",
     label: "Astro",
+    hint: "Astro 7 + vanilla HTML/CSS/JS",
+    available: true,
+  },
+  {
+    id: "remix",
+    label: "Remix",
     hint: "Coming soon",
     available: false,
   },

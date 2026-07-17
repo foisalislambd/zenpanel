@@ -88,13 +88,13 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
           hint: "Plain HTML, CSS, and JavaScript",
         },
         {
-          value: "remix" as const,
-          label: "Remix",
-          hint: "Coming soon",
-        },
-        {
           value: "astro" as const,
           label: "Astro",
+          hint: "Astro 7 + vanilla HTML/CSS/JS",
+        },
+        {
+          value: "remix" as const,
+          label: "Remix",
           hint: "Coming soon",
         },
       ],
@@ -108,9 +108,14 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     framework = result as FrameworkId;
   }
 
-  if (framework !== "nextjs" && framework !== "vite" && framework !== "html") {
+  if (
+    framework !== "nextjs" &&
+    framework !== "vite" &&
+    framework !== "html" &&
+    framework !== "astro"
+  ) {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, or HTML.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, HTML, or Astro.`,
     );
     process.exit(1);
   }
@@ -131,7 +136,12 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     await fs.copy(templateDir, targetDir, {
       filter: (src) => {
         const base = path.basename(src);
-        return base !== "node_modules" && base !== "dist" && base !== ".next";
+        return (
+          base !== "node_modules" &&
+          base !== "dist" &&
+          base !== ".next" &&
+          base !== ".astro"
+        );
       },
     });
 
@@ -162,10 +172,10 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}\n`;
 
   const loginUrl =
-    framework === "html"
+    framework === "html" || framework === "vite"
       ? "http://localhost:5173/admin/login"
-      : framework === "vite"
-        ? "http://localhost:5173/admin/login"
+      : framework === "astro"
+        ? "http://localhost:4321/admin/login"
         : "http://localhost:3000/admin/login";
 
   p.note(
