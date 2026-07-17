@@ -9,7 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Open source project scaffolding (license, contributing guide, security policy, GitHub templates, CI)
+- `create-zenpanel` CLI (`npx create-zenpanel@latest`)
+- Framework selection: Next.js and Vite (HTML / Remix / Astro coming soon)
+- Install-into-existing mode when `package.json` is already present
+- Monorepo layout under `packages/create-zenpanel` with framework templates
+
+### Changed
+
+- Repository restructured like a scaffold monorepo (CLI + templates); root is no longer a single Next.js app
 
 ## [0.1.0] - 2026-07-16
 
@@ -18,3 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Admin UI shell for Next.js (sidebar, dashboard, resource tables, login, dark mode)
 - Preview dashboard data and in-memory demo auth
 - Configurable branding and navigation via `admin.config.ts`
+- Open source project scaffolding (license, contributing guide, security policy, GitHub templates, CI)

@@ -6,8 +6,15 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 
 - Report bugs and propose features via [GitHub Issues](https://github.com/Foisalislambd/zenpanel/issues)
 - Improve docs or accessibility
-- Fix UI bugs or polish existing admin screens
+- Fix UI bugs or polish existing admin screens in the templates
+- Extend `create-zenpanel` (new frameworks, better install detection)
 - Add small, well-scoped features that fit the shell (no backend required)
+
+## Repository layout
+
+- `packages/create-zenpanel` — CLI published as `create-zenpanel`
+- `packages/create-zenpanel/templates/nextjs` — Next.js template
+- `packages/create-zenpanel/templates/vite` — Vite + React template
 
 ## Development setup
 
@@ -15,22 +22,45 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 git clone https://github.com/Foisalislambd/zenpanel.git
 cd zenpanel
 npm install
+npm run build
+```
+
+### Try the CLI locally
+
+```bash
+node packages/create-zenpanel/dist/index.js my-test-app --framework nextjs --skip-install
+```
+
+### Work on a template
+
+```bash
+cd packages/create-zenpanel/templates/nextjs
+npm install
 npm run dev
 ```
 
-Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login). Preview login: `admin` / `admin`.
+Or for Vite:
+
+```bash
+cd packages/create-zenpanel/templates/vite
+npm install
+npm run dev
+```
+
+Preview login: `admin` / `admin` at `/admin/login`.
 
 ## Before you open a PR
 
 1. Create a branch from `main` (`feat/...`, `fix/...`, or `docs/...`)
 2. Keep the diff focused — one concern per PR
-3. Match existing patterns in `src/components/admin` and `src/config/admin.config.ts`
+3. Match existing patterns in the template admin components and `admin.config.ts`
 4. Run checks locally:
 
 ```bash
-npm run lint
 npm run build
 ```
+
+For template UI changes, also run `npm run build` inside the template you changed.
 
 5. Update the README if your change affects setup or customization
 
@@ -39,7 +69,7 @@ npm run build
 - [ ] Describes the problem and the approach
 - [ ] Includes screenshots for UI changes
 - [ ] Does not add secrets, `.env` files, or unrelated refactors
-- [ ] Lint and build pass
+- [ ] CLI build (and template build when relevant) pass
 
 ## Code guidelines
 
@@ -47,6 +77,7 @@ npm run build
 - Reuse shared admin UI (`resource-list`, layout pieces, empty/loading states)
 - Keep branding and nav configurable via `admin.config.ts`
 - Do not introduce a real backend or auth provider unless discussed in an issue first — this project is a UI shell with preview data
+- Keep Next.js and Vite templates in sync when changing shared admin UX
 
 ## Reporting bugs
 
@@ -55,6 +86,7 @@ Include:
 - Steps to reproduce
 - Expected vs actual behavior
 - Browser / OS
+- Framework (Next.js / Vite / install-into-existing)
 - Screenshot or short recording when relevant
 
 ## Questions

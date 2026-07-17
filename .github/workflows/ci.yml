@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  cli:
+    name: Build create-zenpanel
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,8 +27,57 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build CLI
+        run: npm run build
+
+      - name: Typecheck CLI
+        run: npm run typecheck
+
+  nextjs-template:
+    name: Build Next.js template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/nextjs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/nextjs/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Lint
         run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  vite-template:
+    name: Build Vite template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/vite
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/vite/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Build
         run: npm run build

@@ -1,5 +1,6 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# ZenPanel monorepo
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+- CLI: `packages/create-zenpanel`
+- Templates: `packages/create-zenpanel/templates/nextjs` and `templates/vite`
+
+When editing the Next.js template, read `node_modules/next/dist/docs/` inside that template after install — this Next.js version may differ from training data.

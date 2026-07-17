@@ -1,6 +1,5 @@
 # dependencies
 node_modules
-**/node_modules
 .pnp
 .pnp.*
 .yarn/*
@@ -12,15 +11,9 @@ node_modules
 # testing
 coverage
 
-# next.js / vite
-.next/
-out/
-dist/
-**/dist/
-!packages/create-zenpanel/dist/
-!packages/create-zenpanel/dist/**
+# production
+dist
 build
-**/build
 
 # misc
 .DS_Store
@@ -33,16 +26,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env
 .env*
-
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
-
-# local scaffold test output
-/tmp-*/
-/test-*/

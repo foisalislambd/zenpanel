@@ -1,0 +1,9 @@
+src
+tsup.config.ts
+tsconfig.json
+*.tsbuildinfo
+node_modules
+templates/**/node_modules
+templates/**/.next
+templates/**/dist
+templates/**/*.tsbuildinfo

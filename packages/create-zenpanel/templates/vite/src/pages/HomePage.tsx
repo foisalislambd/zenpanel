@@ -1,5 +1,5 @@
 import { adminConfig } from "@/config/admin.config";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   return (
@@ -12,10 +12,10 @@ export default function HomePage() {
           {adminConfig.brand.name}
         </h1>
         <p className="mt-3 text-gray-600 dark:text-gray-400">
-          Admin panel shell for Next.js projects.
+          Admin panel shell for Vite + React projects.
         </p>
         <Link
-          href="/admin/login"
+          to="/admin/login"
           className="mt-8 inline-flex h-11 items-center justify-center rounded-lg bg-brand-500 px-6 text-sm font-semibold text-white transition hover:bg-brand-600"
         >
           Admin sign in

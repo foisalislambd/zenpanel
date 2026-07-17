@@ -1,0 +1,55 @@
+{
+  "name": "create-zenpanel",
+  "version": "1.0.0",
+  "description": "Create a new ZenPanel admin app, or install the admin panel into an existing project.",
+  "license": "MIT",
+  "author": "Foisal Islam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Foisalislambd/zenpanel.git",
+    "directory": "packages/create-zenpanel"
+  },
+  "bugs": {
+    "url": "https://github.com/Foisalislambd/zenpanel/issues"
+  },
+  "homepage": "https://github.com/Foisalislambd/zenpanel#readme",
+  "keywords": [
+    "zenpanel",
+    "admin",
+    "dashboard",
+    "create-zenpanel",
+    "nextjs",
+    "vite",
+    "scaffolding"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "bin": {
+    "create-zenpanel": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "commander": "^14.0.0",
+    "cross-spawn": "^7.0.6",
+    "fs-extra": "^11.3.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20",
+    "tsup": "^8.5.0",
+    "typescript": "^5"
+  }
+}
