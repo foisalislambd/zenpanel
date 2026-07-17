@@ -1,6 +1,6 @@
 # ZenPanel (Solid)
 
-Admin UI shell for Solid + Vite + `@solidjs/router` + Tailwind.
+Admin UI shell for **Solid** + Vite — **same admin UI/UX as the Next.js template** (`solid-js` + `@solidjs/router` + `lucide-solid` + Tailwind).
 
 Based on the latest Vite Solid scaffold (`solid-js@^1.9`, `vite@^8`, `vite-plugin-solid`).
 
