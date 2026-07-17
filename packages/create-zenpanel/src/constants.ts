@@ -16,6 +16,9 @@ export type FrameworkId =
   | "nextjs"
   | "react"
   | "preact"
+  | "solid"
+  | "svelte"
+  | "vue"
   | "html"
   | "remix"
   | "astro";
@@ -47,6 +50,24 @@ export const FRAMEWORKS: FrameworkOption[] = [
     id: "preact",
     label: "Preact",
     hint: "Vite + Preact + Tailwind",
+    available: true,
+  },
+  {
+    id: "solid",
+    label: "Solid",
+    hint: "Vite + Solid Router + Tailwind",
+    available: true,
+  },
+  {
+    id: "svelte",
+    label: "Svelte",
+    hint: "Vite + Svelte 5 SPA",
+    available: true,
+  },
+  {
+    id: "vue",
+    label: "Vue",
+    hint: "Vite + Vue 3 SPA",
     available: true,
   },
   {
@@ -85,6 +106,9 @@ export function normalizeFrameworkId(id: string): FrameworkId | null {
     id === "nextjs" ||
     id === "react" ||
     id === "preact" ||
+    id === "solid" ||
+    id === "svelte" ||
+    id === "vue" ||
     id === "html" ||
     id === "astro" ||
     id === "remix"

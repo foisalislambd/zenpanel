@@ -105,6 +105,75 @@ jobs:
       - name: Build
         run: npm run build
 
+  solid-template:
+    name: Build Solid (Vite) template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/solid
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/solid/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  svelte-template:
+    name: Build Svelte (Vite) template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/svelte
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/svelte/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  vue-template:
+    name: Build Vue (Vite) template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/vue
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/vue/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
   html-template:
     name: Install HTML template
     runs-on: ubuntu-latest

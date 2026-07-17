@@ -94,6 +94,21 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
           hint: "Vite + Preact + Tailwind",
         },
         {
+          value: "solid" as const,
+          label: "Solid",
+          hint: "Vite + Solid Router + Tailwind",
+        },
+        {
+          value: "svelte" as const,
+          label: "Svelte",
+          hint: "Vite + Svelte 5 SPA",
+        },
+        {
+          value: "vue" as const,
+          label: "Vue",
+          hint: "Vite + Vue 3 SPA",
+        },
+        {
           value: "html" as const,
           label: "HTML",
           hint: "Plain HTML, CSS, and JavaScript",
@@ -123,11 +138,14 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     framework !== "nextjs" &&
     framework !== "react" &&
     framework !== "preact" &&
+    framework !== "solid" &&
+    framework !== "svelte" &&
+    framework !== "vue" &&
     framework !== "html" &&
     framework !== "astro"
   ) {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, HTML, or Astro.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, Solid, Svelte, Vue, HTML, or Astro.`,
     );
     process.exit(1);
   }
@@ -184,7 +202,12 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}\n`;
 
   const loginUrl =
-    framework === "html" || framework === "react" || framework === "preact"
+    framework === "html" ||
+    framework === "react" ||
+    framework === "preact" ||
+    framework === "solid" ||
+    framework === "svelte" ||
+    framework === "vue"
       ? "http://localhost:5173/admin/login"
       : framework === "astro"
         ? "http://localhost:4321/admin/login"

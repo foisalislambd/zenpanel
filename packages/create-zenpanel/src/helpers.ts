@@ -44,7 +44,15 @@ export async function readPackageJson(
 
 export function detectFrameworkFromPackage(
   pkg: Record<string, unknown>,
-): "nextjs" | "react" | "preact" | "astro" | "unknown" {
+):
+  | "nextjs"
+  | "react"
+  | "preact"
+  | "solid"
+  | "svelte"
+  | "vue"
+  | "astro"
+  | "unknown" {
   const deps = {
     ...(pkg.dependencies as Record<string, string> | undefined),
     ...(pkg.devDependencies as Record<string, string> | undefined),
@@ -53,6 +61,9 @@ export function detectFrameworkFromPackage(
   if (deps.next) return "nextjs";
   if (deps.astro) return "astro";
   if (deps.preact || deps["@preact/preset-vite"]) return "preact";
+  if (deps["solid-js"] || deps["vite-plugin-solid"]) return "solid";
+  if (deps.svelte || deps["@sveltejs/vite-plugin-svelte"]) return "svelte";
+  if (deps.vue || deps["@vitejs/plugin-vue"]) return "vue";
   if (deps["@vitejs/plugin-react"] || (deps.vite && deps.react)) return "react";
   return "unknown";
 }

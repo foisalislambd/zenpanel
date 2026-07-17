@@ -24,7 +24,7 @@ async function main() {
     )
     .option(
       "-f, --framework <framework>",
-      "Framework template: nextjs | react | preact | html | astro (vite → react alias)",
+      "Framework template: nextjs | react | preact | solid | svelte | vue | html | astro (vite → react alias)",
     )
     .option("--use-npm", "Use npm")
     .option("--use-pnpm", "Use pnpm")
@@ -46,7 +46,7 @@ async function main() {
       if (rawFramework && !framework) {
         console.error(
           pc.red(
-            `Unsupported framework "${rawFramework}". Available now: nextjs, react, preact, html, astro.`,
+            `Unsupported framework "${rawFramework}". Available now: nextjs, react, preact, solid, svelte, vue, html, astro.`,
           ),
         );
         process.exit(1);

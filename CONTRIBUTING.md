@@ -16,6 +16,9 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 - `packages/create-zenpanel/templates/nextjs` — Next.js template
 - `packages/create-zenpanel/templates/react` — React + Vite template
 - `packages/create-zenpanel/templates/preact` — Preact + Vite template
+- `packages/create-zenpanel/templates/solid` — Solid + Vite template
+- `packages/create-zenpanel/templates/svelte` — Svelte 5 + Vite template
+- `packages/create-zenpanel/templates/vue` — Vue 3 + Vite template
 - `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
 - `packages/create-zenpanel/templates/astro` — Astro 7 + vanilla JS template
 
@@ -54,6 +57,30 @@ Or for Preact (Vite):
 
 ```bash
 cd packages/create-zenpanel/templates/preact
+npm install
+npm run dev
+```
+
+Or for Solid (Vite):
+
+```bash
+cd packages/create-zenpanel/templates/solid
+npm install
+npm run dev
+```
+
+Or for Svelte (Vite):
+
+```bash
+cd packages/create-zenpanel/templates/svelte
+npm install
+npm run dev
+```
+
+Or for Vue (Vite):
+
+```bash
+cd packages/create-zenpanel/templates/vue
 npm install
 npm run dev
 ```

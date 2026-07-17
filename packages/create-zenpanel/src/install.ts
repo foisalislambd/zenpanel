@@ -72,6 +72,27 @@ const HTML_COPY_PATHS = [
   "serve.json",
 ] as const;
 
+const SVELTE_COPY_PATHS = [
+  "src/lib",
+  "src/routes",
+  "src/App.svelte",
+  "src/admin.css",
+  "src/main.ts",
+  "index.html",
+  "public/favicon.svg",
+] as const;
+
+const VUE_COPY_PATHS = [
+  "src/lib",
+  "src/routes",
+  "src/App.vue",
+  "src/admin.css",
+  "src/main.ts",
+  "src/vite-env.d.ts",
+  "index.html",
+  "public/favicon.svg",
+] as const;
+
 const THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -116,8 +137,16 @@ export async function installIntoExisting(
     process.exit(1);
   }
 
-  let framework: "nextjs" | "react" | "preact" | "html" | "astro" | "unknown" =
-    detectFrameworkFromPackage(pkg);
+  let framework:
+    | "nextjs"
+    | "react"
+    | "preact"
+    | "solid"
+    | "svelte"
+    | "vue"
+    | "html"
+    | "astro"
+    | "unknown" = detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
     const result = await p.select({
@@ -126,6 +155,9 @@ export async function installIntoExisting(
         { value: "nextjs" as const, label: "Next.js" },
         { value: "react" as const, label: "React (Vite)" },
         { value: "preact" as const, label: "Preact (Vite)" },
+        { value: "solid" as const, label: "Solid (Vite)" },
+        { value: "svelte" as const, label: "Svelte (Vite)" },
+        { value: "vue" as const, label: "Vue (Vite)" },
         { value: "astro" as const, label: "Astro" },
         { value: "html" as const, label: "HTML (static)" },
       ],
@@ -136,7 +168,15 @@ export async function installIntoExisting(
       process.exit(0);
     }
 
-    framework = result as "nextjs" | "react" | "preact" | "html" | "astro";
+    framework = result as
+      | "nextjs"
+      | "react"
+      | "preact"
+      | "solid"
+      | "svelte"
+      | "vue"
+      | "html"
+      | "astro";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -146,23 +186,37 @@ export async function installIntoExisting(
   const copyJobs =
     framework === "nextjs"
       ? await buildNextCopyJobs(cwd, templateDir)
-      : framework === "react" || framework === "preact"
+      : framework === "react" ||
+          framework === "preact" ||
+          framework === "solid"
         ? REACT_COPY_PATHS.map((rel) => ({
             src: path.join(templateDir, rel),
             dest: path.join(cwd, rel),
             label: rel,
           }))
-        : framework === "astro"
-          ? ASTRO_COPY_PATHS.map((rel) => ({
+        : framework === "svelte"
+          ? SVELTE_COPY_PATHS.map((rel) => ({
               src: path.join(templateDir, rel),
               dest: path.join(cwd, rel),
               label: rel,
             }))
-          : HTML_COPY_PATHS.map((rel) => ({
-              src: path.join(templateDir, rel),
-              dest: path.join(cwd, rel),
-              label: rel,
-            }));
+          : framework === "vue"
+            ? VUE_COPY_PATHS.map((rel) => ({
+                src: path.join(templateDir, rel),
+                dest: path.join(cwd, rel),
+                label: rel,
+              }))
+            : framework === "astro"
+              ? ASTRO_COPY_PATHS.map((rel) => ({
+                  src: path.join(templateDir, rel),
+                  dest: path.join(cwd, rel),
+                  label: rel,
+                }))
+              : HTML_COPY_PATHS.map((rel) => ({
+                  src: path.join(templateDir, rel),
+                  dest: path.join(cwd, rel),
+                  label: rel,
+                }));
 
   const conflicts = [];
   for (const job of copyJobs) {
@@ -195,8 +249,16 @@ export async function installIntoExisting(
 
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else if (framework === "react" || framework === "preact") {
+    } else if (
+      framework === "react" ||
+      framework === "preact" ||
+      framework === "solid"
+    ) {
       await mergeReactStyles(cwd, templateDir);
+    } else if (framework === "svelte") {
+      await mergeSvelteFiles(cwd, templateDir);
+    } else if (framework === "vue") {
+      await mergeVueFiles(cwd, templateDir);
     } else if (framework === "astro") {
       await mergeAstroStyles(cwd, templateDir);
     } else if (framework === "html") {
@@ -229,6 +291,34 @@ export async function installIntoExisting(
       "tailwindcss",
     );
   }
+  if (framework === "solid") {
+    depsToInstall.push(
+      "solid-js",
+      "@solidjs/router",
+      "lucide-solid",
+      "clsx",
+      "tailwind-merge",
+      "vite-plugin-solid",
+      "@tailwindcss/vite",
+      "tailwindcss",
+    );
+  }
+  if (framework === "svelte") {
+    depsToInstall.push(
+      "svelte",
+      "@sveltejs/vite-plugin-svelte",
+      "@tsconfig/svelte",
+      "svelte-check",
+    );
+  }
+  if (framework === "vue") {
+    depsToInstall.push(
+      "vue",
+      "@vitejs/plugin-vue",
+      "@vue/tsconfig",
+      "vue-tsc",
+    );
+  }
   if (framework === "html") {
     depsToInstall.push("serve");
   }
@@ -256,17 +346,33 @@ export async function installIntoExisting(
           "Admin routes live under /admin (login at /admin/login).",
           "Preview credentials: admin / admin.",
         ]
-      : framework === "react" || framework === "preact"
+      : framework === "react" || framework === "preact" || framework === "solid"
         ? [
-            "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
+            framework === "solid"
+              ? "Merge ZenPanelAdminRoutes from src/routes/admin-routes.tsx into your <Router>."
+              : "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
             "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
             "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
             framework === "preact"
               ? "Alias react → preact/compat in vite.config (see templates/preact)."
-              : "Preview credentials: admin / admin.",
+              : framework === "solid"
+                ? "Ensure vite-plugin-solid and jsxImportSource solid-js in tsconfig."
+                : "Preview credentials: admin / admin.",
             "Preview credentials: admin / admin.",
           ].filter((t, i, arr) => arr.indexOf(t) === i)
-        : framework === "astro"
+        : framework === "svelte"
+          ? [
+              "Mount App.svelte from src/main.ts and import ./admin.css (see templates/svelte).",
+              "Customize branding in src/lib/config.ts.",
+              "Preview credentials: admin / admin.",
+            ]
+          : framework === "vue"
+            ? [
+                "Mount App.vue from src/main.ts and import ./admin.css (see templates/vue).",
+                "Customize branding in src/lib/config.ts.",
+                "Preview credentials: admin / admin.",
+              ]
+            : framework === "astro"
           ? [
               "Admin pages were copied to src/pages/admin — open /admin/login after `npm run dev`.",
               "Customize branding in src/scripts/config.js.",
@@ -377,6 +483,42 @@ async function mergeReactStyles(
 
   if (changed) {
     await fs.writeFile(indexCss, content);
+  }
+}
+
+async function mergeVueFiles(
+  projectDir: string,
+  templateDir: string,
+): Promise<void> {
+  const adminCssSrc = path.join(templateDir, "src/admin.css");
+  const adminCssDest = path.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs.ensureDir(path.dirname(adminCssDest));
+    await fs.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+
+  const mainSrc = path.join(templateDir, "src/main.ts");
+  const mainDest = path.join(projectDir, "src/main.ts");
+  if (await pathExists(mainSrc) && !(await pathExists(mainDest))) {
+    await fs.copy(mainSrc, mainDest);
+  }
+}
+
+async function mergeSvelteFiles(
+  projectDir: string,
+  templateDir: string,
+): Promise<void> {
+  const adminCssSrc = path.join(templateDir, "src/admin.css");
+  const adminCssDest = path.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs.ensureDir(path.dirname(adminCssDest));
+    await fs.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+
+  const mainSrc = path.join(templateDir, "src/main.ts");
+  const mainDest = path.join(projectDir, "src/main.ts");
+  if (await pathExists(mainSrc) && !(await pathExists(mainDest))) {
+    await fs.copy(mainSrc, mainDest);
   }
 }
 
