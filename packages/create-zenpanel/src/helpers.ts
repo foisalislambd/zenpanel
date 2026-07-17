@@ -73,6 +73,10 @@ export function installDependencies(
       shell: process.platform === "win32",
     });
 
+    child.on("error", (error) => {
+      reject(error);
+    });
+
     child.on("close", (code) => {
       if (code !== 0) {
         reject(
@@ -90,7 +94,7 @@ export function installDependencies(
 function getInstallArgs(pm: PackageManager): string[] {
   switch (pm) {
     case "yarn":
-      return [];
+      return ["install"];
     case "pnpm":
       return ["install"];
     case "bun":

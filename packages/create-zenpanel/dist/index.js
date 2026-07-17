@@ -76,6 +76,9 @@ function installDependencies(cwd, packageManager, packages) {
       env: { ...process.env, ADBLOCK: "1", DISABLE_OPENCOLLECTIVE: "1" },
       shell: process.platform === "win32"
     });
+    child.on("error", (error) => {
+      reject(error);
+    });
     child.on("close", (code) => {
       if (code !== 0) {
         reject(
@@ -92,7 +95,7 @@ function installDependencies(cwd, packageManager, packages) {
 function getInstallArgs(pm) {
   switch (pm) {
     case "yarn":
-      return [];
+      return ["install"];
     case "pnpm":
       return ["install"];
     case "bun":
@@ -167,13 +170,13 @@ async function createApp(options = {}) {
     }
     projectName = result.trim() || "my-admin";
   }
-  const packageName = toValidPackageName(projectName);
+  const packageName = toValidPackageName(path4.basename(projectName));
   const targetDir = path4.resolve(cwd, projectName);
   if (await pathExists(targetDir)) {
     const empty = await isDirectoryEmpty(targetDir);
     if (!empty) {
       p.log.error(
-        `Target directory ${pc.cyan(projectName)} is not empty. Choose another name or remove the folder.`
+        `Target directory ${pc.cyan(path4.basename(targetDir))} is not empty. Choose another name or remove the folder.`
       );
       process.exit(1);
     }
@@ -228,7 +231,9 @@ async function createApp(options = {}) {
     process.exit(1);
   }
   const spinner3 = p.spinner();
-  spinner3.start(`Creating ${pc.cyan(projectName)} (${framework})\u2026`);
+  spinner3.start(
+    `Creating ${pc.cyan(path4.basename(targetDir))} (${framework})\u2026`
+  );
   try {
     await fs3.copy(templateDir, targetDir, {
       filter: (src) => {
@@ -237,7 +242,7 @@ async function createApp(options = {}) {
       }
     });
     await updatePackageName(targetDir, packageName);
-    spinner3.stop(`Project ${pc.cyan(projectName)} created.`);
+    spinner3.stop(`Project ${pc.cyan(path4.basename(targetDir))} created.`);
   } catch (error) {
     spinner3.stop("Failed to create project.");
     throw error;
@@ -274,19 +279,19 @@ import * as p2 from "@clack/prompts";
 import fs4 from "fs-extra";
 import path5 from "path";
 import pc2 from "picocolors";
-var NEXT_COPY_PATHS = [
-  "src/app/admin",
-  "src/components/admin",
-  "src/components/theme",
-  "src/config/admin.config.ts",
-  "src/context",
-  "src/hooks",
-  "src/lib/admin-api",
-  "src/lib/admin-data",
-  "src/lib/admin-nav.ts",
-  "src/lib/cn.ts",
-  "src/lib/delay.ts",
-  "src/lib/format.ts"
+var NEXT_RELATIVE_PATHS = [
+  "app/admin",
+  "components/admin",
+  "components/theme",
+  "config/admin.config.ts",
+  "context",
+  "hooks",
+  "lib/admin-api",
+  "lib/admin-data",
+  "lib/admin-nav.ts",
+  "lib/cn.ts",
+  "lib/delay.ts",
+  "lib/format.ts"
 ];
 var VITE_COPY_PATHS = [
   "src/layouts",
@@ -302,8 +307,37 @@ var VITE_COPY_PATHS = [
   "src/lib/cn.ts",
   "src/lib/delay.ts",
   "src/lib/format.ts",
-  "src/admin.css"
+  "src/admin.css",
+  "src/zenpanel-admin-routes.example.tsx"
 ];
+var THEME_TOKENS_SNIPPET = `
+/* ZenPanel theme tokens (added by create-zenpanel) */
+@theme inline {
+  --color-brand-50: #ecf3ff;
+  --color-brand-100: #dde9ff;
+  --color-brand-300: #9cb9ff;
+  --color-brand-400: #7592ff;
+  --color-brand-500: #465fff;
+  --color-brand-600: #3641f5;
+  --color-brand-800: #252dae;
+  --color-brand-950: #161950;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f2f4f7;
+  --color-gray-200: #e4e7ec;
+  --color-gray-300: #d0d5dd;
+  --color-gray-400: #98a2b3;
+  --color-gray-500: #667085;
+  --color-gray-600: #475467;
+  --color-gray-700: #344054;
+  --color-gray-800: #1d2939;
+  --color-gray-900: #101828;
+  --color-success-50: #ecfdf3;
+  --color-success-500: #12b76a;
+  --color-success-600: #039855;
+  --color-error-50: #fef3f2;
+  --color-error-500: #f04438;
+}
+`;
 async function installIntoExisting(options = {}) {
   const cwd = process.cwd();
   const packageManager = options.packageManager ?? getPackageManager();
@@ -332,12 +366,15 @@ async function installIntoExisting(options = {}) {
     p2.log.step(`Detected framework: ${pc2.cyan(framework)}`);
   }
   const templateDir = path5.join(getTemplatesDir(), framework);
-  const copyPaths = framework === "nextjs" ? NEXT_COPY_PATHS : VITE_COPY_PATHS;
+  const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : VITE_COPY_PATHS.map((rel) => ({
+    src: path5.join(templateDir, rel),
+    dest: path5.join(cwd, rel),
+    label: rel
+  }));
   const conflicts = [];
-  for (const rel of copyPaths) {
-    const dest = path5.join(cwd, rel);
-    if (await pathExists(dest)) {
-      conflicts.push(rel);
+  for (const job of copyJobs) {
+    if (await pathExists(job.dest)) {
+      conflicts.push(job.label);
     }
   }
   if (conflicts.length > 0 && !options.force) {
@@ -353,12 +390,10 @@ async function installIntoExisting(options = {}) {
   const spinner3 = p2.spinner();
   spinner3.start("Copying ZenPanel admin files\u2026");
   try {
-    for (const rel of copyPaths) {
-      const src = path5.join(templateDir, rel);
-      const dest = path5.join(cwd, rel);
-      if (!await pathExists(src)) continue;
-      await fs4.ensureDir(path5.dirname(dest));
-      await fs4.copy(src, dest, { overwrite: true });
+    for (const job of copyJobs) {
+      if (!await pathExists(job.src)) continue;
+      await fs4.ensureDir(path5.dirname(job.dest));
+      await fs4.copy(job.src, job.dest, { overwrite: true });
     }
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
@@ -389,22 +424,43 @@ async function installIntoExisting(options = {}) {
     }
   }
   const tips = framework === "nextjs" ? [
-    "Ensure Tailwind is configured (Tailwind CSS v4 recommended).",
+    "Ensure Tailwind CSS v4 is configured.",
     "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
-    "Import admin styles \u2014 see src/app/admin/admin.css and merge globals if needed.",
-    "Open /admin/login \u2014 preview credentials: admin / admin."
+    "Admin routes live under /admin (login at /admin/login).",
+    "Preview credentials: admin / admin."
   ] : [
-    "Wire admin routes from the Vite template App.tsx into your router.",
-    "Import @/admin.css (and ensure Tailwind v4 is set up).",
+    "Merge zenPanelAdminRoute from src/zenpanel-admin-routes.example.tsx into your <Routes>.",
+    "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
     "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
     "Preview credentials: admin / admin."
   ];
   p2.note(tips.map((t) => `\u2022 ${t}`).join("\n"), "Next steps");
   p2.outro(pc2.green("ZenPanel admin shell installed."));
 }
+async function buildNextCopyJobs(projectDir, templateDir) {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const prefix = srcRoot ? `${srcRoot}/` : "";
+  return NEXT_RELATIVE_PATHS.map((rel) => {
+    const templateRel = `src/${rel}`;
+    const destRel = `${prefix}${rel}`;
+    return {
+      src: path5.join(templateDir, templateRel),
+      dest: path5.join(projectDir, destRel),
+      label: destRel
+    };
+  });
+}
+async function detectNextSrcRoot(projectDir) {
+  if (await pathExists(path5.join(projectDir, "src", "app"))) return "src";
+  if (await pathExists(path5.join(projectDir, "app"))) return "";
+  if (await pathExists(path5.join(projectDir, "src"))) return "src";
+  return "src";
+}
 async function mergeNextStyles(projectDir, templateDir) {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const adminCssRel = srcRoot ? "src/app/admin/admin.css" : "app/admin/admin.css";
   const adminCssSrc = path5.join(templateDir, "src/app/admin/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/app/admin/admin.css");
+  const adminCssDest = path5.join(projectDir, adminCssRel);
   if (await pathExists(adminCssSrc)) {
     await fs4.ensureDir(path5.dirname(adminCssDest));
     await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
@@ -417,24 +473,10 @@ async function mergeNextStyles(projectDir, templateDir) {
   for (const globals of globalsCandidates) {
     if (!await pathExists(globals)) continue;
     const content = await fs4.readFile(globals, "utf8");
-    if (content.includes("zenpanel-brand") || content.includes("--color-brand-500")) {
+    if (content.includes("--color-brand-500")) {
       return;
     }
-    const brandSnippet = `
-
-/* ZenPanel brand tokens (added by create-zenpanel) */
-@theme inline {
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-800: #252dae;
-  --color-brand-950: #161950;
-}
-`;
-    await fs4.appendFile(globals, brandSnippet);
+    await fs4.appendFile(globals, THEME_TOKENS_SNIPPET);
     return;
   }
 }
@@ -445,16 +487,23 @@ async function mergeViteStyles(projectDir, templateDir) {
     await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
   const indexCss = path5.join(projectDir, "src/index.css");
-  if (await pathExists(indexCss)) {
-    const content = await fs4.readFile(indexCss, "utf8");
-    if (!content.includes("admin.css") && !content.includes("--color-brand-500")) {
-      await fs4.appendFile(
-        indexCss,
-        `
+  if (!await pathExists(indexCss)) return;
+  let content = await fs4.readFile(indexCss, "utf8");
+  let changed = false;
+  if (!content.includes("admin.css")) {
+    content = `${content.trimEnd()}
+
 @import "./admin.css";
-`
-      );
-    }
+`;
+    changed = true;
+  }
+  if (!content.includes("--color-brand-500")) {
+    content = `${content.trimEnd()}
+${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+  if (changed) {
+    await fs4.writeFile(indexCss, content);
   }
 }
 

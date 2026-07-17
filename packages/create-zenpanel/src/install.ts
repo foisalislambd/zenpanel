@@ -20,19 +20,19 @@ export type InstallOptions = {
   force?: boolean;
 };
 
-const NEXT_COPY_PATHS = [
-  "src/app/admin",
-  "src/components/admin",
-  "src/components/theme",
-  "src/config/admin.config.ts",
-  "src/context",
-  "src/hooks",
-  "src/lib/admin-api",
-  "src/lib/admin-data",
-  "src/lib/admin-nav.ts",
-  "src/lib/cn.ts",
-  "src/lib/delay.ts",
-  "src/lib/format.ts",
+const NEXT_RELATIVE_PATHS = [
+  "app/admin",
+  "components/admin",
+  "components/theme",
+  "config/admin.config.ts",
+  "context",
+  "hooks",
+  "lib/admin-api",
+  "lib/admin-data",
+  "lib/admin-nav.ts",
+  "lib/cn.ts",
+  "lib/delay.ts",
+  "lib/format.ts",
 ] as const;
 
 const VITE_COPY_PATHS = [
@@ -50,7 +50,37 @@ const VITE_COPY_PATHS = [
   "src/lib/delay.ts",
   "src/lib/format.ts",
   "src/admin.css",
+  "src/zenpanel-admin-routes.example.tsx",
 ] as const;
+
+const THEME_TOKENS_SNIPPET = `
+/* ZenPanel theme tokens (added by create-zenpanel) */
+@theme inline {
+  --color-brand-50: #ecf3ff;
+  --color-brand-100: #dde9ff;
+  --color-brand-300: #9cb9ff;
+  --color-brand-400: #7592ff;
+  --color-brand-500: #465fff;
+  --color-brand-600: #3641f5;
+  --color-brand-800: #252dae;
+  --color-brand-950: #161950;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f2f4f7;
+  --color-gray-200: #e4e7ec;
+  --color-gray-300: #d0d5dd;
+  --color-gray-400: #98a2b3;
+  --color-gray-500: #667085;
+  --color-gray-600: #475467;
+  --color-gray-700: #344054;
+  --color-gray-800: #1d2939;
+  --color-gray-900: #101828;
+  --color-success-50: #ecfdf3;
+  --color-success-500: #12b76a;
+  --color-success-600: #039855;
+  --color-error-50: #fef3f2;
+  --color-error-500: #f04438;
+}
+`;
 
 export async function installIntoExisting(
   options: InstallOptions = {},
@@ -89,13 +119,20 @@ export async function installIntoExisting(
   }
 
   const templateDir = path.join(getTemplatesDir(), framework);
-  const copyPaths = framework === "nextjs" ? NEXT_COPY_PATHS : VITE_COPY_PATHS;
 
-  const conflicts: string[] = [];
-  for (const rel of copyPaths) {
-    const dest = path.join(cwd, rel);
-    if (await pathExists(dest)) {
-      conflicts.push(rel);
+  const copyJobs =
+    framework === "nextjs"
+      ? await buildNextCopyJobs(cwd, templateDir)
+      : VITE_COPY_PATHS.map((rel) => ({
+          src: path.join(templateDir, rel),
+          dest: path.join(cwd, rel),
+          label: rel,
+        }));
+
+  const conflicts = [];
+  for (const job of copyJobs) {
+    if (await pathExists(job.dest)) {
+      conflicts.push(job.label);
     }
   }
 
@@ -115,15 +152,12 @@ export async function installIntoExisting(
   spinner.start("Copying ZenPanel admin files…");
 
   try {
-    for (const rel of copyPaths) {
-      const src = path.join(templateDir, rel);
-      const dest = path.join(cwd, rel);
-      if (!(await pathExists(src))) continue;
-      await fs.ensureDir(path.dirname(dest));
-      await fs.copy(src, dest, { overwrite: true });
+    for (const job of copyJobs) {
+      if (!(await pathExists(job.src))) continue;
+      await fs.ensureDir(path.dirname(job.dest));
+      await fs.copy(job.src, job.dest, { overwrite: true });
     }
 
-    // Styles
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
     } else {
@@ -159,14 +193,14 @@ export async function installIntoExisting(
   const tips =
     framework === "nextjs"
       ? [
-          "Ensure Tailwind is configured (Tailwind CSS v4 recommended).",
+          "Ensure Tailwind CSS v4 is configured.",
           "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
-          "Import admin styles — see src/app/admin/admin.css and merge globals if needed.",
-          "Open /admin/login — preview credentials: admin / admin.",
+          "Admin routes live under /admin (login at /admin/login).",
+          "Preview credentials: admin / admin.",
         ]
       : [
-          "Wire admin routes from the Vite template App.tsx into your router.",
-          "Import @/admin.css (and ensure Tailwind v4 is set up).",
+          "Merge zenPanelAdminRoute from src/zenpanel-admin-routes.example.tsx into your <Routes>.",
+          "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
           "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
           "Preview credentials: admin / admin.",
         ];
@@ -175,18 +209,56 @@ export async function installIntoExisting(
   p.outro(pc.green("ZenPanel admin shell installed."));
 }
 
+async function buildNextCopyJobs(
+  projectDir: string,
+  templateDir: string,
+): Promise<Array<{ src: string; dest: string; label: string }>> {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const prefix = srcRoot ? `${srcRoot}/` : "";
+
+  return NEXT_RELATIVE_PATHS.map((rel) => {
+    // Template always ships under src/
+    const templateRel = `src/${rel}`;
+    const destRel = `${prefix}${rel}`;
+    return {
+      src: path.join(templateDir, templateRel),
+      dest: path.join(projectDir, destRel),
+      label: destRel,
+    };
+  });
+}
+
+/**
+ * Prefer existing Next.js layout conventions:
+ * - src/app → copy into src/
+ * - app (root) → copy into project root
+ * - otherwise default to src/ (create-next-app default)
+ */
+async function detectNextSrcRoot(
+  projectDir: string,
+): Promise<"src" | ""> {
+  if (await pathExists(path.join(projectDir, "src", "app"))) return "src";
+  if (await pathExists(path.join(projectDir, "app"))) return "";
+  if (await pathExists(path.join(projectDir, "src"))) return "src";
+  return "src";
+}
+
 async function mergeNextStyles(
   projectDir: string,
   templateDir: string,
 ): Promise<void> {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const adminCssRel = srcRoot
+    ? "src/app/admin/admin.css"
+    : "app/admin/admin.css";
+
   const adminCssSrc = path.join(templateDir, "src/app/admin/admin.css");
-  const adminCssDest = path.join(projectDir, "src/app/admin/admin.css");
+  const adminCssDest = path.join(projectDir, adminCssRel);
   if (await pathExists(adminCssSrc)) {
     await fs.ensureDir(path.dirname(adminCssDest));
     await fs.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
 
-  // Append a short marker into globals.css if present and not already linked
   const globalsCandidates = [
     path.join(projectDir, "src/app/globals.css"),
     path.join(projectDir, "app/globals.css"),
@@ -196,25 +268,10 @@ async function mergeNextStyles(
   for (const globals of globalsCandidates) {
     if (!(await pathExists(globals))) continue;
     const content = await fs.readFile(globals, "utf8");
-    if (content.includes("zenpanel-brand") || content.includes("--color-brand-500")) {
+    if (content.includes("--color-brand-500")) {
       return;
     }
-
-    const brandSnippet = `
-
-/* ZenPanel brand tokens (added by create-zenpanel) */
-@theme inline {
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-800: #252dae;
-  --color-brand-950: #161950;
-}
-`;
-    await fs.appendFile(globals, brandSnippet);
+    await fs.appendFile(globals, THEME_TOKENS_SNIPPET);
     return;
   }
 }
@@ -230,13 +287,22 @@ async function mergeViteStyles(
   }
 
   const indexCss = path.join(projectDir, "src/index.css");
-  if (await pathExists(indexCss)) {
-    const content = await fs.readFile(indexCss, "utf8");
-    if (!content.includes('admin.css') && !content.includes("--color-brand-500")) {
-      await fs.appendFile(
-        indexCss,
-        `\n@import "./admin.css";\n`,
-      );
-    }
+  if (!(await pathExists(indexCss))) return;
+
+  let content = await fs.readFile(indexCss, "utf8");
+  let changed = false;
+
+  if (!content.includes("admin.css")) {
+    content = `${content.trimEnd()}\n\n@import "./admin.css";\n`;
+    changed = true;
+  }
+
+  if (!content.includes("--color-brand-500")) {
+    content = `${content.trimEnd()}\n${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+
+  if (changed) {
+    await fs.writeFile(indexCss, content);
   }
 }

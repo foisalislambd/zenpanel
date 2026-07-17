@@ -53,14 +53,14 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     projectName = (result as string).trim() || "my-admin";
   }
 
-  const packageName = toValidPackageName(projectName);
+  const packageName = toValidPackageName(path.basename(projectName));
   const targetDir = path.resolve(cwd, projectName);
 
   if (await pathExists(targetDir)) {
     const empty = await isDirectoryEmpty(targetDir);
     if (!empty) {
       p.log.error(
-        `Target directory ${pc.cyan(projectName)} is not empty. Choose another name or remove the folder.`,
+        `Target directory ${pc.cyan(path.basename(targetDir))} is not empty. Choose another name or remove the folder.`,
       );
       process.exit(1);
     }
@@ -123,7 +123,9 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
   }
 
   const spinner = p.spinner();
-  spinner.start(`Creating ${pc.cyan(projectName)} (${framework})…`);
+  spinner.start(
+    `Creating ${pc.cyan(path.basename(targetDir))} (${framework})…`,
+  );
 
   try {
     await fs.copy(templateDir, targetDir, {
@@ -134,7 +136,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     });
 
     await updatePackageName(targetDir, packageName);
-    spinner.stop(`Project ${pc.cyan(projectName)} created.`);
+    spinner.stop(`Project ${pc.cyan(path.basename(targetDir))} created.`);
   } catch (error) {
     spinner.stop("Failed to create project.");
     throw error;

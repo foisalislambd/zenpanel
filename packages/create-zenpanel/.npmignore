@@ -1,6 +1,7 @@
-src
-tsup.config.ts
-tsconfig.json
+# Only ignore package tooling — never templates/*/src
+/src
+/tsup.config.ts
+/tsconfig.json
 *.tsbuildinfo
 node_modules
 templates/**/node_modules
