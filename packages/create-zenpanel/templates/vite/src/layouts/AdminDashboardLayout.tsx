@@ -11,11 +11,13 @@ import {
   useAdminSidebar,
 } from "@/context/admin-sidebar-context";
 import { cn } from "@/lib/cn";
+import { normalizePathname } from "@/lib/admin-nav";
 import { Outlet, useLocation } from "react-router-dom";
 
 export function AdminDashboardLayout() {
   const { pathname } = useLocation();
-  const isFullBleedPage = pathname === "/admin/messages";
+  const path = normalizePathname(pathname);
+  const isFullBleedPage = path === "/admin/messages";
   const { isExpanded, isDesktop } = useAdminSidebar();
   const { isOpen: isChatOpen, isDesktop: isChatDesktop } = useAdminChatPanel();
 
@@ -26,7 +28,7 @@ export function AdminDashboardLayout() {
     : 0;
 
   const chatPushLayout = isChatOpen && isChatDesktop && !isFullBleedPage;
-  const chatOverlay = isFullBleedPage || !isChatDesktop;
+  const chatOverlay = isChatOpen && (isFullBleedPage || !isChatDesktop);
 
   return (
     <AdminGuard>

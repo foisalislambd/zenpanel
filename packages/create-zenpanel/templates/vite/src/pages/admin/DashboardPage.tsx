@@ -70,6 +70,8 @@ export default function AdminDashboardPage() {
   });
 
   useEffect(() => {
+    let cancelled = false;
+
     Promise.all([
       previewFetchStats(),
       previewFetchUsers(),
@@ -78,6 +80,7 @@ export default function AdminDashboardPage() {
       previewFetchRecentOrders(),
     ])
       .then(([statsRes, usersRes, chartRes, activityRes, ordersRes]) => {
+        if (cancelled) return;
         setStats(statsRes.stats);
         setUsers(usersRes.users);
         setChart(chartRes.chart);
@@ -85,9 +88,16 @@ export default function AdminDashboardPage() {
         setOrders(ordersRes.orders);
       })
       .catch((err) => {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : "Failed to load dashboard");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {

@@ -1,5 +1,6 @@
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
+import { isExternalUrl } from "@/lib/admin-nav";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -10,6 +11,9 @@ const DEMO_PASSWORD = "admin";
 const inputClass =
   "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
+const backLinkClass =
+  "inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
+
 export function AdminLoginForm() {
   const { login } = useAdminAuth();
   const navigate = useNavigate();
@@ -17,12 +21,20 @@ export function AdminLoginForm() {
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const siteUrl = adminConfig.brand.siteUrl || "/";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
     setSubmitting(true);
 
     try {
+      if (password !== DEMO_PASSWORD) {
+        setError("Invalid credentials. Use admin / admin for the preview.");
+        return;
+      }
       await login(username.trim() || DEMO_USERNAME);
       navigate("/admin", { replace: true });
     } finally {
@@ -33,12 +45,15 @@ export function AdminLoginForm() {
   return (
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
       <div className="mx-auto w-full max-w-[400px]">
-        <Link
-          to={adminConfig.brand.siteUrl}
-          className="inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
-        >
-          ← Back to site
-        </Link>
+        {isExternalUrl(siteUrl) ? (
+          <a href={siteUrl} className={backLinkClass}>
+            ← Back to site
+          </a>
+        ) : (
+          <Link to={siteUrl} className={backLinkClass}>
+            ← Back to site
+          </Link>
+        )}
 
         <div className="mt-8 lg:mt-10">
           <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white lg:hidden">
@@ -104,6 +119,12 @@ export function AdminLoginForm() {
               </button>
             </div>
           </div>
+
+          {error && (
+            <p className="text-sm text-error-500" role="alert">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"

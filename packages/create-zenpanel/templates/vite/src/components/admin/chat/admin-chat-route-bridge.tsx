@@ -1,5 +1,5 @@
 import { useAdminChatPanel } from "@/context/admin-chat-panel-context";
-import { matchAdminNavItem } from "@/lib/admin-nav";
+import { matchAdminNavItem, normalizePathname } from "@/lib/admin-nav";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -12,21 +12,23 @@ export function AdminChatRouteBridge() {
   const { setPageContext } = useAdminChatPanel();
 
   useEffect(() => {
+    const path = normalizePathname(pathname);
+
     // Dashboard registers rich context via useAdminChatPageContext — do not overwrite it.
-    if (pathname === "/admin") {
+    if (path === "/admin") {
       return;
     }
 
-    const nav = matchAdminNavItem(pathname);
+    const nav = matchAdminNavItem(path);
 
     setPageContext({
-      pageId: pathname,
+      pageId: path,
       title: nav?.name ?? "Admin",
       description:
         nav?.description ??
         `Ask me anything about ${nav?.name ?? "this page"} — analyze data, get suggestions, or plan your next steps.`,
-      route: pathname,
-      getSnapshot: () => ({ route: pathname }),
+      route: path,
+      getSnapshot: () => ({ route: path }),
     });
 
     return () => setPageContext(null);

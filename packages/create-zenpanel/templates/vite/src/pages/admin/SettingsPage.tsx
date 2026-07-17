@@ -35,6 +35,7 @@ export default function AdminSettingsPage() {
               id={`${baseId}-${tab.id}`}
               aria-selected={selected}
               aria-controls={`${baseId}-panel-${tab.id}`}
+              tabIndex={selected ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
                 "rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
@@ -49,35 +50,33 @@ export default function AdminSettingsPage() {
         })}
       </div>
 
-      {activeTab === "account" && (
-        <div
-          role="tabpanel"
-          id={`${baseId}-panel-account`}
-          aria-labelledby={`${baseId}-account`}
-        >
-          <AccountSettings />
-        </div>
-      )}
+      <div
+        role="tabpanel"
+        id={`${baseId}-panel-account`}
+        aria-labelledby={`${baseId}-account`}
+        hidden={activeTab !== "account"}
+      >
+        <AccountSettings />
+      </div>
 
-      {activeTab === "site" && (
-        <div
-          role="tabpanel"
-          id={`${baseId}-panel-site`}
-          aria-labelledby={`${baseId}-site`}
-          className="admin-card admin-card-body space-y-3"
-        >
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-            Branding & navigation
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Edit{" "}
-            <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10">
-              src/config/admin.config.ts
-            </code>{" "}
-            to customize the panel name, logo letter, sidebar links, and login page copy.
-          </p>
-        </div>
-      )}
+      <div
+        role="tabpanel"
+        id={`${baseId}-panel-site`}
+        aria-labelledby={`${baseId}-site`}
+        hidden={activeTab !== "site"}
+        className="admin-card admin-card-body space-y-3"
+      >
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+          Branding & navigation
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Edit{" "}
+          <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10">
+            src/config/admin.config.ts
+          </code>{" "}
+          to customize the panel name, logo letter, sidebar links, and login page copy.
+        </p>
+      </div>
     </div>
   );
 }

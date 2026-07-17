@@ -11,12 +11,24 @@ export default function AdminUsersPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     previewFetchUsers()
-      .then((res) => setUsers(res.users))
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : "Failed to load users");
+      .then((res) => {
+        if (!cancelled) setUsers(res.users);
       })
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load users");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
@@ -35,7 +47,7 @@ export default function AdminUsersPage() {
     <div className="admin-content space-y-6">
       <AdminBreadcrumbs />
       <AdminPageHeader title="Users" />
-      <RecentUsersTable users={users} />
+      <RecentUsersTable users={users} href={null} />
     </div>
   );
 }

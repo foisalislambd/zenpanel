@@ -1,10 +1,11 @@
-import { matchAdminNavItem } from "@/lib/admin-nav";
+import { matchAdminNavItem, normalizePathname } from "@/lib/admin-nav";
 import { ChevronRight, Home } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export function AdminBreadcrumbs() {
   const { pathname } = useLocation();
-  const pageTitle = pathname === "/admin" ? null : (matchAdminNavItem(pathname)?.name ?? null);
+  const path = normalizePathname(pathname);
+  const pageTitle = path === "/admin" ? null : (matchAdminNavItem(path)?.name ?? null);
 
   if (!pageTitle) return null;
 

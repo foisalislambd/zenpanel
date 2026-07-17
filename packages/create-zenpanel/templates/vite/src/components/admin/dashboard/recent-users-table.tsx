@@ -20,10 +20,21 @@ function ProviderBadge({ provider }: { provider: string }) {
   );
 }
 
-export function RecentUsersTable({ users }: { users: PortalUserRow[] }) {
+export function RecentUsersTable({
+  users,
+  href = "/admin/users",
+}: {
+  users: PortalUserRow[];
+  /** Pass `null` to hide the “View all” link (e.g. on the Users page). */
+  href?: string | null;
+}) {
   return (
     <div className="admin-card w-full overflow-hidden">
-      <DashboardSectionHeader title="Recent users" href="/admin/users" />
+      <DashboardSectionHeader
+        title="Recent users"
+        href={href ?? undefined}
+        linkLabel={href ? "View all" : undefined}
+      />
 
       {users.length === 0 ? (
         <div className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
