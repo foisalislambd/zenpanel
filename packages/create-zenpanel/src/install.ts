@@ -93,6 +93,15 @@ const VUE_COPY_PATHS = [
   "public/favicon.svg",
 ] as const;
 
+const ANGULAR_COPY_PATHS = [
+  "src/app",
+  "src/admin.css",
+  "src/styles.css",
+  "src/index.html",
+  "src/main.ts",
+  "public/favicon.svg",
+] as const;
+
 const THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -146,6 +155,7 @@ export async function installIntoExisting(
     | "vue"
     | "html"
     | "astro"
+    | "angular"
     | "unknown" = detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
@@ -159,6 +169,7 @@ export async function installIntoExisting(
         { value: "svelte" as const, label: "Svelte (Vite)" },
         { value: "vue" as const, label: "Vue (Vite)" },
         { value: "astro" as const, label: "Astro" },
+        { value: "angular" as const, label: "Angular" },
         { value: "html" as const, label: "HTML (static)" },
       ],
     });
@@ -176,7 +187,8 @@ export async function installIntoExisting(
       | "svelte"
       | "vue"
       | "html"
-      | "astro";
+      | "astro"
+      | "angular";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -212,11 +224,17 @@ export async function installIntoExisting(
                   dest: path.join(cwd, rel),
                   label: rel,
                 }))
-              : HTML_COPY_PATHS.map((rel) => ({
-                  src: path.join(templateDir, rel),
-                  dest: path.join(cwd, rel),
-                  label: rel,
-                }));
+              : framework === "angular"
+                ? ANGULAR_COPY_PATHS.map((rel) => ({
+                    src: path.join(templateDir, rel),
+                    dest: path.join(cwd, rel),
+                    label: rel,
+                  }))
+                : HTML_COPY_PATHS.map((rel) => ({
+                    src: path.join(templateDir, rel),
+                    dest: path.join(cwd, rel),
+                    label: rel,
+                  }));
 
   const conflicts = [];
   for (const job of copyJobs) {
@@ -261,6 +279,8 @@ export async function installIntoExisting(
       await mergeVueFiles(cwd, templateDir);
     } else if (framework === "astro") {
       await mergeAstroStyles(cwd, templateDir);
+    } else if (framework === "angular") {
+      await mergeAngularStyles(cwd, templateDir);
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
@@ -322,6 +342,9 @@ export async function installIntoExisting(
   if (framework === "html") {
     depsToInstall.push("serve");
   }
+  if (framework === "angular") {
+    depsToInstall.push("clsx", "tailwind-merge");
+  }
 
   if (!options.skipInstall && depsToInstall.length > 0) {
     const installSpinner = p.spinner();
@@ -378,6 +401,13 @@ export async function installIntoExisting(
               "Customize branding in src/scripts/config.js.",
               "Preview credentials: admin / admin.",
             ]
+          : framework === "angular"
+            ? [
+                "Open /admin/login after `npm run dev` (ng serve — port 4200).",
+                "Customize branding in src/app/core/admin.config.ts.",
+                "Ensure Tailwind + @tailwindcss/postcss are configured (see templates/angular).",
+                "Preview credentials: admin / admin.",
+              ]
           : [
               "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
               "Open /admin/login — preview credentials: admin / admin.",
@@ -546,6 +576,43 @@ async function mergeAstroStyles(
   if (await pathExists(adminStyleSrc)) {
     await fs.ensureDir(path.dirname(adminStyleDest));
     await fs.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
+  }
+}
+
+async function mergeAngularStyles(
+  projectDir: string,
+  templateDir: string,
+): Promise<void> {
+  const adminCssSrc = path.join(templateDir, "src/admin.css");
+  const adminCssDest = path.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+
+  const stylesSrc = path.join(templateDir, "src/styles.css");
+  const stylesDest = path.join(projectDir, "src/styles.css");
+  if (await pathExists(stylesSrc) && !(await pathExists(stylesDest))) {
+    await fs.copy(stylesSrc, stylesDest);
+    return;
+  }
+
+  if (!(await pathExists(stylesDest))) return;
+
+  let content = await fs.readFile(stylesDest, "utf8");
+  let changed = false;
+
+  if (!content.includes("admin.css")) {
+    content = `${content.trimEnd()}\n\n@import "./admin.css";\n`;
+    changed = true;
+  }
+
+  if (!content.includes("--color-brand-500")) {
+    content = `${content.trimEnd()}\n${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+
+  if (changed) {
+    await fs.writeFile(stylesDest, content);
   }
 }
 

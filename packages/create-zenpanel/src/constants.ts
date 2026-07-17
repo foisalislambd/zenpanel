@@ -21,7 +21,8 @@ export type FrameworkId =
   | "vue"
   | "html"
   | "remix"
-  | "astro";
+  | "astro"
+  | "angular";
 
 /** CLI may still accept legacy `vite` as an alias for `react`. */
 export type FrameworkCliId = FrameworkId | "vite";
@@ -79,7 +80,13 @@ export const FRAMEWORKS: FrameworkOption[] = [
   {
     id: "astro",
     label: "Astro",
-    hint: "Astro 7 + vanilla HTML/CSS/JS",
+    hint: "Astro 7 + React admin (Next.js UI)",
+    available: true,
+  },
+  {
+    id: "angular",
+    label: "Angular",
+    hint: "Angular 22 + Tailwind (Next.js UI)",
     available: true,
   },
   {
@@ -111,6 +118,7 @@ export function normalizeFrameworkId(id: string): FrameworkId | null {
     id === "vue" ||
     id === "html" ||
     id === "astro" ||
+    id === "angular" ||
     id === "remix"
   ) {
     return id;

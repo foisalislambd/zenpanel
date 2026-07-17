@@ -52,6 +52,7 @@ export function detectFrameworkFromPackage(
   | "svelte"
   | "vue"
   | "astro"
+  | "angular"
   | "unknown" {
   const deps = {
     ...(pkg.dependencies as Record<string, string> | undefined),
@@ -60,6 +61,7 @@ export function detectFrameworkFromPackage(
 
   if (deps.next) return "nextjs";
   if (deps.astro) return "astro";
+  if (deps["@angular/core"] || deps["@angular/cli"]) return "angular";
   if (deps.preact || deps["@preact/preset-vite"]) return "preact";
   if (deps["solid-js"] || deps["vite-plugin-solid"]) return "solid";
   if (deps.svelte || deps["@sveltejs/vite-plugin-svelte"]) return "svelte";

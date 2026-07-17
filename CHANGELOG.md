@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `create-zenpanel` CLI (`npx create-zenpanel@latest`)
-- Framework selection: Next.js, React (Vite), Preact (Vite), Solid (Vite), Svelte 5 (Vite), Vue 3 (Vite), HTML, and Astro 7 vanilla (Remix coming soon)
+- Framework selection: Next.js, React (Vite), Preact (Vite), Solid (Vite), Svelte 5 (Vite), Vue 3 (Vite), HTML, Astro 7, and Angular 22 (Remix coming soon)
 - Astro template based on latest `create-astro` (`astro@^7`, Node `>=22.12`) with plain HTML/CSS/JS admin
+- Angular 22 + Tailwind template based on latest Angular CLI scaffold (`@angular/*@^22`, `@tailwindcss/postcss`) with the same admin UI as Next.js
 - Solid + Vite template based on latest Vite Solid scaffold (`solid-js@^1.9`, `vite@^8`, `vite-plugin-solid`)
 - Svelte 5 + Vite template based on latest Vite Svelte scaffold (`svelte@^5`, `vite@^8`, `@sveltejs/vite-plugin-svelte`)
 - Vue 3 + Vite template based on latest Vite Vue scaffold (`vue@^3.5`, `vite@^8`, `@vitejs/plugin-vue`)

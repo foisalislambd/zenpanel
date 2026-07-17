@@ -116,7 +116,12 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
         {
           value: "astro" as const,
           label: "Astro",
-          hint: "Astro 7 + vanilla HTML/CSS/JS",
+          hint: "Astro 7 + React admin (Next.js UI)",
+        },
+        {
+          value: "angular" as const,
+          label: "Angular",
+          hint: "Angular 22 + Tailwind (Next.js UI)",
         },
         {
           value: "remix" as const,
@@ -142,10 +147,11 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     framework !== "svelte" &&
     framework !== "vue" &&
     framework !== "html" &&
-    framework !== "astro"
+    framework !== "astro" &&
+    framework !== "angular"
   ) {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, Solid, Svelte, Vue, HTML, or Astro.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, Solid, Svelte, Vue, HTML, Astro, or Angular.`,
     );
     process.exit(1);
   }
@@ -170,7 +176,8 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
           base !== "node_modules" &&
           base !== "dist" &&
           base !== ".next" &&
-          base !== ".astro"
+          base !== ".astro" &&
+          base !== ".angular"
         );
       },
     });
@@ -211,7 +218,9 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
       ? "http://localhost:5173/admin/login"
       : framework === "astro"
         ? "http://localhost:4321/admin/login"
-        : "http://localhost:3000/admin/login";
+        : framework === "angular"
+          ? "http://localhost:4200/admin/login"
+          : "http://localhost:3000/admin/login";
 
   p.note(
     `${cd}  ${getRunCommand(packageManager, "dev")}\n\n  Admin login: ${pc.cyan(loginUrl)}\n  Preview credentials: ${pc.cyan("admin / admin")}`,

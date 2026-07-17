@@ -1,0 +1,83 @@
+import { Component, Input } from '@angular/core';
+
+/** Minimal Lucide-style SVG icons used by the admin shell. */
+const PATHS: Record<string, string> = {
+  'layout-dashboard':
+    'M3 3h7v9H3V3zm11 0h7v5h-7V3zM3 14h7v7H3v-7zm11-4h7v11h-7V10z',
+  'folder-kanban':
+    'M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 2H4a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2zM8 10v4M12 10v2M16 10v6',
+  briefcase:
+    'M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16M2 8h20v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z',
+  'shopping-cart':
+    'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0',
+  receipt:
+    'M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z M8 10h8M8 14h8M8 6h8',
+  'credit-card':
+    'M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5zm0 4h20',
+  newspaper:
+    'M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2M18 14h-8M15 18h-5M10 6h8v4h-8V6Z',
+  package:
+    'M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73zM12 22V12M3.3 7l8.7 5 8.7-5',
+  'folder-tree':
+    'M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Zm0 0v6a1 1 0 0 1-1 1H9.5a1 1 0 0 0-.8.4l-.9 1.2a1 1 0 0 1-.8.4H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h2.5a1 1 0 0 0 .8-.4l.9-1.2a1 1 0 0 1 .8-.4H15',
+  'message-circle':
+    'M7.9 20A9 9 0 1 0 4 16.1L2 22Z',
+  mail: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6',
+  users:
+    'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',
+  settings:
+    'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+  search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3',
+  moon: 'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z',
+  sun: 'M12 3v2M12 19v2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M3 12h2M19 12h2M5.6 18.4l1.4-1.4M17 7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+  'chevron-left': 'M15 18l-6-6 6-6',
+  'chevron-right': 'M9 18l6-6-6-6',
+  'chevron-down': 'M6 9l6 6 6-6',
+  'external-link':
+    'M15 3h6v6 M10 14 21 3 M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6',
+  menu: 'M4 5h16M4 12h16M4 19h16',
+  x: 'M18 6 6 18M6 6l12 12',
+  eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+  'eye-off':
+    'M10.7 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-2.1 3.1M6.6 6.6C3.1 8.8 2 12 2 12s3.5 7 10 7a9.8 9.8 0 0 0 4.4-1M2 2l20 20 M9.9 9.9a3 3 0 0 0 4.2 4.2',
+  lock: 'M5 11h14v10H5V11z M8 11V7a4 4 0 0 1 8 0v4',
+  user: 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  'calendar-days':
+    'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01',
+  'dollar-sign': 'M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+  'panel-right-open':
+    'M15 3v18 M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4 M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4 M10 12h4 M12 10l2 2-2 2',
+  home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z',
+};
+
+@Component({
+  selector: 'app-icon',
+  standalone: true,
+  host: {
+    class: 'inline-flex shrink-0',
+  },
+  template: `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      [attr.width]="size"
+      [attr.height]="size"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path [attr.d]="d" />
+    </svg>
+  `,
+})
+export class IconComponent {
+  @Input({ required: true }) name!: string;
+  @Input() size = 20;
+
+  get d(): string {
+    return PATHS[this.name] ?? PATHS['settings']!;
+  }
+}

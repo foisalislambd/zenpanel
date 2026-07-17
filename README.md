@@ -5,7 +5,7 @@
 
 Open-source admin UI shell — sidebar, dashboard, resource tables, login, and dark mode.
 
-Scaffold a new app with **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, or **Astro**, or install the admin panel into an existing project.
+Scaffold a new app with **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro**, or **Angular**, or install the admin panel into an existing project.
 
 No backend included. The dashboard ships with sample preview data so you can review the UI; connect your own API when you are ready.
 
@@ -30,7 +30,7 @@ npx create-zenpanel@latest
 You will be asked to:
 
 1. Enter a project name
-2. Select a framework — **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro** (Remix coming soon)
+2. Select a framework — **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro**, **Angular** (Remix coming soon)
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
@@ -41,6 +41,7 @@ npx create-zenpanel@latest my-admin --framework svelte
 npx create-zenpanel@latest my-admin --framework vue
 npx create-zenpanel@latest my-admin --framework html
 npx create-zenpanel@latest my-admin --framework astro
+npx create-zenpanel@latest my-admin --framework angular
 ```
 
 Then:
@@ -55,6 +56,7 @@ Open the admin login:
 - Next.js: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
 - React / Preact / Solid / Svelte / Vue / HTML: [http://localhost:5173/admin/login](http://localhost:5173/admin/login)
 - Astro: [http://localhost:4321/admin/login](http://localhost:4321/admin/login)
+- Angular: [http://localhost:4200/admin/login](http://localhost:4200/admin/login)
 
 Demo credentials: `admin` / `admin`.
 
@@ -99,7 +101,8 @@ zenpanel/
 │           ├── svelte/      # Svelte 5 + Vite template
 │           ├── vue/         # Vue 3 + Vite template
 │           ├── html/        # Plain HTML / CSS / JS template
-│           └── astro/       # Astro 7 + vanilla JS template
+│           └── astro/       # Astro 7 template
+│           └── angular/     # Angular 22 + Tailwind (Next.js UI)
 ├── docs/                    # Images and documentation assets
 └── README.md
 ```
@@ -108,7 +111,7 @@ zenpanel/
 
 | Package | Role |
 | --- | --- |
-| Next.js 16 / React · Preact · Solid · Svelte · Vue (Vite 8) / Astro 7 | App frameworks |
+| Next.js 16 / React · Preact · Solid · Svelte · Vue (Vite 8) / Astro 7 / Angular 22 | App frameworks |
 | React 19 | UI |
 | Tailwind CSS 4 | Styling |
 | next-themes | Light / dark mode |

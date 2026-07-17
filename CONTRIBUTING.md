@@ -20,7 +20,8 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 - `packages/create-zenpanel/templates/svelte` — Svelte 5 + Vite template
 - `packages/create-zenpanel/templates/vue` — Vue 3 + Vite template
 - `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
-- `packages/create-zenpanel/templates/astro` — Astro 7 + vanilla JS template
+- `packages/create-zenpanel/templates/astro` — Astro 7 template
+- `packages/create-zenpanel/templates/angular` — Angular 22 + Tailwind (Next.js UI)
 
 ## Development setup
 
@@ -93,6 +94,14 @@ npm install
 npm run dev
 ```
 
+Or for Angular:
+
+```bash
+cd packages/create-zenpanel/templates/angular
+npm install
+npm run dev
+```
+
 Preview login: `admin` / `admin` at `/admin/login`.
 
 ## Before you open a PR
@@ -132,7 +141,7 @@ Include:
 - Steps to reproduce
 - Expected vs actual behavior
 - Browser / OS
-- Framework (Next.js / React / HTML / Astro / install-into-existing)
+- Framework (Next.js / React / Preact / Solid / Svelte / Vue / HTML / Astro / Angular / install-into-existing)
 - Screenshot or short recording when relevant
 
 ## Questions

@@ -29,7 +29,7 @@ var ADMIN_PEER_DEPS = [
 ];
 function normalizeFrameworkId(id) {
   if (id === "vite") return "react";
-  if (id === "nextjs" || id === "react" || id === "preact" || id === "solid" || id === "svelte" || id === "vue" || id === "html" || id === "astro" || id === "remix") {
+  if (id === "nextjs" || id === "react" || id === "preact" || id === "solid" || id === "svelte" || id === "vue" || id === "html" || id === "astro" || id === "angular" || id === "remix") {
     return id;
   }
   return null;
@@ -72,6 +72,7 @@ function detectFrameworkFromPackage(pkg2) {
   };
   if (deps.next) return "nextjs";
   if (deps.astro) return "astro";
+  if (deps["@angular/core"] || deps["@angular/cli"]) return "angular";
   if (deps.preact || deps["@preact/preset-vite"]) return "preact";
   if (deps["solid-js"] || deps["vite-plugin-solid"]) return "solid";
   if (deps.svelte || deps["@sveltejs/vite-plugin-svelte"]) return "svelte";
@@ -236,7 +237,12 @@ async function createApp(options = {}) {
         {
           value: "astro",
           label: "Astro",
-          hint: "Astro 7 + vanilla HTML/CSS/JS"
+          hint: "Astro 7 + React admin (Next.js UI)"
+        },
+        {
+          value: "angular",
+          label: "Angular",
+          hint: "Angular 22 + Tailwind (Next.js UI)"
         },
         {
           value: "remix",
@@ -251,9 +257,9 @@ async function createApp(options = {}) {
     }
     framework = result;
   }
-  if (framework !== "nextjs" && framework !== "react" && framework !== "preact" && framework !== "solid" && framework !== "svelte" && framework !== "vue" && framework !== "html" && framework !== "astro") {
+  if (framework !== "nextjs" && framework !== "react" && framework !== "preact" && framework !== "solid" && framework !== "svelte" && framework !== "vue" && framework !== "html" && framework !== "astro" && framework !== "angular") {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, Solid, Svelte, Vue, HTML, or Astro.`
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, Solid, Svelte, Vue, HTML, Astro, or Angular.`
     );
     process.exit(1);
   }
@@ -270,7 +276,7 @@ async function createApp(options = {}) {
     await fs3.copy(templateDir, targetDir, {
       filter: (src) => {
         const base = path4.basename(src);
-        return base !== "node_modules" && base !== "dist" && base !== ".next" && base !== ".astro";
+        return base !== "node_modules" && base !== "dist" && base !== ".next" && base !== ".astro" && base !== ".angular";
       }
     });
     await updatePackageName(targetDir, packageName);
@@ -296,7 +302,7 @@ async function createApp(options = {}) {
   const relative = path4.relative(cwd, targetDir) || ".";
   const cd = relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}
 `;
-  const loginUrl = framework === "html" || framework === "react" || framework === "preact" || framework === "solid" || framework === "svelte" || framework === "vue" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : "http://localhost:3000/admin/login";
+  const loginUrl = framework === "html" || framework === "react" || framework === "preact" || framework === "solid" || framework === "svelte" || framework === "vue" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : framework === "angular" ? "http://localhost:4200/admin/login" : "http://localhost:3000/admin/login";
   p.note(
     `${cd}  ${getRunCommand(packageManager, "dev")}
 
@@ -379,6 +385,14 @@ var VUE_COPY_PATHS = [
   "index.html",
   "public/favicon.svg"
 ];
+var ANGULAR_COPY_PATHS = [
+  "src/app",
+  "src/admin.css",
+  "src/styles.css",
+  "src/index.html",
+  "src/main.ts",
+  "public/favicon.svg"
+];
 var THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -429,6 +443,7 @@ async function installIntoExisting(options = {}) {
         { value: "svelte", label: "Svelte (Vite)" },
         { value: "vue", label: "Vue (Vite)" },
         { value: "astro", label: "Astro" },
+        { value: "angular", label: "Angular" },
         { value: "html", label: "HTML (static)" }
       ]
     });
@@ -454,6 +469,10 @@ async function installIntoExisting(options = {}) {
     dest: path5.join(cwd, rel),
     label: rel
   })) : framework === "astro" ? ASTRO_COPY_PATHS.map((rel) => ({
+    src: path5.join(templateDir, rel),
+    dest: path5.join(cwd, rel),
+    label: rel
+  })) : framework === "angular" ? ANGULAR_COPY_PATHS.map((rel) => ({
     src: path5.join(templateDir, rel),
     dest: path5.join(cwd, rel),
     label: rel
@@ -496,6 +515,8 @@ async function installIntoExisting(options = {}) {
       await mergeVueFiles(cwd, templateDir);
     } else if (framework === "astro") {
       await mergeAstroStyles(cwd, templateDir);
+    } else if (framework === "angular") {
+      await mergeAngularStyles(cwd, templateDir);
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
@@ -551,6 +572,9 @@ async function installIntoExisting(options = {}) {
   if (framework === "html") {
     depsToInstall.push("serve");
   }
+  if (framework === "angular") {
+    depsToInstall.push("clsx", "tailwind-merge");
+  }
   if (!options.skipInstall && depsToInstall.length > 0) {
     const installSpinner = p2.spinner();
     installSpinner.start(`Installing peer dependencies with ${packageManager}\u2026`);
@@ -587,6 +611,11 @@ async function installIntoExisting(options = {}) {
   ] : framework === "astro" ? [
     "Admin pages were copied to src/pages/admin \u2014 open /admin/login after `npm run dev`.",
     "Customize branding in src/scripts/config.js.",
+    "Preview credentials: admin / admin."
+  ] : framework === "angular" ? [
+    "Open /admin/login after `npm run dev` (ng serve \u2014 port 4200).",
+    "Customize branding in src/app/core/admin.config.ts.",
+    "Ensure Tailwind + @tailwindcss/postcss are configured (see templates/angular).",
     "Preview credentials: admin / admin."
   ] : [
     "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
@@ -711,6 +740,37 @@ async function mergeAstroStyles(projectDir, templateDir) {
     await fs4.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
   }
 }
+async function mergeAngularStyles(projectDir, templateDir) {
+  const adminCssSrc = path5.join(templateDir, "src/admin.css");
+  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+  const stylesSrc = path5.join(templateDir, "src/styles.css");
+  const stylesDest = path5.join(projectDir, "src/styles.css");
+  if (await pathExists(stylesSrc) && !await pathExists(stylesDest)) {
+    await fs4.copy(stylesSrc, stylesDest);
+    return;
+  }
+  if (!await pathExists(stylesDest)) return;
+  let content = await fs4.readFile(stylesDest, "utf8");
+  let changed = false;
+  if (!content.includes("admin.css")) {
+    content = `${content.trimEnd()}
+
+@import "./admin.css";
+`;
+    changed = true;
+  }
+  if (!content.includes("--color-brand-500")) {
+    content = `${content.trimEnd()}
+${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+  if (changed) {
+    await fs4.writeFile(stylesDest, content);
+  }
+}
 async function ensureHtmlServeScripts(projectDir) {
   const pkgPath = path5.join(projectDir, "package.json");
   if (!await pathExists(pkgPath)) return;
@@ -745,7 +805,7 @@ async function main() {
     "Project name / directory (omit to install into the current project when package.json exists)"
   ).option(
     "-f, --framework <framework>",
-    "Framework template: nextjs | react | preact | solid | svelte | vue | html | astro (vite \u2192 react alias)"
+    "Framework template: nextjs | react | preact | solid | svelte | vue | html | astro | angular (vite \u2192 react alias)"
   ).option("--use-npm", "Use npm").option("--use-pnpm", "Use pnpm").option("--use-yarn", "Use yarn").option("--use-bun", "Use bun").option("--skip-install", "Skip installing dependencies").option("--force", "Overwrite existing admin files when installing into a project").option(
     "--install",
     "Force install-into-existing mode (requires package.json in cwd)"
@@ -756,7 +816,7 @@ async function main() {
     if (rawFramework && !framework) {
       console.error(
         pc3.red(
-          `Unsupported framework "${rawFramework}". Available now: nextjs, react, preact, solid, svelte, vue, html, astro.`
+          `Unsupported framework "${rawFramework}". Available now: nextjs, react, preact, solid, svelte, vue, html, astro, angular.`
         )
       );
       process.exit(1);

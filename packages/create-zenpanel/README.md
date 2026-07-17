@@ -13,7 +13,7 @@ npx create-zenpanel@latest
 You will be prompted for:
 
 1. Project name
-2. Framework — **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro** (Remix coming soon)
+2. Framework — **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro**, **Angular** (Remix coming soon)
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
@@ -24,6 +24,7 @@ npx create-zenpanel@latest my-admin --framework svelte
 npx create-zenpanel@latest my-admin --framework vue
 npx create-zenpanel@latest my-admin --framework html
 npx create-zenpanel@latest my-admin --framework astro
+npx create-zenpanel@latest my-admin --framework angular
 ```
 
 `vite` is accepted as an alias for `react`.
@@ -47,7 +48,7 @@ npx create-zenpanel@latest --install
 
 | Flag | Description |
 | --- | --- |
-| `-f, --framework <name>` | `nextjs`, `react`, `preact`, `solid`, `svelte`, `vue`, `html`, or `astro` (`vite` → `react`) |
+| `-f, --framework <name>` | `nextjs`, `react`, `preact`, `solid`, `svelte`, `vue`, `html`, `astro`, or `angular` (`vite` → `react`) |
 | `--use-npm` / `--use-pnpm` / `--use-yarn` / `--use-bun` | Package manager |
 | `--skip-install` | Skip dependency installation |
 | `--force` | Overwrite existing admin files (install mode) |
@@ -60,5 +61,6 @@ npx create-zenpanel@latest --install
 | Next.js | `http://localhost:3000/admin/login` |
 | React / Preact / Solid / Svelte / Vue / HTML | `http://localhost:5173/admin/login` |
 | Astro | `http://localhost:4321/admin/login` |
+| Angular | `http://localhost:4200/admin/login` |
 
 Username / password: `admin` / `admin`
