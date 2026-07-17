@@ -15,7 +15,7 @@ import {
 @Component({
   selector: 'app-projects-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Projects" [items]="items" description="Portfolio projects and case studies" />`,
+  template: `<app-resource-page title="Projects" resourceLabel="project" [items]="items" />`,
 })
 export class ProjectsPageComponent {
   readonly items = adminProjects;
@@ -24,7 +24,7 @@ export class ProjectsPageComponent {
 @Component({
   selector: 'app-services-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Services" [items]="items" description="Service offerings and pricing" />`,
+  template: `<app-resource-page title="Services" resourceLabel="service" [items]="items" />`,
 })
 export class ServicesPageComponent {
   readonly items = adminServices;
@@ -33,7 +33,7 @@ export class ServicesPageComponent {
 @Component({
   selector: 'app-service-orders-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Service orders" [items]="items" description="Customer service purchases" />`,
+  template: `<app-resource-page title="Service orders" resourceLabel="order" [items]="items" />`,
 })
 export class ServiceOrdersPageComponent {
   readonly items = adminServiceOrders;
@@ -42,7 +42,7 @@ export class ServiceOrdersPageComponent {
 @Component({
   selector: 'app-transactions-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Transactions" [items]="items" description="Wallet and ledger activity" />`,
+  template: `<app-resource-page title="Transactions" resourceLabel="transaction" [items]="items" />`,
 })
 export class TransactionsPageComponent {
   readonly items = adminTransactions;
@@ -51,7 +51,7 @@ export class TransactionsPageComponent {
 @Component({
   selector: 'app-payments-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Payments" [items]="items" description="Deposits and payment providers" />`,
+  template: `<app-resource-page title="Payments" resourceLabel="payment" [items]="items" />`,
 })
 export class PaymentsPageComponent {
   readonly items = adminPayments;
@@ -60,7 +60,7 @@ export class PaymentsPageComponent {
 @Component({
   selector: 'app-blog-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Blog" [items]="items" />`,
+  template: `<app-resource-page title="Blog" resourceLabel="post" [items]="items" />`,
 })
 export class BlogPageComponent {
   readonly items = adminBlogPosts;
@@ -69,7 +69,7 @@ export class BlogPageComponent {
 @Component({
   selector: 'app-products-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Products" [items]="items" />`,
+  template: `<app-resource-page title="Products" resourceLabel="product" [items]="items" />`,
 })
 export class ProductsPageComponent {
   readonly items = adminProducts;
@@ -78,23 +78,16 @@ export class ProductsPageComponent {
 @Component({
   selector: 'app-categories-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Categories" [items]="items" />`,
+  template: `<app-resource-page title="Categories" resourceLabel="category" [items]="items" />`,
 })
 export class CategoriesPageComponent {
   readonly items = adminCategories;
 }
 
 @Component({
-  selector: 'app-messages-page',
-  imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Messages" [items]="[]" />`,
-})
-export class MessagesPageComponent {}
-
-@Component({
   selector: 'app-newsletter-page',
   imports: [ResourcePageComponent],
-  template: `<app-resource-page title="Newsletter" [items]="items" />`,
+  template: `<app-resource-page title="Newsletter" resourceLabel="subscriber" [items]="items" />`,
 })
 export class NewsletterPageComponent {
   readonly items = adminNewsletter;

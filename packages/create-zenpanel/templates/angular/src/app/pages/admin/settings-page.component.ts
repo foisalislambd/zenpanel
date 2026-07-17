@@ -1,85 +1,78 @@
-import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { adminConfig } from '@/app/core/admin.config';
-import { AuthService } from '@/app/core/auth.service';
+import { Component, signal } from '@angular/core';
+import { AdminBreadcrumbsComponent } from '@/app/admin/ui/admin-breadcrumbs.component';
+import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
+import { AccountSettingsComponent } from '@/app/admin/settings/account-settings.component';
+
+type TabId = 'account' | 'site';
+
+const tabs: { id: TabId; label: string }[] = [
+  { id: 'account', label: 'Account' },
+  { id: 'site', label: 'Branding' },
+];
 
 @Component({
   selector: 'app-settings-page',
-  imports: [DatePipe],
+  imports: [AdminBreadcrumbsComponent, AdminPageHeaderComponent, AccountSettingsComponent],
   template: `
-    <div class="space-y-5">
-      <h1 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Settings</h1>
+    <div class="admin-content space-y-6">
+      <app-admin-breadcrumbs />
+      <app-admin-page-header title="Settings" />
 
-      <div class="flex gap-2">
-        <button
-          type="button"
-          class="rounded-lg px-3 py-1.5 text-sm font-medium"
-          [class.bg-brand-500]="tab() === 'account'"
-          [class.text-white]="tab() === 'account'"
-          [class.text-gray-600]="tab() !== 'account'"
-          (click)="tab.set('account')"
-        >
-          Account
-        </button>
-        <button
-          type="button"
-          class="rounded-lg px-3 py-1.5 text-sm font-medium"
-          [class.bg-brand-500]="tab() === 'branding'"
-          [class.text-white]="tab() === 'branding'"
-          [class.text-gray-600]="tab() !== 'branding'"
-          (click)="tab.set('branding')"
-        >
-          Branding
-        </button>
+      <div
+        role="tablist"
+        aria-label="Settings sections"
+        class="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800"
+      >
+        @for (tab of tabs; track tab.id) {
+          <button
+            type="button"
+            role="tab"
+            [id]="'settings-tab-' + tab.id"
+            [attr.aria-selected]="activeTab() === tab.id"
+            [attr.aria-controls]="'settings-panel-' + tab.id"
+            [attr.tabindex]="activeTab() === tab.id ? 0 : -1"
+            (click)="activeTab.set(tab.id)"
+            class="rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30"
+            [class]="
+              activeTab() === tab.id
+                ? 'bg-brand-500 text-white'
+                : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8'
+            "
+          >
+            {{ tab.label }}
+          </button>
+        }
       </div>
 
-      @if (tab() === 'account') {
-        <div class="admin-card admin-card-body space-y-4">
-          <div>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">Account</h2>
-            <p class="text-sm text-gray-500">Signed-in administrator</p>
-          </div>
-          <dl class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Username</dt>
-              <dd class="mt-1 font-medium">{{ auth.admin()?.username }}</dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Email</dt>
-              <dd class="mt-1 font-medium">{{ auth.admin()?.email }}</dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Role</dt>
-              <dd class="mt-1 font-medium capitalize">{{ auth.admin()?.role }}</dd>
-            </div>
-            <div>
-              <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Last login</dt>
-              <dd class="mt-1 font-medium">
-                {{ auth.admin()?.lastLoginAt | date: 'medium' }}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      } @else {
-        <div class="admin-card admin-card-body space-y-3">
-          <h2 class="text-base font-semibold text-gray-900 dark:text-white">Branding</h2>
-          <p class="text-sm text-gray-500">
-            Edit
-            <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10"
-              >src/app/core/admin.config.ts</code
-            >
-            to customize the panel name, logo letter, sidebar links, and login page copy.
-          </p>
-          <p class="text-sm">
-            <span class="font-medium">{{ brand.name }}</span> — {{ brand.tagline }}
-          </p>
-        </div>
-      }
+      <div
+        role="tabpanel"
+        id="settings-panel-account"
+        aria-labelledby="settings-tab-account"
+        [hidden]="activeTab() !== 'account'"
+      >
+        <app-account-settings />
+      </div>
+
+      <div
+        role="tabpanel"
+        id="settings-panel-site"
+        aria-labelledby="settings-tab-site"
+        [hidden]="activeTab() !== 'site'"
+        class="admin-card admin-card-body space-y-3"
+      >
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white">Branding & navigation</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Edit
+          <code class="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10"
+            >src/app/core/admin.config.ts</code
+          >
+          to customize the panel name, logo letter, sidebar links, and login page copy.
+        </p>
+      </div>
     </div>
   `,
 })
 export class SettingsPageComponent {
-  readonly auth = inject(AuthService);
-  readonly brand = adminConfig.brand;
-  readonly tab = signal<'account' | 'branding'>('account');
+  readonly tabs = tabs;
+  readonly activeTab = signal<TabId>('account');
 }

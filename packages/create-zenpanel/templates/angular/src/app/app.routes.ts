@@ -6,10 +6,10 @@ import { LoginPageComponent } from './pages/admin/login-page.component';
 import { DashboardPageComponent } from './pages/admin/dashboard-page.component';
 import { UsersPageComponent } from './pages/admin/users-page.component';
 import { SettingsPageComponent } from './pages/admin/settings-page.component';
+import { MessagesPageComponent } from './pages/admin/messages-page.component';
 import {
   BlogPageComponent,
   CategoriesPageComponent,
-  MessagesPageComponent,
   NewsletterPageComponent,
   PaymentsPageComponent,
   ProductsPageComponent,

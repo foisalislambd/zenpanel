@@ -1,6 +1,6 @@
 # ZenPanel (Angular)
 
-Admin UI shell for **Angular 22** + Tailwind CSS v4 — same admin UI/UX as the Next.js template.
+Admin UI shell for **Angular 22** + Tailwind CSS v4 — **same admin UI/UX as the Next.js template** (native Angular standalone components, signals, and the Angular Router — no React/Vue/Solid runtime).
 
 Based on the latest Angular CLI scaffold (`@angular/*@^22`) with `@tailwindcss/postcss`.
 
