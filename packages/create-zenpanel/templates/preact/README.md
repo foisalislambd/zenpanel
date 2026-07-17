@@ -1,6 +1,6 @@
 # ZenPanel (Preact)
 
-Admin UI shell for Preact + Vite + React Router (via `preact/compat`) + Tailwind.
+Admin UI shell for **Preact** + Vite — **same admin UI/UX as the Next.js template** (via `preact/compat` + React Router + Tailwind).
 
 Based on the latest Vite Preact scaffold (`preact@^10`, `vite@^8`, `@preact/preset-vite`).
 
