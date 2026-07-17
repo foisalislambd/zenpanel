@@ -22,6 +22,7 @@
 
   const pathname = usePathname();
   const route = $derived(pathname.route);
+  const isAdminRoute = $derived(route.id === "admin-login" || route.id.startsWith("admin-"));
 
   $effect(() => {
     if (route.id === "not-found") {
@@ -33,45 +34,46 @@
 <ThemeProvider>
   {#if route.id === "home"}
     <HomePage />
-  {:else if route.id === "admin-login"}
+  {:else if isAdminRoute}
+    <!-- Keep one AdminRootLayout mounted across login ↔ dashboard so in-memory auth survives. -->
     <AdminRootLayout>
-      <AdminAuthLayout>
-        <LoginPage />
-      </AdminAuthLayout>
-    </AdminRootLayout>
-  {:else if route.id.startsWith("admin-")}
-    <AdminRootLayout>
-      <AdminDashboardLayout>
-        {#if route.id === "admin-dashboard"}
-          <DashboardPage />
-        {:else if route.id === "admin-projects"}
-          <ProjectsPage />
-        {:else if route.id === "admin-services"}
-          <ServicesPage />
-        {:else if route.id === "admin-service-orders"}
-          <ServiceOrdersPage />
-        {:else if route.id === "admin-transactions"}
-          <TransactionsPage />
-        {:else if route.id === "admin-payments"}
-          <PaymentsPage />
-        {:else if route.id === "admin-blog"}
-          <BlogPage />
-        {:else if route.id === "admin-products"}
-          <ProductsPage />
-        {:else if route.id === "admin-categories"}
-          <CategoriesPage />
-        {:else if route.id === "admin-messages"}
-          <div class="flex h-full min-h-0 flex-1 flex-col">
-            <MessagesPage />
-          </div>
-        {:else if route.id === "admin-newsletter"}
-          <NewsletterPage />
-        {:else if route.id === "admin-users"}
-          <UsersPage />
-        {:else if route.id === "admin-settings"}
-          <SettingsPage />
-        {/if}
-      </AdminDashboardLayout>
+      {#if route.id === "admin-login"}
+        <AdminAuthLayout>
+          <LoginPage />
+        </AdminAuthLayout>
+      {:else}
+        <AdminDashboardLayout>
+          {#if route.id === "admin-dashboard"}
+            <DashboardPage />
+          {:else if route.id === "admin-projects"}
+            <ProjectsPage />
+          {:else if route.id === "admin-services"}
+            <ServicesPage />
+          {:else if route.id === "admin-service-orders"}
+            <ServiceOrdersPage />
+          {:else if route.id === "admin-transactions"}
+            <TransactionsPage />
+          {:else if route.id === "admin-payments"}
+            <PaymentsPage />
+          {:else if route.id === "admin-blog"}
+            <BlogPage />
+          {:else if route.id === "admin-products"}
+            <ProductsPage />
+          {:else if route.id === "admin-categories"}
+            <CategoriesPage />
+          {:else if route.id === "admin-messages"}
+            <div class="flex h-full min-h-0 flex-1 flex-col">
+              <MessagesPage />
+            </div>
+          {:else if route.id === "admin-newsletter"}
+            <NewsletterPage />
+          {:else if route.id === "admin-users"}
+            <UsersPage />
+          {:else if route.id === "admin-settings"}
+            <SettingsPage />
+          {/if}
+        </AdminDashboardLayout>
+      {/if}
     </AdminRootLayout>
   {/if}
 </ThemeProvider>

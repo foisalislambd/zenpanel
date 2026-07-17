@@ -25,6 +25,10 @@
       getSnapshot: () => ({ route: path }),
     });
 
-    return () => chat.setPageContext(null);
+    return () => {
+      if (chat.pageContext?.pageId === path) {
+        chat.setPageContext(null);
+      }
+    };
   });
 </script>

@@ -46,6 +46,7 @@ const siteUrl = brand.siteUrl || "/";
     ]"
     aria-label="Admin navigation"
     :aria-hidden="mobileClosed || undefined"
+    :inert="mobileClosed || undefined"
   >
     <div class="admin-topbar flex items-center gap-3 px-4">
       <RouterLink

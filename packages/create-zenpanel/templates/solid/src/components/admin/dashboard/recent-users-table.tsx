@@ -26,7 +26,7 @@ export function RecentUsersTable(props: {
   /** Pass `null` to hide the “View all” link (e.g. on the Users page). */
   href?: string | null;
 }) {
-  const href = () => props.href ?? undefined;
+  const href = () => (props.href === undefined ? "/admin/users" : props.href ?? undefined);
 
   return (
     <div class="admin-card w-full overflow-hidden">

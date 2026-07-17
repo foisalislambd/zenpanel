@@ -13,7 +13,13 @@ export function registerAdminChatPageContext(getCtx: () => AdminChatPageContext)
   }
 
   $effect(() => {
-    panel.setPageContext(getCtx());
-    return () => panel.setPageContext(null);
+    const ctx = getCtx();
+    panel.setPageContext(ctx);
+    return () => {
+      // Avoid wiping a newer route/page context if navigation already replaced ours.
+      if (panel.pageContext?.pageId === ctx.pageId) {
+        panel.setPageContext(null);
+      }
+    };
   });
 }

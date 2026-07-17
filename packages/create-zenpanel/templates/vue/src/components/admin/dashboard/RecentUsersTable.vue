@@ -7,7 +7,7 @@ withDefaults(
     users: PortalUserRow[];
     href?: string | null;
   }>(),
-  { href: undefined },
+  { href: "/admin/users" },
 );
 
 const providerStyles: Record<string, string> = {

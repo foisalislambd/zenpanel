@@ -13,9 +13,12 @@ export function useAdminChatPageContext(getCtx: WatchSource<AdminChatPageContext
     throw new Error("useAdminChatPageContext must be used within AdminChatPanelProvider");
   }
 
+  let ownedPageId: string | null = null;
+
   const stop = watch(
     getCtx,
     (ctx) => {
+      ownedPageId = ctx.pageId;
       panel.setPageContext(ctx);
     },
     { immediate: true, deep: true },
@@ -23,6 +26,9 @@ export function useAdminChatPageContext(getCtx: WatchSource<AdminChatPageContext
 
   onUnmounted(() => {
     stop();
-    panel.setPageContext(null);
+    // Avoid wiping a newer route/page context if navigation already replaced ours.
+    if (ownedPageId && panel.pageContext?.pageId === ownedPageId) {
+      panel.setPageContext(null);
+    }
   });
 }

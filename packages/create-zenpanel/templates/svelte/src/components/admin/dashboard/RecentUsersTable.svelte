@@ -7,7 +7,7 @@
     href?: string | null;
   };
 
-  let { users, href = undefined }: Props = $props();
+  let { users, href = "/admin/users" }: Props = $props();
 
   const providerStyles: Record<string, string> = {
     email: "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400",

@@ -7,17 +7,21 @@ import { matchAdminNavItem, normalizePathname } from "@/lib/admin-nav";
 const route = useRoute();
 const chat = useAdminChatPanel();
 
+let ownedPath: string | null = null;
+
 const stop = watch(
   () => route.path,
   (pathValue) => {
     const path = normalizePathname(pathValue);
 
     if (path === "/admin") {
+      ownedPath = null;
       return;
     }
 
     const nav = matchAdminNavItem(path);
 
+    ownedPath = path;
     chat.setPageContext({
       pageId: path,
       title: nav?.name ?? "Admin",
@@ -33,7 +37,9 @@ const stop = watch(
 
 onUnmounted(() => {
   stop();
-  chat.setPageContext(null);
+  if (ownedPath && chat.pageContext?.pageId === ownedPath) {
+    chat.setPageContext(null);
+  }
 });
 </script>
 

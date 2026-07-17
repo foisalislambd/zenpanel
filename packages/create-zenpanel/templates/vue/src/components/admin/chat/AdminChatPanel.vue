@@ -60,6 +60,8 @@ watch(
       document.removeEventListener("keydown", onKeyDownEscape);
     }
   },
+  // Panel only mounts while open — run immediately so Escape binds on mount.
+  { immediate: true },
 );
 
 onUnmounted(() => {
