@@ -17,8 +17,9 @@
     "admin",
     "dashboard",
     "nextjs",
-    "vite",
     "react",
+    "vite",
+    "astro",
     "tailwindcss",
     "admin-panel",
     "create-zenpanel"

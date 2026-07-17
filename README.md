@@ -5,7 +5,7 @@
 
 Open-source admin UI shell — sidebar, dashboard, resource tables, login, and dark mode.
 
-Scaffold a new app with **Next.js**, **Vite**, **HTML**, or **Astro**, or install the admin panel into an existing project.
+Scaffold a new app with **Next.js**, **React**, **HTML**, or **Astro**, or install the admin panel into an existing project.
 
 No backend included. The dashboard ships with sample preview data so you can review the UI; connect your own API when you are ready.
 
@@ -30,11 +30,11 @@ npx create-zenpanel@latest
 You will be asked to:
 
 1. Enter a project name
-2. Select a framework — **Next.js**, **Vite**, **HTML**, **Astro** (Remix coming soon)
+2. Select a framework — **Next.js**, **React**, **HTML**, **Astro** (Remix coming soon)
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
-npx create-zenpanel@latest my-admin --framework vite
+npx create-zenpanel@latest my-admin --framework react
 npx create-zenpanel@latest my-admin --framework html
 npx create-zenpanel@latest my-admin --framework astro
 ```
@@ -49,7 +49,7 @@ npm run dev
 Open the admin login:
 
 - Next.js: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
-- Vite / HTML: [http://localhost:5173/admin/login](http://localhost:5173/admin/login)
+- React / HTML: [http://localhost:5173/admin/login](http://localhost:5173/admin/login)
 - Astro: [http://localhost:4321/admin/login](http://localhost:4321/admin/login)
 
 Demo credentials: `admin` / `admin`.
@@ -89,7 +89,7 @@ zenpanel/
 │       ├── src/             # CLI source
 │       └── templates/
 │           ├── nextjs/      # Next.js + ZenPanel template
-│           ├── vite/        # Vite + React Router template
+│           ├── react/       # React + Vite + React Router template
 │           ├── html/        # Plain HTML / CSS / JS template
 │           └── astro/       # Astro 7 + vanilla JS template
 ├── docs/                    # Images and documentation assets
@@ -100,7 +100,7 @@ zenpanel/
 
 | Package | Role |
 | --- | --- |
-| Next.js 16 / Vite 8 / Astro 7 | App frameworks |
+| Next.js 16 / React (Vite 8) / Astro 7 | App frameworks |
 | React 19 | UI |
 | Tailwind CSS 4 | Styling |
 | next-themes | Light / dark mode |

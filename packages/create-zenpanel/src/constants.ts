@@ -12,7 +12,10 @@ export function getTemplatesDir(): string {
   return path.join(getPackageRoot(), "templates");
 }
 
-export type FrameworkId = "nextjs" | "vite" | "html" | "remix" | "astro";
+export type FrameworkId = "nextjs" | "react" | "html" | "remix" | "astro";
+
+/** CLI may still accept legacy `vite` as an alias for `react`. */
+export type FrameworkCliId = FrameworkId | "vite";
 
 export type FrameworkOption = {
   id: FrameworkId;
@@ -29,9 +32,9 @@ export const FRAMEWORKS: FrameworkOption[] = [
     available: true,
   },
   {
-    id: "vite",
-    label: "Vite",
-    hint: "React + React Router + Tailwind",
+    id: "react",
+    label: "React",
+    hint: "Vite + React Router + Tailwind",
     available: true,
   },
   {
@@ -62,3 +65,18 @@ export const ADMIN_PEER_DEPS = [
 ] as const;
 
 export const PACKAGE_NAME = "create-zenpanel";
+
+/** Map legacy / alias ids onto the template folder name. */
+export function normalizeFrameworkId(id: string): FrameworkId | null {
+  if (id === "vite") return "react";
+  if (
+    id === "nextjs" ||
+    id === "react" ||
+    id === "html" ||
+    id === "astro" ||
+    id === "remix"
+  ) {
+    return id;
+  }
+  return null;
+}

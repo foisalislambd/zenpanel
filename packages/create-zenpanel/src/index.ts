@@ -4,7 +4,7 @@ import pc from "picocolors";
 import { createApp } from "./create-app";
 import { readPackageJson } from "./helpers";
 import { installIntoExisting } from "./install";
-import type { FrameworkId } from "./constants";
+import { normalizeFrameworkId } from "./constants";
 import type { PackageManager } from "./package-manager";
 import { createRequire } from "node:module";
 
@@ -24,7 +24,7 @@ async function main() {
     )
     .option(
       "-f, --framework <framework>",
-      "Framework template: nextjs | vite | html | astro",
+      "Framework template: nextjs | react | html | astro (vite → react alias)",
     )
     .option("--use-npm", "Use npm")
     .option("--use-pnpm", "Use pnpm")
@@ -38,18 +38,15 @@ async function main() {
     )
     .action(async (projectDirectory: string | undefined, opts) => {
       const packageManager = resolvePackageManager(opts);
-      const framework = opts.framework as FrameworkId | undefined;
+      const rawFramework = opts.framework as string | undefined;
+      const framework = rawFramework
+        ? normalizeFrameworkId(rawFramework)
+        : undefined;
 
-      if (
-        framework &&
-        framework !== "nextjs" &&
-        framework !== "vite" &&
-        framework !== "html" &&
-        framework !== "astro"
-      ) {
+      if (rawFramework && !framework) {
         console.error(
           pc.red(
-            `Unsupported framework "${framework}". Available now: nextjs, vite, html, astro.`,
+            `Unsupported framework "${rawFramework}". Available now: nextjs, react, html, astro.`,
           ),
         );
         process.exit(1);
@@ -92,7 +89,7 @@ async function main() {
 
       await createApp({
         projectName: projectDirectory,
-        framework,
+        framework: framework ?? undefined,
         packageManager,
         skipInstall: Boolean(opts.skipInstall),
       });

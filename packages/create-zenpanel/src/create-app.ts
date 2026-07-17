@@ -2,7 +2,11 @@ import * as p from "@clack/prompts";
 import fs from "fs-extra";
 import path from "node:path";
 import pc from "picocolors";
-import { getTemplatesDir, type FrameworkId } from "./constants";
+import {
+  getTemplatesDir,
+  normalizeFrameworkId,
+  type FrameworkId,
+} from "./constants";
 import {
   installDependencies,
   isDirectoryEmpty,
@@ -19,7 +23,7 @@ import {
 
 export type CreateAppOptions = {
   projectName?: string;
-  framework?: FrameworkId;
+  framework?: FrameworkId | "vite";
   packageManager?: PackageManager;
   skipInstall?: boolean;
 };
@@ -66,7 +70,9 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     }
   }
 
-  let framework = options.framework;
+  let framework: FrameworkId | undefined = options.framework
+    ? (normalizeFrameworkId(options.framework) ?? undefined)
+    : undefined;
 
   if (!framework) {
     const result = await p.select({
@@ -78,9 +84,9 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
           hint: "App Router + Tailwind",
         },
         {
-          value: "vite" as const,
-          label: "Vite",
-          hint: "React + React Router + Tailwind",
+          value: "react" as const,
+          label: "React",
+          hint: "Vite + React Router + Tailwind",
         },
         {
           value: "html" as const,
@@ -110,12 +116,12 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
 
   if (
     framework !== "nextjs" &&
-    framework !== "vite" &&
+    framework !== "react" &&
     framework !== "html" &&
     framework !== "astro"
   ) {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, HTML, or Astro.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, HTML, or Astro.`,
     );
     process.exit(1);
   }
@@ -172,7 +178,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}\n`;
 
   const loginUrl =
-    framework === "html" || framework === "vite"
+    framework === "html" || framework === "react"
       ? "http://localhost:5173/admin/login"
       : framework === "astro"
         ? "http://localhost:4321/admin/login"

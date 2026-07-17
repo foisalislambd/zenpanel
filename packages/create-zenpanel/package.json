@@ -19,7 +19,9 @@
     "dashboard",
     "create-zenpanel",
     "nextjs",
+    "react",
     "vite",
+    "astro",
     "scaffolding"
   ],
   "engines": {

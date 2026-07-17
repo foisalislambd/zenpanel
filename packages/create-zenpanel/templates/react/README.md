@@ -1,6 +1,6 @@
-# ZenPanel (Vite)
+# ZenPanel (React)
 
-Admin UI shell for Vite + React + React Router.
+Admin UI shell for React + Vite + React Router + Tailwind.
 
 ## Scripts
 

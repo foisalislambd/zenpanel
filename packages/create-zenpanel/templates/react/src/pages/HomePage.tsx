@@ -12,7 +12,7 @@ export default function HomePage() {
           {adminConfig.brand.name}
         </h1>
         <p className="mt-3 text-gray-600 dark:text-gray-400">
-          Admin panel shell for Vite + React projects.
+          Admin panel shell for React + Vite projects.
         </p>
         <Link
           to="/admin/login"

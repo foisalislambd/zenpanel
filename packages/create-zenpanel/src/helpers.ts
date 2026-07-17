@@ -44,7 +44,7 @@ export async function readPackageJson(
 
 export function detectFrameworkFromPackage(
   pkg: Record<string, unknown>,
-): "nextjs" | "vite" | "astro" | "unknown" {
+): "nextjs" | "react" | "astro" | "unknown" {
   const deps = {
     ...(pkg.dependencies as Record<string, string> | undefined),
     ...(pkg.devDependencies as Record<string, string> | undefined),
@@ -52,7 +52,7 @@ export function detectFrameworkFromPackage(
 
   if (deps.next) return "nextjs";
   if (deps.astro) return "astro";
-  if (deps.vite || deps["@vitejs/plugin-react"]) return "vite";
+  if (deps["@vitejs/plugin-react"] || (deps.vite && deps.react)) return "react";
   return "unknown";
 }
 

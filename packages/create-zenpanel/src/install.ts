@@ -35,7 +35,7 @@ const NEXT_RELATIVE_PATHS = [
   "lib/format.ts",
 ] as const;
 
-const VITE_COPY_PATHS = [
+const REACT_COPY_PATHS = [
   "src/layouts",
   "src/pages/admin",
   "src/routes",
@@ -116,7 +116,7 @@ export async function installIntoExisting(
     process.exit(1);
   }
 
-  let framework: "nextjs" | "vite" | "html" | "astro" | "unknown" =
+  let framework: "nextjs" | "react" | "html" | "astro" | "unknown" =
     detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
@@ -124,7 +124,7 @@ export async function installIntoExisting(
       message: "Could not detect framework. Which are you using?",
       options: [
         { value: "nextjs" as const, label: "Next.js" },
-        { value: "vite" as const, label: "Vite (React)" },
+        { value: "react" as const, label: "React (Vite)" },
         { value: "astro" as const, label: "Astro" },
         { value: "html" as const, label: "HTML (static)" },
       ],
@@ -135,7 +135,7 @@ export async function installIntoExisting(
       process.exit(0);
     }
 
-    framework = result as "nextjs" | "vite" | "html" | "astro";
+    framework = result as "nextjs" | "react" | "html" | "astro";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -145,8 +145,8 @@ export async function installIntoExisting(
   const copyJobs =
     framework === "nextjs"
       ? await buildNextCopyJobs(cwd, templateDir)
-      : framework === "vite"
-        ? VITE_COPY_PATHS.map((rel) => ({
+      : framework === "react"
+        ? REACT_COPY_PATHS.map((rel) => ({
             src: path.join(templateDir, rel),
             dest: path.join(cwd, rel),
             label: rel,
@@ -194,8 +194,8 @@ export async function installIntoExisting(
 
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else if (framework === "vite") {
-      await mergeViteStyles(cwd, templateDir);
+    } else if (framework === "react") {
+      await mergeReactStyles(cwd, templateDir);
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
@@ -207,10 +207,10 @@ export async function installIntoExisting(
   }
 
   const depsToInstall: string[] = [];
-  if (framework === "nextjs" || framework === "vite") {
+  if (framework === "nextjs" || framework === "react") {
     depsToInstall.push(...ADMIN_PEER_DEPS);
   }
-  if (framework === "vite") {
+  if (framework === "react") {
     depsToInstall.push("react-router-dom");
   }
   if (framework === "html") {
@@ -240,7 +240,7 @@ export async function installIntoExisting(
           "Admin routes live under /admin (login at /admin/login).",
           "Preview credentials: admin / admin.",
         ]
-      : framework === "vite"
+      : framework === "react"
         ? [
             "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
             "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
@@ -330,7 +330,7 @@ async function mergeNextStyles(
   }
 }
 
-async function mergeViteStyles(
+async function mergeReactStyles(
   projectDir: string,
   templateDir: string,
 ): Promise<void> {

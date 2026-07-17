@@ -60,11 +60,11 @@ jobs:
         run: npm run build
 
   vite-template:
-    name: Build Vite template
+    name: Build React (Vite) template
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/create-zenpanel/templates/vite
+        working-directory: packages/create-zenpanel/templates/react
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: packages/create-zenpanel/templates/vite/package-lock.json
+          cache-dependency-path: packages/create-zenpanel/templates/react/package-lock.json
 
       - name: Install dependencies
         run: npm install

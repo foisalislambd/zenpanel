@@ -14,7 +14,7 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 
 - `packages/create-zenpanel` — CLI published as `create-zenpanel`
 - `packages/create-zenpanel/templates/nextjs` — Next.js template
-- `packages/create-zenpanel/templates/vite` — Vite + React template
+- `packages/create-zenpanel/templates/react` — React + Vite template
 - `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
 - `packages/create-zenpanel/templates/astro` — Astro 7 + vanilla JS template
 
@@ -37,6 +37,14 @@ node packages/create-zenpanel/dist/index.js my-test-app --framework nextjs --ski
 
 ```bash
 cd packages/create-zenpanel/templates/nextjs
+npm install
+npm run dev
+```
+
+Or for React (Vite):
+
+```bash
+cd packages/create-zenpanel/templates/react
 npm install
 npm run dev
 ```
@@ -79,7 +87,7 @@ For template UI changes, also run `npm run build` inside the template you change
 - Reuse shared admin UI (`resource-list`, layout pieces, empty/loading states)
 - Keep branding and nav configurable via `admin.config.ts`
 - Do not introduce a real backend or auth provider unless discussed in an issue first — this project is a UI shell with preview data
-- Keep Next.js and Vite templates in sync when changing shared admin UX
+- Keep Next.js and React templates in sync when changing shared admin UX
 
 ## Reporting bugs
 
@@ -88,7 +96,7 @@ Include:
 - Steps to reproduce
 - Expected vs actual behavior
 - Browser / OS
-- Framework (Next.js / Vite / install-into-existing)
+- Framework (Next.js / React / HTML / Astro / install-into-existing)
 - Screenshot or short recording when relevant
 
 ## Questions
