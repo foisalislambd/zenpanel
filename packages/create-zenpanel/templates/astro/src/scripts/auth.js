@@ -1,4 +1,5 @@
 const STORAGE_KEY = "zenpanel-preview-admin";
+const ADMIN_ACCOUNT_CREATED_AT = "2024-01-15T10:00:00.000Z";
 
 export function getAdmin() {
   try {
@@ -10,14 +11,19 @@ export function getAdmin() {
 }
 
 export function login(username = "admin") {
+  const name = username.trim() || "admin";
   const admin = {
-    username,
-    email: `${username}@zenpanel.dev`,
+    id: "admin-1",
+    username: name,
+    email: `${name}@example.com`,
+    role: "admin",
+    lastLoginAt: new Date().toISOString(),
+    createdAt: ADMIN_ACCOUNT_CREATED_AT,
   };
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(admin));
   } catch {
-    // Private mode / quota — in-memory redirect still works for this page load.
+    // Private mode / quota
   }
   return admin;
 }

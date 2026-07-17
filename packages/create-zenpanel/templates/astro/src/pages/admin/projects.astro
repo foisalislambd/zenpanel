@@ -1,9 +1,19 @@
 ---
-import AdminResourcePage from "../../components/AdminResourcePage.astro";
+import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
-<AdminResourcePage
-  title="Projects"
-  resourceKey="projects"
-  emptyLabel="No projects yet — connect your API when ready."
-/>
+<AdminLayout title="Projects">
+  <div id="layout-root"></div>
+  <div id="page-content" hidden></div>
+</AdminLayout>
+
+<script>
+  import { mountAdminLayout } from "../../scripts/layout.js";
+  import { renderResourcePage } from "../../scripts/resource.js";
+
+  mountAdminLayout({ title: "Projects" });
+  renderResourcePage(document.getElementById("page-content"), {
+    title: "Projects",
+    resourceLabel: "project",
+  });
+</script>

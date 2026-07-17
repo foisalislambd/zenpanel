@@ -1,9 +1,19 @@
 ---
-import AdminResourcePage from "../../components/AdminResourcePage.astro";
+import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
-<AdminResourcePage
-  title="Service orders"
-  resourceKey="service-orders"
-  emptyLabel="No service orders yet — connect your API when ready."
-/>
+<AdminLayout title="Service orders">
+  <div id="layout-root"></div>
+  <div id="page-content" hidden></div>
+</AdminLayout>
+
+<script>
+  import { mountAdminLayout } from "../../scripts/layout.js";
+  import { renderResourcePage } from "../../scripts/resource.js";
+
+  mountAdminLayout({ title: "Service orders" });
+  renderResourcePage(document.getElementById("page-content"), {
+    title: "Service orders",
+    resourceLabel: "service order",
+  });
+</script>

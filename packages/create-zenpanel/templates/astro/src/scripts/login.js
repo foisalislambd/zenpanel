@@ -1,15 +1,7 @@
 import { DEMO_PASSWORD, DEMO_USERNAME, adminConfig } from "./config.js";
 import { login, requireGuest } from "./auth.js";
 import { initTheme, toggleTheme, getTheme } from "./theme.js";
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+import { escapeHtml, refreshIcons } from "./utils.js";
 
 initTheme();
 
@@ -20,6 +12,10 @@ if (!requireGuest()) {
   const form = document.getElementById("login-form");
   const errorEl = document.getElementById("login-error");
   const themeBtn = document.getElementById("theme-toggle");
+  const submitBtn = document.getElementById("login-submit");
+  const passwordInput = document.getElementById("admin-password");
+  const usernameInput = document.getElementById("admin-username");
+  const togglePasswordBtn = document.getElementById("toggle-password");
 
   const brandLetter = document.getElementById("brand-letter");
   const mobileBrand = document.getElementById("mobile-brand");
@@ -34,16 +30,20 @@ if (!requireGuest()) {
   if (brandFeatures) {
     brandFeatures.innerHTML = brand.loginFeatures
       .map(
-        (f) =>
-          `<li style="display:flex;gap:0.75rem;align-items:center;margin:0.75rem 0"><span style="display:inline-flex;height:1.25rem;width:1.25rem;align-items:center;justify-content:center;border-radius:999px;background:rgba(70,95,255,0.3);font-size:12px">✓</span>${escapeHtml(f)}</li>`,
+        (f) => `
+        <li class="flex items-center gap-3">
+          <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200">✓</span>
+          ${escapeHtml(f)}
+        </li>
+      `,
       )
       .join("");
   }
 
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
   if (usernameInput) usernameInput.value = DEMO_USERNAME;
   if (passwordInput) passwordInput.value = DEMO_PASSWORD;
+
+  let showPassword = false;
 
   function syncThemeButton() {
     if (!themeBtn) return;
@@ -52,8 +52,19 @@ if (!requireGuest()) {
       "aria-label",
       dark ? "Switch to light mode" : "Switch to dark mode",
     );
-    themeBtn.innerHTML = `<i data-lucide="${dark ? "sun" : "moon"}" style="width:20px;height:20px"></i>`;
-    if (window.lucide) window.lucide.createIcons();
+    themeBtn.innerHTML = `<i data-lucide="${dark ? "sun" : "moon"}" class="h-5 w-5"></i>`;
+    refreshIcons();
+  }
+
+  function syncPasswordToggle() {
+    if (!passwordInput || !togglePasswordBtn) return;
+    passwordInput.type = showPassword ? "text" : "password";
+    togglePasswordBtn.setAttribute(
+      "aria-label",
+      showPassword ? "Hide password" : "Show password",
+    );
+    togglePasswordBtn.innerHTML = `<i data-lucide="${showPassword ? "eye-off" : "eye"}" class="h-4 w-4"></i>`;
+    refreshIcons();
   }
 
   themeBtn?.addEventListener("click", () => {
@@ -61,12 +72,16 @@ if (!requireGuest()) {
     syncThemeButton();
   });
 
+  togglePasswordBtn?.addEventListener("click", () => {
+    showPassword = !showPassword;
+    syncPasswordToggle();
+  });
+
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
     if (errorEl) errorEl.hidden = true;
 
-    const username =
-      usernameInput?.value.trim() || DEMO_USERNAME;
+    const username = usernameInput?.value.trim() || DEMO_USERNAME;
     const password = passwordInput?.value ?? "";
 
     if (password !== DEMO_PASSWORD) {
@@ -78,9 +93,16 @@ if (!requireGuest()) {
       return;
     }
 
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Signing in…";
+    }
+
     login(username);
     window.location.replace("/admin");
   });
 
   syncThemeButton();
+  syncPasswordToggle();
+  refreshIcons();
 }

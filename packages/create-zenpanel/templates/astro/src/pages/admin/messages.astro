@@ -1,9 +1,16 @@
 ---
-import AdminResourcePage from "../../components/AdminResourcePage.astro";
+import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
-<AdminResourcePage
-  title="Messages"
-  resourceKey="messages"
-  emptyLabel="No messages yet — connect your API when ready."
-/>
+<AdminLayout title="Messages">
+  <div id="layout-root"></div>
+  <div id="page-content" hidden></div>
+</AdminLayout>
+
+<script>
+  import { mountAdminLayout } from "../../scripts/layout.js";
+  import { renderMessagesPage } from "../../scripts/resource.js";
+
+  mountAdminLayout({ title: "Messages", fullBleed: true });
+  renderMessagesPage(document.getElementById("page-content"));
+</script>

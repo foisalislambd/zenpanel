@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "description": "ZenPanel admin UI shell for Astro (vanilla HTML/CSS/JS)",
+  "description": "ZenPanel admin UI shell for Astro (vanilla HTML/CSS/JS, Tailwind CSS v4)",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -15,5 +15,9 @@
   },
   "dependencies": {
     "astro": "^7.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3"
   }
 }
