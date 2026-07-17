@@ -1,6 +1,6 @@
 # ZenPanel (Vue)
 
-Admin UI shell for **Vue 3** + Vite — SPA with a client-side router.
+Admin UI shell for **Vue 3** + Vite — same design and UX as the Next.js, Solid, and Svelte templates, built with native Vue 3 Composition API (`<script setup>`).
 
 Based on the latest Vite Vue scaffold (`vue@^3.5`, `vite@^8`, `@vitejs/plugin-vue`).
 
@@ -19,4 +19,4 @@ Preview credentials: `admin` / `admin`.
 
 ## Customize
 
-Edit `src/lib/config.ts` for branding and sidebar links.
+Edit `src/config/admin.config.ts` for branding and sidebar links.

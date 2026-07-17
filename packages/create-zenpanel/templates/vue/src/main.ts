@@ -1,8 +1,8 @@
 import { createApp } from "vue";
-import "./admin.css";
+import "./index.css";
 import App from "./App.vue";
-import { initTheme } from "./lib/theme";
+import { router } from "./router";
 
-initTheme();
-
-createApp(App).mount("#app");
+const app = createApp(App);
+app.use(router);
+app.mount("#app");
