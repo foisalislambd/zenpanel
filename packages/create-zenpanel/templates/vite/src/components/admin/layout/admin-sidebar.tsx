@@ -6,8 +6,7 @@ import {
 } from "@/context/admin-sidebar-context";
 import { isAdminNavActive } from "@/lib/admin-nav";
 import { ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 export function AdminSidebar() {
@@ -107,16 +106,27 @@ export function AdminSidebar() {
       </nav>
 
       <div className="shrink-0 space-y-1 border-t border-gray-200 p-3 dark:border-gray-800">
-        <a
-          href={brand.siteUrl}
-          target="_blank"
-          rel="noreferrer"
-          className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels ? "justify-center" : ""}`}
-          title={!showLabels ? "View site" : undefined}
-        >
-          <ExternalLink className="h-5 w-5 shrink-0" />
-          {showLabels && <span>View site</span>}
-        </a>
+        {/^https?:\/\//i.test(brand.siteUrl) ? (
+          <a
+            href={brand.siteUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels ? "justify-center" : ""}`}
+            title={!showLabels ? "View site" : undefined}
+          >
+            <ExternalLink className="h-5 w-5 shrink-0" />
+            {showLabels && <span>View site</span>}
+          </a>
+        ) : (
+          <Link
+            to={brand.siteUrl || "/"}
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels ? "justify-center" : ""}`}
+            title={!showLabels ? "View site" : undefined}
+          >
+            <ExternalLink className="h-5 w-5 shrink-0" />
+            {showLabels && <span>View site</span>}
+          </Link>
+        )}
 
         {isDesktop && (
           <button

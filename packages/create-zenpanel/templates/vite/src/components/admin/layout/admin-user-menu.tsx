@@ -1,7 +1,6 @@
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { ChevronDown, LogOut, Settings } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useId, useRef, useState } from "react";
 
 export function AdminUserMenu() {

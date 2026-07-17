@@ -1,8 +1,7 @@
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const DEMO_USERNAME = "admin";

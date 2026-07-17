@@ -19,4 +19,15 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  // Context providers also export hooks / constants — allowed for this pattern.
+  {
+    files: [
+      "**/context/**/*.{ts,tsx}",
+      "**/components/**/*provider*.tsx",
+      "**/components/admin/auth/admin-auth-provider.tsx",
+    ],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ]);

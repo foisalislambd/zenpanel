@@ -296,6 +296,7 @@ var NEXT_RELATIVE_PATHS = [
 var VITE_COPY_PATHS = [
   "src/layouts",
   "src/pages/admin",
+  "src/routes",
   "src/components/admin",
   "src/components/theme",
   "src/config/admin.config.ts",
@@ -429,7 +430,7 @@ async function installIntoExisting(options = {}) {
     "Admin routes live under /admin (login at /admin/login).",
     "Preview credentials: admin / admin."
   ] : [
-    "Merge zenPanelAdminRoute from src/zenpanel-admin-routes.example.tsx into your <Routes>.",
+    "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
     "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
     "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
     "Preview credentials: admin / admin."
