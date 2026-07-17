@@ -2,18 +2,38 @@
 
 Scaffold a ZenPanel admin app, or install the admin UI shell into an existing project.
 
-## Usage
+Same dashboard design across **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro**, and **Angular**.
 
-### Create a new project
+## Quick start
 
 ```bash
 npx create-zenpanel@latest
 ```
 
-You will be prompted for:
+```bash
+npx create-zenpanel@latest my-admin --framework nextjs
+cd my-admin
+npm run dev
+```
 
-1. Project name
-2. Framework — **Next.js**, **React**, **Preact**, **Solid**, **Svelte**, **Vue**, **HTML**, **Astro**, **Angular** (Remix coming soon)
+Full guides: [ZenPanel docs](../../docs/README.md)
+
+| Guide | Link |
+| --- | --- |
+| Getting started | [docs/getting-started.md](../../docs/getting-started.md) |
+| CLI flags & modes | [docs/cli.md](../../docs/cli.md) |
+| Frameworks | [docs/frameworks.md](../../docs/frameworks.md) |
+| Customization | [docs/customization.md](../../docs/customization.md) |
+| Theming | [docs/theming.md](../../docs/theming.md) |
+| Connect your API | [docs/connecting-api.md](../../docs/connecting-api.md) |
+| Publish this package | [docs/publishing.md](../../docs/publishing.md) |
+
+## Create a new project
+
+Prompts:
+
+1. Project name  
+2. Framework
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
@@ -29,18 +49,12 @@ npx create-zenpanel@latest my-admin --framework angular
 
 `vite` is accepted as an alias for `react`.
 
-### Install into an existing project
-
-If the current directory already has a `package.json`, the CLI installs the admin panel into that project:
+## Install into an existing project
 
 ```bash
 cd my-existing-app
 npx create-zenpanel@latest
-```
-
-Or force install mode:
-
-```bash
+# or
 npx create-zenpanel@latest --install
 ```
 
@@ -48,7 +62,7 @@ npx create-zenpanel@latest --install
 
 | Flag | Description |
 | --- | --- |
-| `-f, --framework <name>` | `nextjs`, `react`, `preact`, `solid`, `svelte`, `vue`, `html`, `astro`, or `angular` (`vite` → `react`) |
+| `-f, --framework <name>` | `nextjs`, `react`, `preact`, `solid`, `svelte`, `vue`, `html`, `astro`, or `angular` |
 | `--use-npm` / `--use-pnpm` / `--use-yarn` / `--use-bun` | Package manager |
 | `--skip-install` | Skip dependency installation |
 | `--force` | Overwrite existing admin files (install mode) |
@@ -63,4 +77,4 @@ npx create-zenpanel@latest --install
 | Astro | `http://localhost:4321/admin/login` |
 | Angular | `http://localhost:4200/admin/login` |
 
-Username / password: `admin` / `admin`
+Username / password: **`admin` / `admin`**
