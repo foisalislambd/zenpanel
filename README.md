@@ -9,7 +9,7 @@
 Scaffold with one command, preview with sample data, then connect your own API when you are ready.
 
 ```bash
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
 
 <p align="center">
@@ -60,8 +60,10 @@ npx create-zenpanel@latest
 ### 1. Create a project
 
 ```bash
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
+
+Same as Vite / Next-style scaffolding — npm resolves this to the `create-zenpanel` package. Equivalent: `npx create-zenpanel@latest`.
 
 You will be asked for:
 
@@ -71,15 +73,15 @@ You will be asked for:
 Or skip the prompts:
 
 ```bash
-npx create-zenpanel@latest my-admin --framework nextjs
-npx create-zenpanel@latest my-admin --framework react
-npx create-zenpanel@latest my-admin --framework preact
-npx create-zenpanel@latest my-admin --framework solid
-npx create-zenpanel@latest my-admin --framework svelte
-npx create-zenpanel@latest my-admin --framework vue
-npx create-zenpanel@latest my-admin --framework html
-npx create-zenpanel@latest my-admin --framework astro
-npx create-zenpanel@latest my-admin --framework angular
+npm create zenpanel@latest my-admin -- --framework nextjs
+npm create zenpanel@latest my-admin -- --framework react
+npm create zenpanel@latest my-admin -- --framework preact
+npm create zenpanel@latest my-admin -- --framework solid
+npm create zenpanel@latest my-admin -- --framework svelte
+npm create zenpanel@latest my-admin -- --framework vue
+npm create zenpanel@latest my-admin -- --framework html
+npm create zenpanel@latest my-admin -- --framework astro
+npm create zenpanel@latest my-admin -- --framework angular
 ```
 
 ### 2. Run the app
@@ -104,7 +106,7 @@ npm run dev
 
 ```bash
 cd your-existing-app
-npx create-zenpanel@latest
+npm create zenpanel@latest
 # or
 npx create-zenpanel@latest --install
 ```
@@ -189,7 +191,7 @@ Details: [Customization](./docs/customization.md) · [Theming](./docs/theming.md
 ```text
 zenpanel/
 ├── packages/
-│   └── create-zenpanel/          # npx create-zenpanel CLI
+│   └── create-zenpanel/          # npm create zenpanel CLI
 │       ├── src/                  # CLI source
 │       └── templates/
 │           ├── nextjs/           # Next.js (design source of truth)

@@ -10,15 +10,17 @@ ZenPanel is an **admin UI shell** (sidebar, dashboard, resources, login, dark mo
 ## Create a new project
 
 ```bash
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
+
+Same pattern as Vite (`npm create vite@latest`). Equivalent: `npx create-zenpanel@latest`.
 
 You will be prompted for a project name and framework.
 
 Or pass options up front:
 
 ```bash
-npx create-zenpanel@latest my-admin --framework nextjs
+npm create zenpanel@latest my-admin -- --framework nextjs
 ```
 
 Then:
@@ -45,7 +47,7 @@ If the current folder already has a `package.json`:
 
 ```bash
 cd your-existing-app
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
 
 Force install mode:

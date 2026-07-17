@@ -23,7 +23,7 @@ Start here if you are new: **[Getting started](./getting-started.md)**
 ## Quick links
 
 ```bash
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
 
 - Demo login: `admin` / `admin`

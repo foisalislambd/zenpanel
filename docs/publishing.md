@@ -50,11 +50,13 @@ This monorepo publishes the CLI package at `packages/create-zenpanel`.
 
    ```bash
    npm view create-zenpanel version
+   npm create zenpanel@latest -- --help
    npx create-zenpanel@latest --help
    ```
 
 ## Notes
 
 - Root package `zenpanel` is `private: true` — only publish `create-zenpanel`.
+- Package **must** stay named `create-zenpanel` so `npm create zenpanel@latest` works (same as `create-vite` / `create-next-app`).
 - First publish of a scoped-unscoped public package may need `--access public`.
 - Prefer tagging a git release that matches the npm version.

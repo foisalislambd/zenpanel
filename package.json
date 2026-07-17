@@ -2,7 +2,7 @@
   "name": "zenpanel",
   "version": "1.0.0",
   "private": true,
-  "description": "ZenPanel — open-source admin UI shell. Scaffold with create-zenpanel.",
+  "description": "ZenPanel — open-source admin UI shell. Scaffold with npm create zenpanel.",
   "license": "MIT",
   "author": "Foisal Islam",
   "repository": {

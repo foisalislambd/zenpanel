@@ -2,13 +2,23 @@
 
 Package: [`create-zenpanel`](https://www.npmjs.com/package/create-zenpanel)
 
+Same convention as Vite (`create-vite`) and Next (`create-next-app`): the npm package is named `create-zenpanel`, so users run `npm create zenpanel`.
+
 ## Usage
+
+```bash
+npm create zenpanel@latest [project-name] -- [options]
+```
+
+Equivalents:
 
 ```bash
 npx create-zenpanel@latest [project-name] [options]
 ```
 
 Interactive prompts fill in anything you omit.
+
+> **Note:** Pass CLI flags after `--` when using `npm create` (npm eats unknown flags otherwise).
 
 ## Options
 
@@ -35,8 +45,8 @@ Used when the current directory already has a `package.json`, or when you pass `
 ## Examples
 
 ```bash
-npx create-zenpanel@latest my-admin --framework react --use-pnpm
-npx create-zenpanel@latest my-admin --framework html --skip-install
+npm create zenpanel@latest my-admin -- --framework react --use-pnpm
+npm create zenpanel@latest my-admin -- --framework html --skip-install
 cd existing-app && npx create-zenpanel@latest --install --framework nextjs
 ```
 

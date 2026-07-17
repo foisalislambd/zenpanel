@@ -7,11 +7,13 @@ Same dashboard design across **Next.js**, **React**, **Preact**, **Solid**, **Sv
 ## Quick start
 
 ```bash
-npx create-zenpanel@latest
+npm create zenpanel@latest
 ```
 
+Same convention as Vite (`npm create vite@latest`) — npm runs the `create-zenpanel` package. Equivalent: `npx create-zenpanel@latest`.
+
 ```bash
-npx create-zenpanel@latest my-admin --framework nextjs
+npm create zenpanel@latest my-admin -- --framework nextjs
 cd my-admin
 npm run dev
 ```
@@ -36,15 +38,15 @@ Prompts:
 2. Framework
 
 ```bash
-npx create-zenpanel@latest my-admin --framework nextjs
-npx create-zenpanel@latest my-admin --framework react
-npx create-zenpanel@latest my-admin --framework preact
-npx create-zenpanel@latest my-admin --framework solid
-npx create-zenpanel@latest my-admin --framework svelte
-npx create-zenpanel@latest my-admin --framework vue
-npx create-zenpanel@latest my-admin --framework html
-npx create-zenpanel@latest my-admin --framework astro
-npx create-zenpanel@latest my-admin --framework angular
+npm create zenpanel@latest my-admin -- --framework nextjs
+npm create zenpanel@latest my-admin -- --framework react
+npm create zenpanel@latest my-admin -- --framework preact
+npm create zenpanel@latest my-admin -- --framework solid
+npm create zenpanel@latest my-admin -- --framework svelte
+npm create zenpanel@latest my-admin -- --framework vue
+npm create zenpanel@latest my-admin -- --framework html
+npm create zenpanel@latest my-admin -- --framework astro
+npm create zenpanel@latest my-admin -- --framework angular
 ```
 
 `vite` is accepted as an alias for `react`.
@@ -53,7 +55,7 @@ npx create-zenpanel@latest my-admin --framework angular
 
 ```bash
 cd my-existing-app
-npx create-zenpanel@latest
+npm create zenpanel@latest
 # or
 npx create-zenpanel@latest --install
 ```
@@ -68,13 +70,16 @@ npx create-zenpanel@latest --install
 | `--force` | Overwrite existing admin files (install mode) |
 | `--install` | Force install-into-existing mode |
 
-## Preview login
+Pass flags after `--` when using `npm create` (example: `npm create zenpanel@latest my-admin -- --framework react`).
 
-| Framework | URL |
+## Why the package is named `create-zenpanel`
+
+npm’s create shortcut maps `npm create <name>` → package `create-<name>`:
+
+| You type | npm installs / runs |
 | --- | --- |
-| Next.js | `http://localhost:3000/admin/login` |
-| React / Preact / Solid / Svelte / Vue / HTML | `http://localhost:5173/admin/login` |
-| Astro | `http://localhost:4321/admin/login` |
-| Angular | `http://localhost:4200/admin/login` |
+| `npm create vite@latest` | `create-vite` |
+| `npm create next-app@latest` | `create-next-app` |
+| `npm create zenpanel@latest` | `create-zenpanel` |
 
-Username / password: **`admin` / `admin`**
+So the published package name stays `create-zenpanel` (not `zenpanel`) — same pattern as Vite and Next.
