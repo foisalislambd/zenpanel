@@ -78,6 +78,18 @@ npx create-zenpanel@latest
 - Light and dark themes via `next-themes`
 - Brand name, tagline, and navigation in one config file
 
+## Documentation
+
+Full guides live in [`docs/`](./docs/README.md):
+
+- [Getting started](./docs/getting-started.md)
+- [CLI reference](./docs/cli.md)
+- [Frameworks](./docs/frameworks.md)
+- [Customization](./docs/customization.md)
+- [Theming](./docs/theming.md)
+- [Connect your API](./docs/connecting-api.md)
+- [Publish to npm](./docs/publishing.md)
+
 ## Customize
 
 Edit `src/config/admin.config.ts` to change:
@@ -103,7 +115,16 @@ zenpanel/
 │           ├── html/        # Plain HTML / CSS / JS template
 │           └── astro/       # Astro 7 template
 │           └── angular/     # Angular 22 + Tailwind (Next.js UI)
-├── docs/                    # Images and documentation assets
+├── docs/                    # Guides + screenshot assets
+│   ├── README.md
+│   ├── getting-started.md
+│   ├── cli.md
+│   ├── frameworks.md
+│   ├── customization.md
+│   ├── theming.md
+│   ├── connecting-api.md
+│   ├── publishing.md
+│   └── images/
 └── README.md
 ```
 

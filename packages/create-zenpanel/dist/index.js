@@ -359,12 +359,8 @@ var ASTRO_COPY_PATHS = [
   "src/zenpanel-admin.example.ts"
 ];
 var HTML_COPY_PATHS = [
-  "admin",
-  "css",
-  "js",
-  "public",
-  "favicon.svg",
-  "serve.json"
+  "src",
+  "public"
 ];
 var SVELTE_COPY_PATHS = [
   "src/lib",
@@ -444,7 +440,7 @@ async function installIntoExisting(options = {}) {
         { value: "vue", label: "Vue (Vite)" },
         { value: "astro", label: "Astro" },
         { value: "angular", label: "Angular" },
-        { value: "html", label: "HTML (static)" }
+        { value: "html", label: "HTML (static + Tailwind)" }
       ]
     });
     if (p2.isCancel(result)) {
@@ -570,7 +566,7 @@ async function installIntoExisting(options = {}) {
     );
   }
   if (framework === "html") {
-    depsToInstall.push("serve");
+    depsToInstall.push("serve", "tailwindcss", "@tailwindcss/cli", "concurrently");
   }
   if (framework === "angular") {
     depsToInstall.push("clsx", "tailwind-merge");
@@ -618,9 +614,9 @@ async function installIntoExisting(options = {}) {
     "Ensure Tailwind + @tailwindcss/postcss are configured (see templates/angular).",
     "Preview credentials: admin / admin."
   ] : [
-    "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
+    "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI \u2014 port 5173).",
     "Open /admin/login \u2014 preview credentials: admin / admin.",
-    "Customize branding in js/config.js."
+    "Customize branding in src/js/config.js."
   ];
   p2.note(tips.map((t) => `\u2022 ${t}`).join("\n"), "Next steps");
   p2.outro(pc2.green("ZenPanel admin shell installed."));
@@ -777,9 +773,13 @@ async function ensureHtmlServeScripts(projectDir) {
   const pkg2 = await fs4.readJson(pkgPath);
   pkg2.scripts ??= {};
   const defaults = {
-    dev: "serve . -l 5173 --no-clipboard",
-    start: "serve . -l 5173 --no-clipboard",
-    preview: "serve . -l 5173 --no-clipboard"
+    "css:build": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
+    "css:watch": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",
+    dev: 'concurrently -k "npm:css:watch" "npm:serve"',
+    serve: "serve src -l 5173 --no-clipboard",
+    build: "npm run css:build",
+    preview: "npm run serve",
+    start: "npm run serve"
   };
   let changed = false;
   for (const [name, command] of Object.entries(defaults)) {
