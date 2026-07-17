@@ -54,6 +54,15 @@ const VITE_COPY_PATHS = [
   "src/zenpanel-admin-routes.example.tsx",
 ] as const;
 
+const HTML_COPY_PATHS = [
+  "admin",
+  "css",
+  "js",
+  "public",
+  "favicon.svg",
+  "serve.json",
+] as const;
+
 const THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -98,7 +107,8 @@ export async function installIntoExisting(
     process.exit(1);
   }
 
-  let framework = detectFrameworkFromPackage(pkg);
+  let framework: "nextjs" | "vite" | "html" | "unknown" =
+    detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
     const result = await p.select({
@@ -106,6 +116,7 @@ export async function installIntoExisting(
       options: [
         { value: "nextjs" as const, label: "Next.js" },
         { value: "vite" as const, label: "Vite (React)" },
+        { value: "html" as const, label: "HTML (static)" },
       ],
     });
 
@@ -114,7 +125,7 @@ export async function installIntoExisting(
       process.exit(0);
     }
 
-    framework = result as "nextjs" | "vite";
+    framework = result as "nextjs" | "vite" | "html";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -124,11 +135,17 @@ export async function installIntoExisting(
   const copyJobs =
     framework === "nextjs"
       ? await buildNextCopyJobs(cwd, templateDir)
-      : VITE_COPY_PATHS.map((rel) => ({
-          src: path.join(templateDir, rel),
-          dest: path.join(cwd, rel),
-          label: rel,
-        }));
+      : framework === "vite"
+        ? VITE_COPY_PATHS.map((rel) => ({
+            src: path.join(templateDir, rel),
+            dest: path.join(cwd, rel),
+            label: rel,
+          }))
+        : HTML_COPY_PATHS.map((rel) => ({
+            src: path.join(templateDir, rel),
+            dest: path.join(cwd, rel),
+            label: rel,
+          }));
 
   const conflicts = [];
   for (const job of copyJobs) {
@@ -161,8 +178,10 @@ export async function installIntoExisting(
 
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else {
+    } else if (framework === "vite") {
       await mergeViteStyles(cwd, templateDir);
+    } else if (framework === "html") {
+      await ensureHtmlServeScripts(cwd);
     }
 
     spinner.stop("Admin files copied.");
@@ -171,12 +190,18 @@ export async function installIntoExisting(
     throw error;
   }
 
-  const depsToInstall: string[] = [...ADMIN_PEER_DEPS];
+  const depsToInstall: string[] = [];
+  if (framework === "nextjs" || framework === "vite") {
+    depsToInstall.push(...ADMIN_PEER_DEPS);
+  }
   if (framework === "vite") {
     depsToInstall.push("react-router-dom");
   }
+  if (framework === "html") {
+    depsToInstall.push("serve");
+  }
 
-  if (!options.skipInstall) {
+  if (!options.skipInstall && depsToInstall.length > 0) {
     const installSpinner = p.spinner();
     installSpinner.start(`Installing peer dependencies with ${packageManager}…`);
     try {
@@ -199,12 +224,18 @@ export async function installIntoExisting(
           "Admin routes live under /admin (login at /admin/login).",
           "Preview credentials: admin / admin.",
         ]
-      : [
-          "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
-          "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
-          "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
-          "Preview credentials: admin / admin.",
-        ];
+      : framework === "vite"
+        ? [
+            "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
+            "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
+            "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+            "Preview credentials: admin / admin.",
+          ]
+        : [
+            "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
+            "Open /admin/login — preview credentials: admin / admin.",
+            "Customize branding in js/config.js.",
+          ];
 
   p.note(tips.map((t) => `• ${t}`).join("\n"), "Next steps");
   p.outro(pc.green("ZenPanel admin shell installed."));
@@ -305,5 +336,32 @@ async function mergeViteStyles(
 
   if (changed) {
     await fs.writeFile(indexCss, content);
+  }
+}
+
+/** Add serve scripts when the project does not already define them. */
+async function ensureHtmlServeScripts(projectDir: string): Promise<void> {
+  const pkgPath = path.join(projectDir, "package.json");
+  if (!(await pathExists(pkgPath))) return;
+
+  const pkg = await fs.readJson(pkgPath);
+  pkg.scripts ??= {};
+
+  const defaults: Record<string, string> = {
+    dev: "serve . -l 5173 --no-clipboard",
+    start: "serve . -l 5173 --no-clipboard",
+    preview: "serve . -l 5173 --no-clipboard",
+  };
+
+  let changed = false;
+  for (const [name, command] of Object.entries(defaults)) {
+    if (!pkg.scripts[name]) {
+      pkg.scripts[name] = command;
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    await fs.writeJson(pkgPath, pkg, { spaces: 2 });
   }
 }

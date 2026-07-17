@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products — ZenPanel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body class="admin-shell">
+    <div id="layout-root"></div>
+    <div id="page-content" hidden>
+      <h1 class="page-title">Products</h1>
+      <div class="admin-card">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--gray-200);font-weight:600;font-size:0.875rem">Products</div>
+        <ul id="resource-list" style="list-style:none;margin:0;padding:0"></ul>
+        <p id="empty-state" class="muted" style="padding:2.5rem 1.25rem;text-align:center;font-size:0.875rem;display:none">No products yet — connect your API when ready.</p>
+      </div>
+    </div>
+    <script type="module">
+      import { mountAdminLayout } from "/js/layout.js";
+      import { resourceSamples } from "/js/data.js";
+      mountAdminLayout({ title: "Products" });
+      const items = resourceSamples["products"] || [];
+      const list = document.getElementById("resource-list");
+      const empty = document.getElementById("empty-state");
+      if (!items.length) {
+        empty.style.display = "block";
+      } else {
+        list.innerHTML = items
+          .map((item) => `<li style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--gray-100);font-size:0.875rem">${String(item)}</li>`)
+          .join("");
+      }
+    </script>
+  </body>
+</html>

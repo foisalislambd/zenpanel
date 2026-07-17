@@ -1,0 +1,18 @@
+{
+  "name": "zenpanel-html",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "ZenPanel admin UI shell — plain HTML, CSS, and JavaScript",
+  "scripts": {
+    "dev": "serve . -l 5173 --no-clipboard",
+    "start": "serve . -l 5173 --no-clipboard",
+    "preview": "serve . -l 5173 --no-clipboard"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

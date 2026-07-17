@@ -5,7 +5,7 @@
 
 Open-source admin UI shell — sidebar, dashboard, resource tables, login, and dark mode.
 
-Scaffold a new app with **Next.js** or **Vite**, or install the admin panel into an existing project.
+Scaffold a new app with **Next.js**, **Vite**, or **HTML**, or install the admin panel into an existing project.
 
 No backend included. The dashboard ships with sample preview data so you can review the UI; connect your own API when you are ready.
 
@@ -30,11 +30,12 @@ npx create-zenpanel@latest
 You will be asked to:
 
 1. Enter a project name
-2. Select a framework — **Next.js**, **Vite**, HTML, Remix, Astro (Next.js and Vite are available now)
+2. Select a framework — **Next.js**, **Vite**, **HTML** (Remix / Astro coming soon)
 
 ```bash
 npx create-zenpanel@latest my-admin --framework nextjs
 npx create-zenpanel@latest my-admin --framework vite
+npx create-zenpanel@latest my-admin --framework html
 ```
 
 Then:
@@ -44,7 +45,12 @@ cd my-admin
 npm run dev
 ```
 
-Open the admin login (Next.js: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)). Demo credentials: `admin` / `admin`.
+Open the admin login:
+
+- Next.js: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+- Vite / HTML: [http://localhost:5173/admin/login](http://localhost:5173/admin/login)
+
+Demo credentials: `admin` / `admin`.
 
 ### Install into an existing project
 
@@ -81,7 +87,8 @@ zenpanel/
 │       ├── src/             # CLI source
 │       └── templates/
 │           ├── nextjs/      # Next.js + ZenPanel template
-│           └── vite/        # Vite + React Router template
+│           ├── vite/        # Vite + React Router template
+│           └── html/        # Plain HTML / CSS / JS template
 ├── docs/                    # Images and documentation assets
 └── README.md
 ```

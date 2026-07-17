@@ -24,7 +24,7 @@ async function main() {
     )
     .option(
       "-f, --framework <framework>",
-      "Framework template: nextjs | vite",
+      "Framework template: nextjs | vite | html",
     )
     .option("--use-npm", "Use npm")
     .option("--use-pnpm", "Use pnpm")
@@ -40,10 +40,15 @@ async function main() {
       const packageManager = resolvePackageManager(opts);
       const framework = opts.framework as FrameworkId | undefined;
 
-      if (framework && framework !== "nextjs" && framework !== "vite") {
+      if (
+        framework &&
+        framework !== "nextjs" &&
+        framework !== "vite" &&
+        framework !== "html"
+      ) {
         console.error(
           pc.red(
-            `Unsupported framework "${framework}". Available now: nextjs, vite.`,
+            `Unsupported framework "${framework}". Available now: nextjs, vite, html.`,
           ),
         );
         process.exit(1);

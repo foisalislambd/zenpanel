@@ -199,7 +199,7 @@ async function createApp(options = {}) {
         {
           value: "html",
           label: "HTML",
-          hint: "Coming soon"
+          hint: "Plain HTML, CSS, and JavaScript"
         },
         {
           value: "remix",
@@ -219,9 +219,9 @@ async function createApp(options = {}) {
     }
     framework = result;
   }
-  if (framework !== "nextjs" && framework !== "vite") {
+  if (framework !== "nextjs" && framework !== "vite" && framework !== "html") {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js or Vite.`
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, or HTML.`
     );
     process.exit(1);
   }
@@ -264,10 +264,11 @@ async function createApp(options = {}) {
   const relative = path4.relative(cwd, targetDir) || ".";
   const cd = relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}
 `;
+  const loginUrl = framework === "html" ? "http://localhost:5173/admin/login" : framework === "vite" ? "http://localhost:5173/admin/login" : "http://localhost:3000/admin/login";
   p.note(
     `${cd}  ${getRunCommand(packageManager, "dev")}
 
-  Admin login: ${pc.cyan(framework === "vite" ? "http://localhost:5173/admin/login" : "http://localhost:3000/admin/login")}
+  Admin login: ${pc.cyan(loginUrl)}
   Preview credentials: ${pc.cyan("admin / admin")}`,
     "Next steps"
   );
@@ -310,6 +311,14 @@ var VITE_COPY_PATHS = [
   "src/lib/format.ts",
   "src/admin.css",
   "src/zenpanel-admin-routes.example.tsx"
+];
+var HTML_COPY_PATHS = [
+  "admin",
+  "css",
+  "js",
+  "public",
+  "favicon.svg",
+  "serve.json"
 ];
 var THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
@@ -355,7 +364,8 @@ async function installIntoExisting(options = {}) {
       message: "Could not detect framework. Which are you using?",
       options: [
         { value: "nextjs", label: "Next.js" },
-        { value: "vite", label: "Vite (React)" }
+        { value: "vite", label: "Vite (React)" },
+        { value: "html", label: "HTML (static)" }
       ]
     });
     if (p2.isCancel(result)) {
@@ -367,7 +377,11 @@ async function installIntoExisting(options = {}) {
     p2.log.step(`Detected framework: ${pc2.cyan(framework)}`);
   }
   const templateDir = path5.join(getTemplatesDir(), framework);
-  const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : VITE_COPY_PATHS.map((rel) => ({
+  const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : framework === "vite" ? VITE_COPY_PATHS.map((rel) => ({
+    src: path5.join(templateDir, rel),
+    dest: path5.join(cwd, rel),
+    label: rel
+  })) : HTML_COPY_PATHS.map((rel) => ({
     src: path5.join(templateDir, rel),
     dest: path5.join(cwd, rel),
     label: rel
@@ -398,19 +412,27 @@ async function installIntoExisting(options = {}) {
     }
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else {
+    } else if (framework === "vite") {
       await mergeViteStyles(cwd, templateDir);
+    } else if (framework === "html") {
+      await ensureHtmlServeScripts(cwd);
     }
     spinner3.stop("Admin files copied.");
   } catch (error) {
     spinner3.stop("Failed to copy admin files.");
     throw error;
   }
-  const depsToInstall = [...ADMIN_PEER_DEPS];
+  const depsToInstall = [];
+  if (framework === "nextjs" || framework === "vite") {
+    depsToInstall.push(...ADMIN_PEER_DEPS);
+  }
   if (framework === "vite") {
     depsToInstall.push("react-router-dom");
   }
-  if (!options.skipInstall) {
+  if (framework === "html") {
+    depsToInstall.push("serve");
+  }
+  if (!options.skipInstall && depsToInstall.length > 0) {
     const installSpinner = p2.spinner();
     installSpinner.start(`Installing peer dependencies with ${packageManager}\u2026`);
     try {
@@ -429,11 +451,15 @@ async function installIntoExisting(options = {}) {
     "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
     "Admin routes live under /admin (login at /admin/login).",
     "Preview credentials: admin / admin."
-  ] : [
+  ] : framework === "vite" ? [
     "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
     "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
     "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
     "Preview credentials: admin / admin."
+  ] : [
+    "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
+    "Open /admin/login \u2014 preview credentials: admin / admin.",
+    "Customize branding in js/config.js."
   ];
   p2.note(tips.map((t) => `\u2022 ${t}`).join("\n"), "Next steps");
   p2.outro(pc2.green("ZenPanel admin shell installed."));
@@ -507,6 +533,27 @@ ${THEME_TOKENS_SNIPPET}`;
     await fs4.writeFile(indexCss, content);
   }
 }
+async function ensureHtmlServeScripts(projectDir) {
+  const pkgPath = path5.join(projectDir, "package.json");
+  if (!await pathExists(pkgPath)) return;
+  const pkg2 = await fs4.readJson(pkgPath);
+  pkg2.scripts ??= {};
+  const defaults = {
+    dev: "serve . -l 5173 --no-clipboard",
+    start: "serve . -l 5173 --no-clipboard",
+    preview: "serve . -l 5173 --no-clipboard"
+  };
+  let changed = false;
+  for (const [name, command] of Object.entries(defaults)) {
+    if (!pkg2.scripts[name]) {
+      pkg2.scripts[name] = command;
+      changed = true;
+    }
+  }
+  if (changed) {
+    await fs4.writeJson(pkgPath, pkg2, { spaces: 2 });
+  }
+}
 
 // src/index.ts
 import { createRequire } from "module";
@@ -520,17 +567,17 @@ async function main() {
     "Project name / directory (omit to install into the current project when package.json exists)"
   ).option(
     "-f, --framework <framework>",
-    "Framework template: nextjs | vite"
+    "Framework template: nextjs | vite | html"
   ).option("--use-npm", "Use npm").option("--use-pnpm", "Use pnpm").option("--use-yarn", "Use yarn").option("--use-bun", "Use bun").option("--skip-install", "Skip installing dependencies").option("--force", "Overwrite existing admin files when installing into a project").option(
     "--install",
     "Force install-into-existing mode (requires package.json in cwd)"
   ).action(async (projectDirectory, opts) => {
     const packageManager = resolvePackageManager(opts);
     const framework = opts.framework;
-    if (framework && framework !== "nextjs" && framework !== "vite") {
+    if (framework && framework !== "nextjs" && framework !== "vite" && framework !== "html") {
       console.error(
         pc3.red(
-          `Unsupported framework "${framework}". Available now: nextjs, vite.`
+          `Unsupported framework "${framework}". Available now: nextjs, vite, html.`
         )
       );
       process.exit(1);

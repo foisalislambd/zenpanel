@@ -15,6 +15,7 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 - `packages/create-zenpanel` — CLI published as `create-zenpanel`
 - `packages/create-zenpanel/templates/nextjs` — Next.js template
 - `packages/create-zenpanel/templates/vite` — Vite + React template
+- `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
 
 ## Development setup
 

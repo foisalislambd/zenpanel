@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in — ZenPanel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body class="admin-shell">
+    <div class="login-page">
+      <button
+        type="button"
+        id="theme-toggle"
+        class="icon-btn"
+        style="position:absolute;top:1rem;right:1rem;z-index:10"
+        aria-label="Toggle theme"
+      >
+        <i data-lucide="moon" style="width:20px;height:20px"></i>
+      </button>
+
+      <div class="login-form-wrap">
+        <div class="login-form">
+          <a href="/" class="muted" style="font-size:0.875rem;font-weight:500">← Back to site</a>
+          <div style="margin-top:2rem">
+            <div class="brand-mark" style="margin-bottom:1.5rem" id="mobile-brand">Z</div>
+            <h1 style="margin:0;font-size:1.75rem;font-weight:600">Sign in</h1>
+            <p class="muted" style="margin:0.5rem 0 0;font-size:0.875rem;line-height:1.5">
+              Preview UI — credentials are prefilled. Click sign in to open the dashboard.
+            </p>
+          </div>
+          <form id="login-form" style="margin-top:2rem">
+            <div class="field">
+              <label for="username">Username</label>
+              <input id="username" name="username" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" />
+            </div>
+            <p id="login-error" class="error-text" hidden></p>
+            <button class="btn btn-primary" style="width:100%" type="submit">Sign in to dashboard</button>
+          </form>
+          <p class="muted" style="margin-top:2rem;text-align:center;font-size:0.75rem">
+            UI preview only — no real authentication.
+          </p>
+        </div>
+      </div>
+
+      <aside class="login-brand-panel">
+        <div style="position:relative;z-index:1;max-width:28rem">
+          <div class="brand-mark" id="brand-letter" style="margin:0 auto;height:4rem;width:4rem;font-size:1.5rem;border-radius:1rem">Z</div>
+          <h2 id="brand-name" style="margin:1.5rem 0 0.75rem;font-size:1.75rem">ZenPanel</h2>
+          <p id="brand-desc" style="margin:0;color:rgba(236,243,255,0.9);line-height:1.6"></p>
+          <ul id="brand-features" style="list-style:none;padding:0;margin:2rem 0 0;text-align:left;color:rgba(236,243,255,0.85)"></ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module" src="/js/login.js"></script>
+  </body>
+</html>

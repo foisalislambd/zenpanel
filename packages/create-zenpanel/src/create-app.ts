@@ -85,7 +85,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
         {
           value: "html" as const,
           label: "HTML",
-          hint: "Coming soon",
+          hint: "Plain HTML, CSS, and JavaScript",
         },
         {
           value: "remix" as const,
@@ -108,9 +108,9 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     framework = result as FrameworkId;
   }
 
-  if (framework !== "nextjs" && framework !== "vite") {
+  if (framework !== "nextjs" && framework !== "vite" && framework !== "html") {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js or Vite.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, Vite, or HTML.`,
     );
     process.exit(1);
   }
@@ -161,8 +161,15 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
   const cd =
     relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}\n`;
 
+  const loginUrl =
+    framework === "html"
+      ? "http://localhost:5173/admin/login"
+      : framework === "vite"
+        ? "http://localhost:5173/admin/login"
+        : "http://localhost:3000/admin/login";
+
   p.note(
-    `${cd}  ${getRunCommand(packageManager, "dev")}\n\n  Admin login: ${pc.cyan(framework === "vite" ? "http://localhost:5173/admin/login" : "http://localhost:3000/admin/login")}\n  Preview credentials: ${pc.cyan("admin / admin")}`,
+    `${cd}  ${getRunCommand(packageManager, "dev")}\n\n  Admin login: ${pc.cyan(loginUrl)}\n  Preview credentials: ${pc.cyan("admin / admin")}`,
     "Next steps",
   );
 

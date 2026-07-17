@@ -37,8 +37,8 @@ export const FRAMEWORKS: FrameworkOption[] = [
   {
     id: "html",
     label: "HTML",
-    hint: "Coming soon",
-    available: false,
+    hint: "Plain HTML, CSS, and JavaScript",
+    available: true,
   },
   {
     id: "remix",
