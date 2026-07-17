@@ -15,6 +15,7 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 - `packages/create-zenpanel` — CLI published as `create-zenpanel`
 - `packages/create-zenpanel/templates/nextjs` — Next.js template
 - `packages/create-zenpanel/templates/react` — React + Vite template
+- `packages/create-zenpanel/templates/preact` — Preact + Vite template
 - `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
 - `packages/create-zenpanel/templates/astro` — Astro 7 + vanilla JS template
 
@@ -45,6 +46,14 @@ Or for React (Vite):
 
 ```bash
 cd packages/create-zenpanel/templates/react
+npm install
+npm run dev
+```
+
+Or for Preact (Vite):
+
+```bash
+cd packages/create-zenpanel/templates/preact
 npm install
 npm run dev
 ```

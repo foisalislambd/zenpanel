@@ -29,7 +29,7 @@ var ADMIN_PEER_DEPS = [
 ];
 function normalizeFrameworkId(id) {
   if (id === "vite") return "react";
-  if (id === "nextjs" || id === "react" || id === "html" || id === "astro" || id === "remix") {
+  if (id === "nextjs" || id === "react" || id === "preact" || id === "html" || id === "astro" || id === "remix") {
     return id;
   }
   return null;
@@ -72,6 +72,7 @@ function detectFrameworkFromPackage(pkg2) {
   };
   if (deps.next) return "nextjs";
   if (deps.astro) return "astro";
+  if (deps.preact || deps["@preact/preset-vite"]) return "preact";
   if (deps["@vitejs/plugin-react"] || deps.vite && deps.react) return "react";
   return "unknown";
 }
@@ -205,6 +206,11 @@ async function createApp(options = {}) {
           hint: "Vite + React Router + Tailwind"
         },
         {
+          value: "preact",
+          label: "Preact",
+          hint: "Vite + Preact + Tailwind"
+        },
+        {
           value: "html",
           label: "HTML",
           hint: "Plain HTML, CSS, and JavaScript"
@@ -227,9 +233,9 @@ async function createApp(options = {}) {
     }
     framework = result;
   }
-  if (framework !== "nextjs" && framework !== "react" && framework !== "html" && framework !== "astro") {
+  if (framework !== "nextjs" && framework !== "react" && framework !== "preact" && framework !== "html" && framework !== "astro") {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, HTML, or Astro.`
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, HTML, or Astro.`
     );
     process.exit(1);
   }
@@ -272,7 +278,7 @@ async function createApp(options = {}) {
   const relative = path4.relative(cwd, targetDir) || ".";
   const cd = relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}
 `;
-  const loginUrl = framework === "html" || framework === "react" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : "http://localhost:3000/admin/login";
+  const loginUrl = framework === "html" || framework === "react" || framework === "preact" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : "http://localhost:3000/admin/login";
   p.note(
     `${cd}  ${getRunCommand(packageManager, "dev")}
 
@@ -381,6 +387,7 @@ async function installIntoExisting(options = {}) {
       options: [
         { value: "nextjs", label: "Next.js" },
         { value: "react", label: "React (Vite)" },
+        { value: "preact", label: "Preact (Vite)" },
         { value: "astro", label: "Astro" },
         { value: "html", label: "HTML (static)" }
       ]
@@ -394,7 +401,7 @@ async function installIntoExisting(options = {}) {
     p2.log.step(`Detected framework: ${pc2.cyan(framework)}`);
   }
   const templateDir = path5.join(getTemplatesDir(), framework);
-  const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : framework === "react" ? REACT_COPY_PATHS.map((rel) => ({
+  const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : framework === "react" || framework === "preact" ? REACT_COPY_PATHS.map((rel) => ({
     src: path5.join(templateDir, rel),
     dest: path5.join(cwd, rel),
     label: rel
@@ -433,8 +440,10 @@ async function installIntoExisting(options = {}) {
     }
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else if (framework === "react") {
+    } else if (framework === "react" || framework === "preact") {
       await mergeReactStyles(cwd, templateDir);
+    } else if (framework === "astro") {
+      await mergeAstroStyles(cwd, templateDir);
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
@@ -444,11 +453,20 @@ async function installIntoExisting(options = {}) {
     throw error;
   }
   const depsToInstall = [];
-  if (framework === "nextjs" || framework === "react") {
+  if (framework === "nextjs" || framework === "react" || framework === "preact") {
     depsToInstall.push(...ADMIN_PEER_DEPS);
   }
   if (framework === "react") {
     depsToInstall.push("react-router-dom");
+  }
+  if (framework === "preact") {
+    depsToInstall.push(
+      "preact",
+      "react-router-dom@6",
+      "@preact/preset-vite",
+      "@tailwindcss/vite",
+      "tailwindcss"
+    );
   }
   if (framework === "html") {
     depsToInstall.push("serve");
@@ -472,12 +490,13 @@ async function installIntoExisting(options = {}) {
     "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
     "Admin routes live under /admin (login at /admin/login).",
     "Preview credentials: admin / admin."
-  ] : framework === "react" ? [
+  ] : framework === "react" || framework === "preact" ? [
     "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
     "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
     "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+    framework === "preact" ? "Alias react \u2192 preact/compat in vite.config (see templates/preact)." : "Preview credentials: admin / admin.",
     "Preview credentials: admin / admin."
-  ] : framework === "astro" ? [
+  ].filter((t, i, arr) => arr.indexOf(t) === i) : framework === "astro" ? [
     "Admin pages were copied to src/pages/admin \u2014 open /admin/login after `npm run dev`.",
     "Customize branding in src/scripts/config.js.",
     "Preview credentials: admin / admin."
@@ -558,6 +577,26 @@ ${THEME_TOKENS_SNIPPET}`;
     await fs4.writeFile(indexCss, content);
   }
 }
+async function mergeAstroStyles(projectDir, templateDir) {
+  const adminCssSrc = path5.join(templateDir, "src/admin.css");
+  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+  const globalCssSrc = path5.join(templateDir, "src/styles/global.css");
+  const globalCssDest = path5.join(projectDir, "src/styles/global.css");
+  if (await pathExists(globalCssSrc) && !await pathExists(globalCssDest)) {
+    await fs4.ensureDir(path5.dirname(globalCssDest));
+    await fs4.copy(globalCssSrc, globalCssDest);
+    return;
+  }
+  const adminStyleSrc = path5.join(templateDir, "src/styles/admin.css");
+  const adminStyleDest = path5.join(projectDir, "src/styles/admin.css");
+  if (await pathExists(adminStyleSrc)) {
+    await fs4.ensureDir(path5.dirname(adminStyleDest));
+    await fs4.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
+  }
+}
 async function ensureHtmlServeScripts(projectDir) {
   const pkgPath = path5.join(projectDir, "package.json");
   if (!await pathExists(pkgPath)) return;
@@ -592,7 +631,7 @@ async function main() {
     "Project name / directory (omit to install into the current project when package.json exists)"
   ).option(
     "-f, --framework <framework>",
-    "Framework template: nextjs | react | html | astro (vite \u2192 react alias)"
+    "Framework template: nextjs | react | preact | html | astro (vite \u2192 react alias)"
   ).option("--use-npm", "Use npm").option("--use-pnpm", "Use pnpm").option("--use-yarn", "Use yarn").option("--use-bun", "Use bun").option("--skip-install", "Skip installing dependencies").option("--force", "Overwrite existing admin files when installing into a project").option(
     "--install",
     "Force install-into-existing mode (requires package.json in cwd)"
@@ -603,7 +642,7 @@ async function main() {
     if (rawFramework && !framework) {
       console.error(
         pc3.red(
-          `Unsupported framework "${rawFramework}". Available now: nextjs, react, html, astro.`
+          `Unsupported framework "${rawFramework}". Available now: nextjs, react, preact, html, astro.`
         )
       );
       process.exit(1);

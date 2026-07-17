@@ -59,7 +59,7 @@ jobs:
       - name: Build
         run: npm run build
 
-  vite-template:
+  react-template:
     name: Build React (Vite) template
     runs-on: ubuntu-latest
     defaults:
@@ -75,6 +75,29 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: packages/create-zenpanel/templates/react/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  preact-template:
+    name: Build Preact (Vite) template
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/create-zenpanel/templates/preact
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/create-zenpanel/templates/preact/package-lock.json
 
       - name: Install dependencies
         run: npm install

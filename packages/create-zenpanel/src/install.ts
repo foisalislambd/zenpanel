@@ -116,7 +116,7 @@ export async function installIntoExisting(
     process.exit(1);
   }
 
-  let framework: "nextjs" | "react" | "html" | "astro" | "unknown" =
+  let framework: "nextjs" | "react" | "preact" | "html" | "astro" | "unknown" =
     detectFrameworkFromPackage(pkg);
 
   if (framework === "unknown") {
@@ -125,6 +125,7 @@ export async function installIntoExisting(
       options: [
         { value: "nextjs" as const, label: "Next.js" },
         { value: "react" as const, label: "React (Vite)" },
+        { value: "preact" as const, label: "Preact (Vite)" },
         { value: "astro" as const, label: "Astro" },
         { value: "html" as const, label: "HTML (static)" },
       ],
@@ -135,7 +136,7 @@ export async function installIntoExisting(
       process.exit(0);
     }
 
-    framework = result as "nextjs" | "react" | "html" | "astro";
+    framework = result as "nextjs" | "react" | "preact" | "html" | "astro";
   } else {
     p.log.step(`Detected framework: ${pc.cyan(framework)}`);
   }
@@ -145,7 +146,7 @@ export async function installIntoExisting(
   const copyJobs =
     framework === "nextjs"
       ? await buildNextCopyJobs(cwd, templateDir)
-      : framework === "react"
+      : framework === "react" || framework === "preact"
         ? REACT_COPY_PATHS.map((rel) => ({
             src: path.join(templateDir, rel),
             dest: path.join(cwd, rel),
@@ -194,8 +195,10 @@ export async function installIntoExisting(
 
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
-    } else if (framework === "react") {
+    } else if (framework === "react" || framework === "preact") {
       await mergeReactStyles(cwd, templateDir);
+    } else if (framework === "astro") {
+      await mergeAstroStyles(cwd, templateDir);
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
@@ -207,11 +210,24 @@ export async function installIntoExisting(
   }
 
   const depsToInstall: string[] = [];
-  if (framework === "nextjs" || framework === "react") {
+  if (
+    framework === "nextjs" ||
+    framework === "react" ||
+    framework === "preact"
+  ) {
     depsToInstall.push(...ADMIN_PEER_DEPS);
   }
   if (framework === "react") {
     depsToInstall.push("react-router-dom");
+  }
+  if (framework === "preact") {
+    depsToInstall.push(
+      "preact",
+      "react-router-dom@6",
+      "@preact/preset-vite",
+      "@tailwindcss/vite",
+      "tailwindcss",
+    );
   }
   if (framework === "html") {
     depsToInstall.push("serve");
@@ -240,13 +256,16 @@ export async function installIntoExisting(
           "Admin routes live under /admin (login at /admin/login).",
           "Preview credentials: admin / admin.",
         ]
-      : framework === "react"
+      : framework === "react" || framework === "preact"
         ? [
             "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
             "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
             "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+            framework === "preact"
+              ? "Alias react → preact/compat in vite.config (see templates/preact)."
+              : "Preview credentials: admin / admin.",
             "Preview credentials: admin / admin.",
-          ]
+          ].filter((t, i, arr) => arr.indexOf(t) === i)
         : framework === "astro"
           ? [
               "Admin pages were copied to src/pages/admin — open /admin/login after `npm run dev`.",
@@ -358,6 +377,33 @@ async function mergeReactStyles(
 
   if (changed) {
     await fs.writeFile(indexCss, content);
+  }
+}
+
+async function mergeAstroStyles(
+  projectDir: string,
+  templateDir: string,
+): Promise<void> {
+  const adminCssSrc = path.join(templateDir, "src/admin.css");
+  const adminCssDest = path.join(projectDir, "src/admin.css");
+  if (await pathExists(adminCssSrc)) {
+    await fs.copy(adminCssSrc, adminCssDest, { overwrite: true });
+  }
+
+  const globalCssSrc = path.join(templateDir, "src/styles/global.css");
+  const globalCssDest = path.join(projectDir, "src/styles/global.css");
+  if (await pathExists(globalCssSrc) && !(await pathExists(globalCssDest))) {
+    await fs.ensureDir(path.dirname(globalCssDest));
+    await fs.copy(globalCssSrc, globalCssDest);
+    return;
+  }
+
+  // Astro vanilla template uses src/styles/admin.css
+  const adminStyleSrc = path.join(templateDir, "src/styles/admin.css");
+  const adminStyleDest = path.join(projectDir, "src/styles/admin.css");
+  if (await pathExists(adminStyleSrc)) {
+    await fs.ensureDir(path.dirname(adminStyleDest));
+    await fs.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
   }
 }
 

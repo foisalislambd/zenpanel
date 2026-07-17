@@ -89,6 +89,11 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
           hint: "Vite + React Router + Tailwind",
         },
         {
+          value: "preact" as const,
+          label: "Preact",
+          hint: "Vite + Preact + Tailwind",
+        },
+        {
           value: "html" as const,
           label: "HTML",
           hint: "Plain HTML, CSS, and JavaScript",
@@ -117,11 +122,12 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
   if (
     framework !== "nextjs" &&
     framework !== "react" &&
+    framework !== "preact" &&
     framework !== "html" &&
     framework !== "astro"
   ) {
     p.log.warn(
-      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, HTML, or Astro.`,
+      `${pc.bold(framework)} support is coming soon. Please choose Next.js, React, Preact, HTML, or Astro.`,
     );
     process.exit(1);
   }
@@ -178,7 +184,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}\n`;
 
   const loginUrl =
-    framework === "html" || framework === "react"
+    framework === "html" || framework === "react" || framework === "preact"
       ? "http://localhost:5173/admin/login"
       : framework === "astro"
         ? "http://localhost:4321/admin/login"

@@ -12,7 +12,13 @@ export function getTemplatesDir(): string {
   return path.join(getPackageRoot(), "templates");
 }
 
-export type FrameworkId = "nextjs" | "react" | "html" | "remix" | "astro";
+export type FrameworkId =
+  | "nextjs"
+  | "react"
+  | "preact"
+  | "html"
+  | "remix"
+  | "astro";
 
 /** CLI may still accept legacy `vite` as an alias for `react`. */
 export type FrameworkCliId = FrameworkId | "vite";
@@ -35,6 +41,12 @@ export const FRAMEWORKS: FrameworkOption[] = [
     id: "react",
     label: "React",
     hint: "Vite + React Router + Tailwind",
+    available: true,
+  },
+  {
+    id: "preact",
+    label: "Preact",
+    hint: "Vite + Preact + Tailwind",
     available: true,
   },
   {
@@ -72,6 +84,7 @@ export function normalizeFrameworkId(id: string): FrameworkId | null {
   if (
     id === "nextjs" ||
     id === "react" ||
+    id === "preact" ||
     id === "html" ||
     id === "astro" ||
     id === "remix"
