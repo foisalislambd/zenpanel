@@ -1,0 +1,31 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service orders — ZenPanel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body class="admin-shell">
+    <div id="layout-root"></div>
+    <div id="page-content" hidden></div>
+    <script type="module">
+      import { mountAdminLayout } from "/js/layout.js";
+      import { renderResourcePage } from "/js/resource.js";
+
+      mountAdminLayout({ title: "Service orders" });
+      renderResourcePage(document.getElementById("page-content"), {
+        title: "Service orders",
+        resourceLabel: "service order",
+      });
+    </script>
+  </body>
+</html>

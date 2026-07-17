@@ -64,12 +64,8 @@ const ASTRO_COPY_PATHS = [
 ] as const;
 
 const HTML_COPY_PATHS = [
-  "admin",
-  "css",
-  "js",
+  "src",
   "public",
-  "favicon.svg",
-  "serve.json",
 ] as const;
 
 const SVELTE_COPY_PATHS = [
@@ -170,7 +166,7 @@ export async function installIntoExisting(
         { value: "vue" as const, label: "Vue (Vite)" },
         { value: "astro" as const, label: "Astro" },
         { value: "angular" as const, label: "Angular" },
-        { value: "html" as const, label: "HTML (static)" },
+        { value: "html" as const, label: "HTML (static + Tailwind)" },
       ],
     });
 
@@ -340,7 +336,7 @@ export async function installIntoExisting(
     );
   }
   if (framework === "html") {
-    depsToInstall.push("serve");
+    depsToInstall.push("serve", "tailwindcss", "@tailwindcss/cli", "concurrently");
   }
   if (framework === "angular") {
     depsToInstall.push("clsx", "tailwind-merge");
@@ -409,9 +405,9 @@ export async function installIntoExisting(
                 "Preview credentials: admin / admin.",
               ]
           : [
-              "Start the static server with `npm run dev` (or `npx serve . -l 5173`).",
+              "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI — port 5173).",
               "Open /admin/login — preview credentials: admin / admin.",
-              "Customize branding in js/config.js.",
+              "Customize branding in src/js/config.js.",
             ];
 
   p.note(tips.map((t) => `• ${t}`).join("\n"), "Next steps");
@@ -616,7 +612,7 @@ async function mergeAngularStyles(
   }
 }
 
-/** Add serve scripts when the project does not already define them. */
+/** Ensure static HTML scripts exist when merging into a project without them. */
 async function ensureHtmlServeScripts(projectDir: string): Promise<void> {
   const pkgPath = path.join(projectDir, "package.json");
   if (!(await pathExists(pkgPath))) return;
@@ -625,9 +621,15 @@ async function ensureHtmlServeScripts(projectDir: string): Promise<void> {
   pkg.scripts ??= {};
 
   const defaults: Record<string, string> = {
-    dev: "serve . -l 5173 --no-clipboard",
-    start: "serve . -l 5173 --no-clipboard",
-    preview: "serve . -l 5173 --no-clipboard",
+    "css:build":
+      "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
+    "css:watch":
+      "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",
+    dev: 'concurrently -k "npm:css:watch" "npm:serve"',
+    serve: "serve src -l 5173 --no-clipboard",
+    build: "npm run css:build",
+    preview: "npm run serve",
+    start: "npm run serve",
   };
 
   let changed = false;

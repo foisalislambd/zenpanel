@@ -74,7 +74,7 @@ export const FRAMEWORKS: FrameworkOption[] = [
   {
     id: "html",
     label: "HTML",
-    hint: "Plain HTML, CSS, and JavaScript",
+    hint: "Plain HTML + Tailwind v4 CLI (no Vite)",
     available: true,
   },
   {

@@ -3,16 +3,23 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "ZenPanel admin UI shell — plain HTML, CSS, and JavaScript",
+  "description": "ZenPanel admin UI shell — plain HTML, CSS, and JavaScript (Tailwind CSS v4 CLI, no Vite)",
   "scripts": {
-    "dev": "serve . -l 5173 --no-clipboard",
-    "start": "serve . -l 5173 --no-clipboard",
-    "preview": "serve . -l 5173 --no-clipboard"
+    "css:build": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
+    "css:watch": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",
+    "dev": "concurrently -k \"npm:css:watch\" \"npm:serve\"",
+    "serve": "serve src -l 5173 --no-clipboard",
+    "build": "npm run css:build",
+    "preview": "npm run serve",
+    "start": "npm run serve"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "serve": "^14.2.4"
+    "@tailwindcss/cli": "^4.3.3",
+    "concurrently": "^9.2.1",
+    "serve": "^14.2.4",
+    "tailwindcss": "^4.3.3"
   }
 }

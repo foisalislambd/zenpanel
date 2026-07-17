@@ -1,0 +1,11 @@
+/* Minimal shell reset — layout/login use Tailwind utilities like Next */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
