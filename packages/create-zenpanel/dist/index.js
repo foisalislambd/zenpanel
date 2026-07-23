@@ -328,6 +328,7 @@ var NEXT_RELATIVE_PATHS = [
   "lib/admin-api",
   "lib/admin-data",
   "lib/admin-nav.ts",
+  "lib/brand-theme.ts",
   "lib/cn.ts",
   "lib/delay.ts",
   "lib/format.ts"
@@ -344,6 +345,7 @@ var REACT_COPY_PATHS = [
   "src/lib/admin-api",
   "src/lib/admin-data",
   "src/lib/admin-nav.ts",
+  "src/lib/brand-theme.ts",
   "src/lib/cn.ts",
   "src/lib/delay.ts",
   "src/lib/format.ts",
@@ -389,6 +391,7 @@ var ANGULAR_COPY_PATHS = [
   "src/main.ts",
   "public/favicon.svg"
 ];
+var DARK_VARIANT_SNIPPET = `@custom-variant dark (&:where(.dark, .dark *));`;
 var THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -417,6 +420,37 @@ var THEME_TOKENS_SNIPPET = `
   --color-error-500: #f04438;
 }
 `;
+function mergeZenpanelThemeCss(content) {
+  let next = content;
+  let changed = false;
+  if (!next.includes("@custom-variant dark")) {
+    next = injectAfterImports(next, DARK_VARIANT_SNIPPET);
+    changed = true;
+  }
+  if (!next.includes("--color-brand-500")) {
+    next = `${next.trimEnd()}
+${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+  return { content: next, changed };
+}
+function injectAfterImports(css, snippet) {
+  const importLine = /^[ \t]*@import\b[^\n]*$/gm;
+  let lastEnd = -1;
+  let match;
+  while ((match = importLine.exec(css)) !== null) {
+    lastEnd = match.index + match[0].length;
+  }
+  const block = `
+${snippet}
+`;
+  if (lastEnd >= 0) {
+    return css.slice(0, lastEnd) + block + css.slice(lastEnd);
+  }
+  return `${snippet}
+
+${css}`;
+}
 async function installIntoExisting(options = {}) {
   const cwd = process.cwd();
   const packageManager = options.packageManager ?? getPackageManager();
@@ -503,8 +537,10 @@ async function installIntoExisting(options = {}) {
     }
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
+      await ensureNextThemeProvider(cwd);
     } else if (framework === "react" || framework === "preact" || framework === "solid") {
       await mergeReactStyles(cwd, templateDir);
+      await ensureViteThemeProvider(cwd);
     } else if (framework === "svelte") {
       await mergeSvelteFiles(cwd, templateDir);
     } else if (framework === "vue") {
@@ -587,13 +623,13 @@ async function installIntoExisting(options = {}) {
   }
   const tips = framework === "nextjs" ? [
     "Ensure Tailwind CSS v4 is configured.",
-    "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
+    "ThemeProvider + class-based dark mode were wired automatically when possible.",
     "Admin routes live under /admin (login at /admin/login).",
     "Preview credentials: admin / admin."
   ] : framework === "react" || framework === "preact" || framework === "solid" ? [
     framework === "solid" ? "Merge ZenPanelAdminRoutes from src/routes/admin-routes.tsx into your <Router>." : "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
     "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
-    "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+    "ThemeProvider + class-based dark mode were wired automatically when possible.",
     framework === "preact" ? "Alias react \u2192 preact/compat in vite.config (see templates/preact)." : framework === "solid" ? "Ensure vite-plugin-solid and jsxImportSource solid-js in tsconfig." : "Preview credentials: admin / admin.",
     "Preview credentials: admin / admin."
   ].filter((t, i, arr) => arr.indexOf(t) === i) : framework === "svelte" ? [
@@ -657,12 +693,100 @@ async function mergeNextStyles(projectDir, templateDir) {
   for (const globals of globalsCandidates) {
     if (!await pathExists(globals)) continue;
     const content = await fs4.readFile(globals, "utf8");
-    if (content.includes("--color-brand-500")) {
-      return;
+    const merged = mergeZenpanelThemeCss(content);
+    if (merged.changed) {
+      await fs4.writeFile(globals, merged.content);
     }
-    await fs4.appendFile(globals, THEME_TOKENS_SNIPPET);
     return;
   }
+}
+var THEME_PROVIDER_IMPORT = 'import { ThemeProvider } from "@/components/theme/theme-provider";\n';
+function hasZenpanelThemeProvider(content) {
+  return content.includes("@/components/theme/theme-provider") || content.includes("components/theme/theme-provider");
+}
+function insertThemeProviderImport(content) {
+  if (hasZenpanelThemeProvider(content)) return content;
+  const lastImport = [...content.matchAll(/^import\s.+;?\s*$/gm)].at(-1);
+  if (lastImport) {
+    const end = lastImport.index + lastImport[0].length;
+    return content.slice(0, end) + "\n" + THEME_PROVIDER_IMPORT + content.slice(end);
+  }
+  return THEME_PROVIDER_IMPORT + content;
+}
+function isThemeProviderWrapped(content) {
+  return /<ThemeProvider[\s>][\s\S]*\{children\}[\s\S]*<\/ThemeProvider>/.test(
+    content
+  );
+}
+async function ensureNextThemeProvider(projectDir) {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const rootCandidates = [
+    path5.join(projectDir, srcRoot ? "src/app/layout.tsx" : "app/layout.tsx"),
+    path5.join(projectDir, srcRoot ? "src/app/layout.jsx" : "app/layout.jsx")
+  ];
+  for (const layoutPath of rootCandidates) {
+    if (!await pathExists(layoutPath)) continue;
+    const content = await fs4.readFile(layoutPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
+      return;
+    }
+    const patched = patchNextRootLayout(content);
+    if (patched !== content && isThemeProviderWrapped(patched)) {
+      await fs4.writeFile(layoutPath, patched);
+      return;
+    }
+  }
+  const adminCandidates = [
+    path5.join(
+      projectDir,
+      srcRoot ? "src/app/admin/layout.tsx" : "app/admin/layout.tsx"
+    ),
+    path5.join(
+      projectDir,
+      srcRoot ? "src/app/admin/layout.jsx" : "app/admin/layout.jsx"
+    )
+  ];
+  for (const layoutPath of adminCandidates) {
+    if (!await pathExists(layoutPath)) continue;
+    const content = await fs4.readFile(layoutPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
+      return;
+    }
+    const patched = patchAdminLayoutWithThemeProvider(content);
+    if (patched !== content && isThemeProviderWrapped(patched)) {
+      await fs4.writeFile(layoutPath, patched);
+      return;
+    }
+  }
+}
+function patchNextRootLayout(content) {
+  const canWrap = /<body[\s>][\s\S]*\{children\}[\s\S]*<\/body>/.test(content) && !isThemeProviderWrapped(content);
+  if (!canWrap) return content;
+  let next = insertThemeProviderImport(content);
+  if (!/suppressHydrationWarning/.test(next)) {
+    next = next.replace(/<html(\s[^>]*)?>/, (tag) => {
+      if (tag.includes("suppressHydrationWarning")) return tag;
+      return tag.replace("<html", "<html suppressHydrationWarning");
+    });
+  }
+  if (!isThemeProviderWrapped(next)) {
+    next = next.replace(
+      "{children}",
+      "<ThemeProvider>{children}</ThemeProvider>"
+    );
+  }
+  return next;
+}
+function patchAdminLayoutWithThemeProvider(content) {
+  if (!content.includes("{children}") || isThemeProviderWrapped(content)) {
+    return content;
+  }
+  let next = insertThemeProviderImport(content);
+  next = next.replace(
+    "{children}",
+    "<ThemeProvider>{children}</ThemeProvider>"
+  );
+  return next;
 }
 async function mergeReactStyles(projectDir, templateDir) {
   const adminCssSrc = path5.join(templateDir, "src/admin.css");
@@ -675,20 +799,51 @@ async function mergeReactStyles(projectDir, templateDir) {
   let content = await fs4.readFile(indexCss, "utf8");
   let changed = false;
   if (!content.includes("admin.css")) {
-    content = `${content.trimEnd()}
-
-@import "./admin.css";
-`;
+    content = injectAfterImports(content, '@import "./admin.css";');
     changed = true;
   }
-  if (!content.includes("--color-brand-500")) {
-    content = `${content.trimEnd()}
-${THEME_TOKENS_SNIPPET}`;
-    changed = true;
-  }
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
   if (changed) {
     await fs4.writeFile(indexCss, content);
   }
+}
+async function ensureViteThemeProvider(projectDir) {
+  const appCandidates = [
+    path5.join(projectDir, "src/App.tsx"),
+    path5.join(projectDir, "src/App.jsx")
+  ];
+  for (const appPath of appCandidates) {
+    if (!await pathExists(appPath)) continue;
+    const content = await fs4.readFile(appPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && content.includes("<ThemeProvider")) {
+      return;
+    }
+    const patched = patchViteAppWithThemeProvider(content);
+    if (patched !== content && patched.includes("<ThemeProvider>") && patched.includes("</ThemeProvider>")) {
+      await fs4.writeFile(appPath, patched);
+    }
+    return;
+  }
+}
+function patchViteAppWithThemeProvider(content) {
+  if (content.includes("<ThemeProvider")) return content;
+  const wrapRe = /return\s*\(\s*\n(\s*)<([A-Za-z][\w.]*)([\s\S]*?\n\1)<\/\2>\s*\n(\s*)\);/;
+  if (!wrapRe.test(content)) return content;
+  let next = insertThemeProviderImport(content);
+  next = next.replace(
+    wrapRe,
+    (_full, indent, tag, inner, closeIndent) => {
+      if (tag === "ThemeProvider") return _full;
+      return `return (
+${indent}<ThemeProvider>
+${indent}  <${tag}${inner}  </${tag}>
+${indent}</ThemeProvider>
+${closeIndent});`;
+    }
+  );
+  return next;
 }
 async function mergeVueFiles(projectDir, templateDir) {
   const adminCssSrc = path5.join(templateDir, "src/admin.css");
@@ -702,6 +857,7 @@ async function mergeVueFiles(projectDir, templateDir) {
   if (await pathExists(mainSrc) && !await pathExists(mainDest)) {
     await fs4.copy(mainSrc, mainDest);
   }
+  await mergeHostIndexCss(projectDir);
 }
 async function mergeSvelteFiles(projectDir, templateDir) {
   const adminCssSrc = path5.join(templateDir, "src/admin.css");
@@ -715,6 +871,23 @@ async function mergeSvelteFiles(projectDir, templateDir) {
   if (await pathExists(mainSrc) && !await pathExists(mainDest)) {
     await fs4.copy(mainSrc, mainDest);
   }
+  await mergeHostIndexCss(projectDir);
+}
+async function mergeHostIndexCss(projectDir) {
+  const indexCss = path5.join(projectDir, "src/index.css");
+  if (!await pathExists(indexCss)) return;
+  let content = await fs4.readFile(indexCss, "utf8");
+  let changed = false;
+  if (!content.includes("admin.css")) {
+    content = injectAfterImports(content, '@import "./admin.css";');
+    changed = true;
+  }
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
+  if (changed) {
+    await fs4.writeFile(indexCss, content);
+  }
 }
 async function mergeAstroStyles(projectDir, templateDir) {
   const adminCssSrc = path5.join(templateDir, "src/admin.css");
@@ -727,7 +900,12 @@ async function mergeAstroStyles(projectDir, templateDir) {
   if (await pathExists(globalCssSrc) && !await pathExists(globalCssDest)) {
     await fs4.ensureDir(path5.dirname(globalCssDest));
     await fs4.copy(globalCssSrc, globalCssDest);
-    return;
+  } else if (await pathExists(globalCssDest)) {
+    const content = await fs4.readFile(globalCssDest, "utf8");
+    const merged = mergeZenpanelThemeCss(content);
+    if (merged.changed) {
+      await fs4.writeFile(globalCssDest, merged.content);
+    }
   }
   const adminStyleSrc = path5.join(templateDir, "src/styles/admin.css");
   const adminStyleDest = path5.join(projectDir, "src/styles/admin.css");
@@ -752,17 +930,12 @@ async function mergeAngularStyles(projectDir, templateDir) {
   let content = await fs4.readFile(stylesDest, "utf8");
   let changed = false;
   if (!content.includes("admin.css")) {
-    content = `${content.trimEnd()}
-
-@import "./admin.css";
-`;
+    content = injectAfterImports(content, '@import "./admin.css";');
     changed = true;
   }
-  if (!content.includes("--color-brand-500")) {
-    content = `${content.trimEnd()}
-${THEME_TOKENS_SNIPPET}`;
-    changed = true;
-  }
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
   if (changed) {
     await fs4.writeFile(stylesDest, content);
   }

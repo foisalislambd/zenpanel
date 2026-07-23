@@ -30,6 +30,7 @@ const NEXT_RELATIVE_PATHS = [
   "lib/admin-api",
   "lib/admin-data",
   "lib/admin-nav.ts",
+  "lib/brand-theme.ts",
   "lib/cn.ts",
   "lib/delay.ts",
   "lib/format.ts",
@@ -47,6 +48,7 @@ const REACT_COPY_PATHS = [
   "src/lib/admin-api",
   "src/lib/admin-data",
   "src/lib/admin-nav.ts",
+  "src/lib/brand-theme.ts",
   "src/lib/cn.ts",
   "src/lib/delay.ts",
   "src/lib/format.ts",
@@ -98,6 +100,11 @@ const ANGULAR_COPY_PATHS = [
   "public/favicon.svg",
 ] as const;
 
+/** Class-based dark mode for next-themes (`attribute="class"`). Without this,
+ * Tailwind v4 falls back to prefers-color-scheme and OS dark mode paints
+ * `dark:text-white` on light admin surfaces (invisible text). */
+const DARK_VARIANT_SNIPPET = `@custom-variant dark (&:where(.dark, .dark *));`;
+
 const THEME_TOKENS_SNIPPET = `
 /* ZenPanel theme tokens (added by create-zenpanel) */
 @theme inline {
@@ -126,6 +133,40 @@ const THEME_TOKENS_SNIPPET = `
   --color-error-500: #f04438;
 }
 `;
+
+/** Inject class-based dark variant + brand tokens into host CSS. */
+function mergeZenpanelThemeCss(content: string): { content: string; changed: boolean } {
+  let next = content;
+  let changed = false;
+
+  if (!next.includes("@custom-variant dark")) {
+    next = injectAfterImports(next, DARK_VARIANT_SNIPPET);
+    changed = true;
+  }
+
+  if (!next.includes("--color-brand-500")) {
+    next = `${next.trimEnd()}\n${THEME_TOKENS_SNIPPET}`;
+    changed = true;
+  }
+
+  return { content: next, changed };
+}
+
+/** Place a CSS rule after the last @import (Tailwind requires imports first). */
+function injectAfterImports(css: string, snippet: string): string {
+  const importLine = /^[ \t]*@import\b[^\n]*$/gm;
+  let lastEnd = -1;
+  let match: RegExpExecArray | null;
+  while ((match = importLine.exec(css)) !== null) {
+    lastEnd = match.index + match[0].length;
+  }
+
+  const block = `\n${snippet}\n`;
+  if (lastEnd >= 0) {
+    return css.slice(0, lastEnd) + block + css.slice(lastEnd);
+  }
+  return `${snippet}\n\n${css}`;
+}
 
 export async function installIntoExisting(
   options: InstallOptions = {},
@@ -263,12 +304,14 @@ export async function installIntoExisting(
 
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
+      await ensureNextThemeProvider(cwd);
     } else if (
       framework === "react" ||
       framework === "preact" ||
       framework === "solid"
     ) {
       await mergeReactStyles(cwd, templateDir);
+      await ensureViteThemeProvider(cwd);
     } else if (framework === "svelte") {
       await mergeSvelteFiles(cwd, templateDir);
     } else if (framework === "vue") {
@@ -361,7 +404,7 @@ export async function installIntoExisting(
     framework === "nextjs"
       ? [
           "Ensure Tailwind CSS v4 is configured.",
-          "Wrap your root layout with ThemeProvider from @/components/theme/theme-provider.",
+          "ThemeProvider + class-based dark mode were wired automatically when possible.",
           "Admin routes live under /admin (login at /admin/login).",
           "Preview credentials: admin / admin.",
         ]
@@ -371,7 +414,7 @@ export async function installIntoExisting(
               ? "Merge ZenPanelAdminRoutes from src/routes/admin-routes.tsx into your <Router>."
               : "Merge zenPanelAdminRoute from src/routes/admin-routes.tsx (or the .example file) into your <Routes>.",
             "Import ./admin.css in your main CSS (done automatically when src/index.css exists).",
-            "Wrap the app with ThemeProvider from @/components/theme/theme-provider.",
+            "ThemeProvider + class-based dark mode were wired automatically when possible.",
             framework === "preact"
               ? "Alias react → preact/compat in vite.config (see templates/preact)."
               : framework === "solid"
@@ -473,12 +516,133 @@ async function mergeNextStyles(
   for (const globals of globalsCandidates) {
     if (!(await pathExists(globals))) continue;
     const content = await fs.readFile(globals, "utf8");
-    if (content.includes("--color-brand-500")) {
-      return;
+    const merged = mergeZenpanelThemeCss(content);
+    if (merged.changed) {
+      await fs.writeFile(globals, merged.content);
     }
-    await fs.appendFile(globals, THEME_TOKENS_SNIPPET);
     return;
   }
+}
+
+const THEME_PROVIDER_IMPORT =
+  'import { ThemeProvider } from "@/components/theme/theme-provider";\n';
+
+function hasZenpanelThemeProvider(content: string): boolean {
+  return (
+    content.includes("@/components/theme/theme-provider") ||
+    content.includes("components/theme/theme-provider")
+  );
+}
+
+function insertThemeProviderImport(content: string): string {
+  if (hasZenpanelThemeProvider(content)) return content;
+
+  const lastImport = [...content.matchAll(/^import\s.+;?\s*$/gm)].at(-1);
+  if (lastImport) {
+    const end = lastImport.index! + lastImport[0].length;
+    return (
+      content.slice(0, end) + "\n" + THEME_PROVIDER_IMPORT + content.slice(end)
+    );
+  }
+  return THEME_PROVIDER_IMPORT + content;
+}
+
+function isThemeProviderWrapped(content: string): boolean {
+  return /<ThemeProvider[\s>][\s\S]*\{children\}[\s\S]*<\/ThemeProvider>/.test(
+    content,
+  );
+}
+
+/**
+ * Wire next-themes ThemeProvider into the host root layout (or admin layout
+ * as a fallback) so the moon toggle and class-based dark mode work.
+ * Only writes when the JSX wrap succeeds — never leaves a dangling import.
+ */
+async function ensureNextThemeProvider(projectDir: string): Promise<void> {
+  const srcRoot = await detectNextSrcRoot(projectDir);
+  const rootCandidates = [
+    path.join(projectDir, srcRoot ? "src/app/layout.tsx" : "app/layout.tsx"),
+    path.join(projectDir, srcRoot ? "src/app/layout.jsx" : "app/layout.jsx"),
+  ];
+
+  for (const layoutPath of rootCandidates) {
+    if (!(await pathExists(layoutPath))) continue;
+    const content = await fs.readFile(layoutPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
+      return;
+    }
+
+    const patched = patchNextRootLayout(content);
+    if (patched !== content && isThemeProviderWrapped(patched)) {
+      await fs.writeFile(layoutPath, patched);
+      return;
+    }
+  }
+
+  // Fallback: wrap admin shell layout (copied by install).
+  const adminCandidates = [
+    path.join(
+      projectDir,
+      srcRoot ? "src/app/admin/layout.tsx" : "app/admin/layout.tsx",
+    ),
+    path.join(
+      projectDir,
+      srcRoot ? "src/app/admin/layout.jsx" : "app/admin/layout.jsx",
+    ),
+  ];
+
+  for (const layoutPath of adminCandidates) {
+    if (!(await pathExists(layoutPath))) continue;
+    const content = await fs.readFile(layoutPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
+      return;
+    }
+
+    const patched = patchAdminLayoutWithThemeProvider(content);
+    if (patched !== content && isThemeProviderWrapped(patched)) {
+      await fs.writeFile(layoutPath, patched);
+      return;
+    }
+  }
+}
+
+function patchNextRootLayout(content: string): string {
+  // Preview wrap first — refuse import-only patches when JSX can't be wrapped.
+  const canWrap =
+    /<body[\s>][\s\S]*\{children\}[\s\S]*<\/body>/.test(content) &&
+    !isThemeProviderWrapped(content);
+  if (!canWrap) return content;
+
+  let next = insertThemeProviderImport(content);
+
+  if (!/suppressHydrationWarning/.test(next)) {
+    next = next.replace(/<html(\s[^>]*)?>/, (tag) => {
+      if (tag.includes("suppressHydrationWarning")) return tag;
+      return tag.replace("<html", "<html suppressHydrationWarning");
+    });
+  }
+
+  if (!isThemeProviderWrapped(next)) {
+    next = next.replace(
+      "{children}",
+      "<ThemeProvider>{children}</ThemeProvider>",
+    );
+  }
+
+  return next;
+}
+
+function patchAdminLayoutWithThemeProvider(content: string): string {
+  if (!content.includes("{children}") || isThemeProviderWrapped(content)) {
+    return content;
+  }
+
+  let next = insertThemeProviderImport(content);
+  next = next.replace(
+    "{children}",
+    "<ThemeProvider>{children}</ThemeProvider>",
+  );
+  return next;
 }
 
 async function mergeReactStyles(
@@ -498,18 +662,72 @@ async function mergeReactStyles(
   let changed = false;
 
   if (!content.includes("admin.css")) {
-    content = `${content.trimEnd()}\n\n@import "./admin.css";\n`;
+    content = injectAfterImports(content, '@import "./admin.css";');
     changed = true;
   }
 
-  if (!content.includes("--color-brand-500")) {
-    content = `${content.trimEnd()}\n${THEME_TOKENS_SNIPPET}`;
-    changed = true;
-  }
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
 
   if (changed) {
     await fs.writeFile(indexCss, content);
   }
+}
+
+async function ensureViteThemeProvider(projectDir: string): Promise<void> {
+  const appCandidates = [
+    path.join(projectDir, "src/App.tsx"),
+    path.join(projectDir, "src/App.jsx"),
+  ];
+
+  for (const appPath of appCandidates) {
+    if (!(await pathExists(appPath))) continue;
+    const content = await fs.readFile(appPath, "utf8");
+    if (hasZenpanelThemeProvider(content) && content.includes("<ThemeProvider")) {
+      return;
+    }
+
+    const patched = patchViteAppWithThemeProvider(content);
+    // Only persist when JSX wrap succeeded (avoid dangling unused import).
+    if (
+      patched !== content &&
+      patched.includes("<ThemeProvider>") &&
+      patched.includes("</ThemeProvider>")
+    ) {
+      await fs.writeFile(appPath, patched);
+    }
+    return;
+  }
+}
+
+/** Best-effort wrap of a simple `return ( <Tag>…</Tag> );` App root. */
+function patchViteAppWithThemeProvider(content: string): string {
+  if (content.includes("<ThemeProvider")) return content;
+
+  const wrapRe =
+    /return\s*\(\s*\n(\s*)<([A-Za-z][\w.]*)([\s\S]*?\n\1)<\/\2>\s*\n(\s*)\);/;
+  if (!wrapRe.test(content)) return content;
+
+  let next = insertThemeProviderImport(content);
+  next = next.replace(
+    wrapRe,
+    (
+      _full,
+      indent: string,
+      tag: string,
+      inner: string,
+      closeIndent: string,
+    ) => {
+      if (tag === "ThemeProvider") return _full;
+      return (
+        `return (\n${indent}<ThemeProvider>\n` +
+        `${indent}  <${tag}${inner}  </${tag}>\n` +
+        `${indent}</ThemeProvider>\n${closeIndent});`
+      );
+    },
+  );
+  return next;
 }
 
 async function mergeVueFiles(
@@ -528,6 +746,8 @@ async function mergeVueFiles(
   if (await pathExists(mainSrc) && !(await pathExists(mainDest))) {
     await fs.copy(mainSrc, mainDest);
   }
+
+  await mergeHostIndexCss(projectDir);
 }
 
 async function mergeSvelteFiles(
@@ -546,6 +766,29 @@ async function mergeSvelteFiles(
   if (await pathExists(mainSrc) && !(await pathExists(mainDest))) {
     await fs.copy(mainSrc, mainDest);
   }
+
+  await mergeHostIndexCss(projectDir);
+}
+
+async function mergeHostIndexCss(projectDir: string): Promise<void> {
+  const indexCss = path.join(projectDir, "src/index.css");
+  if (!(await pathExists(indexCss))) return;
+
+  let content = await fs.readFile(indexCss, "utf8");
+  let changed = false;
+
+  if (!content.includes("admin.css")) {
+    content = injectAfterImports(content, '@import "./admin.css";');
+    changed = true;
+  }
+
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
+
+  if (changed) {
+    await fs.writeFile(indexCss, content);
+  }
 }
 
 async function mergeAstroStyles(
@@ -563,7 +806,12 @@ async function mergeAstroStyles(
   if (await pathExists(globalCssSrc) && !(await pathExists(globalCssDest))) {
     await fs.ensureDir(path.dirname(globalCssDest));
     await fs.copy(globalCssSrc, globalCssDest);
-    return;
+  } else if (await pathExists(globalCssDest)) {
+    const content = await fs.readFile(globalCssDest, "utf8");
+    const merged = mergeZenpanelThemeCss(content);
+    if (merged.changed) {
+      await fs.writeFile(globalCssDest, merged.content);
+    }
   }
 
   // Astro vanilla template uses src/styles/admin.css
@@ -598,14 +846,13 @@ async function mergeAngularStyles(
   let changed = false;
 
   if (!content.includes("admin.css")) {
-    content = `${content.trimEnd()}\n\n@import "./admin.css";\n`;
+    content = injectAfterImports(content, '@import "./admin.css";');
     changed = true;
   }
 
-  if (!content.includes("--color-brand-500")) {
-    content = `${content.trimEnd()}\n${THEME_TOKENS_SNIPPET}`;
-    changed = true;
-  }
+  const merged = mergeZenpanelThemeCss(content);
+  content = merged.content;
+  changed = changed || merged.changed;
 
   if (changed) {
     await fs.writeFile(stylesDest, content);
