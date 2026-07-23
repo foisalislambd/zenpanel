@@ -1,6 +1,6 @@
 {
   "name": "create-zenpanel",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "Create a new ZenPanel admin app, or install the admin panel into an existing project.",
   "license": "MIT",
   "author": "Foisal Islam",
