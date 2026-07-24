@@ -3,7 +3,7 @@
 [![CI](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml/badge.svg)](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-brightgreen.svg)](https://nodejs.org)
-[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-2088FF?logo=github)](https://foisalislambd.github.io/zenpanel/)
+[![Live demo](https://img.shields.io/badge/demo-zenpanel.foisal.org-2088FF?logo=github)](https://zenpanel.foisal.org/)
 
 **Open-source admin UI shell** — same polished dashboard across every major web framework.
 
@@ -13,7 +13,7 @@ Scaffold with one command, preview with sample data, then connect your own API w
 npm create zenpanel@latest
 ```
 
-**[Live demo](https://foisalislambd.github.io/zenpanel/)** — sign in with `admin` / `admin`
+**[Live demo](https://zenpanel.foisal.org/)** — sign in with `admin` / `admin`
 <p align="center">
   <img src="docs/images/light-panel-image.png" alt="ZenPanel dashboard in light mode" width="100%" />
 </p>
