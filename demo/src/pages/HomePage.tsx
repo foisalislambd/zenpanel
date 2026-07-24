@@ -1,7 +1,9 @@
 import { adminConfig } from "@/config/admin.config";
 import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
-import { ArrowRight, BookOpen, LayoutDashboard } from "lucide-react";
+import { ArrowRight, BookOpen, Github, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
+
+const GITHUB_URL = "https://github.com/foisalislambd/zenpanel";
 
 export default function HomePage() {
   return (
@@ -24,7 +26,19 @@ export default function HomePage() {
             {adminConfig.brand.name}
           </span>
         </div>
-        <AdminThemeToggle />
+        <div className="flex items-center gap-2">
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/5"
+            aria-label="ZenPanel on GitHub"
+          >
+            <Github className="h-4 w-4" />
+            <span className="hidden sm:inline">GitHub</span>
+          </a>
+          <AdminThemeToggle />
+        </div>
       </header>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-20 pt-8">
@@ -40,7 +54,7 @@ export default function HomePage() {
             guides, then explore the live admin preview.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
             <Link
               to="/docs"
               className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition hover:bg-brand-600 sm:w-auto"
@@ -56,6 +70,15 @@ export default function HomePage() {
               <LayoutDashboard className="h-4 w-4" />
               Admin
             </Link>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white/80 px-6 text-sm font-semibold text-gray-800 backdrop-blur transition hover:border-gray-400 hover:bg-white sm:w-auto dark:border-gray-700 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10"
+            >
+              <Github className="h-4 w-4" />
+              GitHub
+            </a>
           </div>
 
           <p className="mt-8 text-sm text-gray-500 dark:text-gray-500">
