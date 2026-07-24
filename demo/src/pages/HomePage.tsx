@@ -1,9 +1,22 @@
 import { adminConfig } from "@/config/admin.config";
 import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
-import { ArrowRight, BookOpen, Github, LayoutDashboard } from "lucide-react";
+import { ArrowRight, BookOpen, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const GITHUB_URL = "https://github.com/foisalislambd/zenpanel";
+
+function GitHubIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+      className={className}
+    >
+      <path d="M12 2C6.477 2 2 6.586 2 12.253c0 4.537 2.865 8.387 6.839 9.747.5.095.683-.222.683-.48 0-.237-.009-.866-.013-1.7-2.782.618-3.369-1.38-3.369-1.38-.455-1.184-1.11-1.5-1.11-1.5-.908-.636.069-.623.069-.623 1.004.072 1.532 1.06 1.532 1.06.892 1.568 2.341 1.115 2.91.853.091-.662.35-1.115.636-1.372-2.22-.259-4.555-1.143-4.555-5.087 0-1.124.39-2.043 1.029-2.764-.103-.26-.446-1.302.098-2.713 0 0 .84-.276 2.75 1.055A9.304 9.304 0 0 1 12 6.912a9.3 9.3 0 0 1 2.504.346c1.909-1.331 2.747-1.055 2.747-1.055.546 1.411.203 2.453.1 2.713.64.721 1.028 1.64 1.028 2.764 0 3.953-2.338 4.825-4.566 5.079.359.317.679.943.679 1.901 0 1.372-.012 2.477-.012 2.813 0 .26.18.58.688.48A10.215 10.215 0 0 0 22 12.253C22 6.586 17.523 2 12 2Z" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -34,7 +47,7 @@ export default function HomePage() {
             className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/5"
             aria-label="ZenPanel on GitHub"
           >
-            <Github className="h-4 w-4" />
+            <GitHubIcon className="h-4 w-4" />
             <span className="hidden sm:inline">GitHub</span>
           </a>
           <AdminThemeToggle />
@@ -76,7 +89,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white/80 px-6 text-sm font-semibold text-gray-800 backdrop-blur transition hover:border-gray-400 hover:bg-white sm:w-auto dark:border-gray-700 dark:bg-white/5 dark:text-gray-100 dark:hover:bg-white/10"
             >
-              <Github className="h-4 w-4" />
+              <GitHubIcon className="h-4 w-4" />
               GitHub
             </a>
           </div>
