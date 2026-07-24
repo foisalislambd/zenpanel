@@ -195,7 +195,7 @@ jobs:
         run: npm install
 
       - name: Verify admin pages exist
-        run: test -f admin/login.html && test -f admin/index.html && test -f js/config.js
+        run: test -f src/admin/login.html && test -f src/admin/index.html && test -f src/js/config.js
 
   astro-template:
     name: Build Astro template
