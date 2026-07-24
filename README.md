@@ -3,6 +3,7 @@
 [![CI](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml/badge.svg)](https://github.com/Foisalislambd/zenpanel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-brightgreen.svg)](https://nodejs.org)
+[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-2088FF?logo=github)](https://foisalislambd.github.io/zenpanel/)
 
 **Open-source admin UI shell** — same polished dashboard across every major web framework.
 
@@ -12,6 +13,7 @@ Scaffold with one command, preview with sample data, then connect your own API w
 npm create zenpanel@latest
 ```
 
+**[Live demo](https://foisalislambd.github.io/zenpanel/)** — sign in with `admin` / `admin`
 <p align="center">
   <img src="docs/images/light-panel-image.png" alt="ZenPanel dashboard in light mode" width="100%" />
 </p>
@@ -203,6 +205,7 @@ zenpanel/
 │           ├── html/             # Plain HTML + Tailwind CLI
 │           ├── astro/            # Astro 7
 │           └── angular/          # Angular 22
+├── demo/                         # Live admin demo (GitHub Pages)
 ├── docs/                         # Guides + screenshots
 └── README.md
 ```

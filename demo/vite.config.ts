@@ -3,11 +3,12 @@ import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import viteBasepath from 'vite-basepath';
+import viteBasepath from "vite-basepath";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
+// vite-basepath sets base to `./` so the build works on GitHub Pages (/zenpanel/).
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteBasepath()],
   resolve: {

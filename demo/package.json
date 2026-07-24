@@ -1,9 +1,9 @@
 {
-  "name": ".",
+  "name": "zenpanel-demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "ZenPanel admin UI shell for React + Vite",
+  "description": "Live ZenPanel admin demo (GitHub Pages)",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
