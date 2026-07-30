@@ -135,7 +135,7 @@ const DEFAULT_QUICK_ACTIONS: AdminChatQuickAction[] = [
                     [class.text-gray-800]="msg.role !== 'user'"
                     [class.shadow-gray-200/40]="msg.role !== 'user'"
                     [class.dark:border-gray-700]="msg.role !== 'user'"
-                    [class.dark:bg-gray-800/90]="msg.role !== 'user'"
+                    [class.dark:bg-gray-800]="msg.role !== 'user'"
                     [class.dark:text-gray-100]="msg.role !== 'user'"
                     [class.dark:shadow-none]="msg.role !== 'user'"
                   >
@@ -231,7 +231,7 @@ const DEFAULT_QUICK_ACTIONS: AdminChatQuickAction[] = [
 
         <div class="shrink-0 border-t border-gray-200 p-3 dark:border-gray-800">
           <div
-            class="rounded-xl border border-gray-200 bg-gray-50 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-500/15 dark:border-gray-700 dark:bg-gray-900/50"
+            class="rounded-xl border border-gray-200 bg-gray-50 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-500/15 dark:border-gray-700 dark:bg-gray-900"
           >
             <textarea
               #textareaRef

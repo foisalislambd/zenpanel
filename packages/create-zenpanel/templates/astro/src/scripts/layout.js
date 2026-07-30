@@ -486,7 +486,7 @@ export function mountAdminLayout(options = {}) {
           <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             <header
               data-header
-              class="admin-topbar sticky top-0 z-30 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 dark:bg-gray-900/95 dark:supports-[backdrop-filter]:bg-gray-900/80"
+              class="admin-topbar sticky top-0 z-30 w-full bg-white dark:bg-gray-900"
             ></header>
             <main
               data-main

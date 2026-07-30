@@ -34,7 +34,7 @@ function MessageBubble(props: { message: AdminChatMessage }) {
           "max-w-[92%] rounded-2xl px-3.5 py-2.5 text-sm shadow-sm",
           isUser()
             ? "bg-brand-500 text-white shadow-brand-500/20"
-            : "border border-gray-200/80 bg-white text-gray-800 shadow-gray-200/40 dark:border-gray-700 dark:bg-gray-800/90 dark:text-gray-100 dark:shadow-none",
+            : "border border-gray-200/80 bg-white text-gray-800 shadow-gray-200/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:shadow-none",
         )}
       >
         <Show when={!isUser()}>
@@ -357,7 +357,7 @@ export function AdminChatPanel(props: Props) {
         </Show>
 
         <div class="shrink-0 border-t border-gray-200 p-3 dark:border-gray-800">
-          <div class="rounded-xl border border-gray-200 bg-gray-50 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-500/15 dark:border-gray-700 dark:bg-gray-900/50">
+          <div class="rounded-xl border border-gray-200 bg-gray-50 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-500/15 dark:border-gray-700 dark:bg-gray-900">
             <textarea
               ref={textareaRef}
               value={prompt()}
