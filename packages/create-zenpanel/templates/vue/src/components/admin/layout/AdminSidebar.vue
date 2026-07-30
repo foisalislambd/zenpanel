@@ -81,12 +81,6 @@ const siteUrl = brand.siteUrl || "/";
     </div>
 
     <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-      <p
-        v-if="showLabels"
-        class="mb-2 px-3 text-[11px] font-semibold tracking-wider text-gray-400 uppercase"
-      >
-        Menu
-      </p>
       <RouterLink
         v-for="item in adminNavItems"
         :key="item.href"

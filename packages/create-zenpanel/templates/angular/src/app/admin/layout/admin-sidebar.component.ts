@@ -57,11 +57,6 @@ import { IconComponent } from '@/app/shared/icon.component';
       </div>
 
       <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-        @if (showLabels()) {
-          <p class="mb-2 px-3 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
-            Menu
-          </p>
-        }
         @for (item of navItems; track item.href) {
           <a
             [routerLink]="item.href"

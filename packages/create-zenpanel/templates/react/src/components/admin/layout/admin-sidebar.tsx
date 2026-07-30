@@ -74,11 +74,6 @@ export function AdminSidebar() {
       </div>
 
       <nav className="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-        {showLabels && (
-          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
-            Menu
-          </p>
-        )}
         {adminNavItems.map((item) => {
           const active = isAdminNavActive(pathname, item.href);
           const Icon = item.icon;

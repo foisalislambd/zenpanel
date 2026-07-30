@@ -173,11 +173,6 @@ export function mountAdminLayout(options = {}) {
       </div>
 
       <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-        ${
-          showLabels
-            ? `<p class="mb-2 px-3 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">Menu</p>`
-            : ""
-        }
         ${adminNavItems
           .map((item) => {
             const active = isActive(item.href);
@@ -273,7 +268,7 @@ export function mountAdminLayout(options = {}) {
             <input
               type="search"
               disabled
-              placeholder="Search — connect API to enable"
+              placeholder="Search"
               class="h-10 w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 py-2 pr-4 pl-10 text-sm text-gray-500 placeholder:text-gray-400 dark:border-gray-800 dark:bg-white/5 dark:text-gray-500"
               aria-label="Search"
               aria-describedby="admin-search-hint"

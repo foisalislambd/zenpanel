@@ -63,11 +63,6 @@
   </div>
 
   <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-    {#if showLabels}
-      <p class="mb-2 px-3 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
-        Menu
-      </p>
-    {/if}
     {#each adminNavItems as item (item.href)}
       {@const active = isAdminNavActive(pathname.current, item.href)}
       {@const Icon = item.icon}
