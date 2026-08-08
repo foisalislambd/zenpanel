@@ -40,67 +40,30 @@ node packages/create-zenpanel/dist/index.js my-test-app --framework nextjs --ski
 
 ### Work on a template
 
-```bash
-cd packages/create-zenpanel/templates/nextjs
-npm install
-npm run dev
-```
-
-Or for React (Vite):
+From the repo root (no `cd` needed). First run auto-installs if `node_modules` is missing:
 
 ```bash
-cd packages/create-zenpanel/templates/react
-npm install
-npm run dev
+npm run template -- list          # available frameworks
+npm run template -- nextjs        # npm run dev
+npm run template -- react build
+npm run template -- vue install
 ```
 
-Or for Preact (Vite):
+Shortcuts:
 
 ```bash
-cd packages/create-zenpanel/templates/preact
-npm install
-npm run dev
+npm run dev:nextjs
+npm run dev:react
+npm run dev:preact
+npm run dev:solid
+npm run dev:svelte
+npm run dev:vue
+npm run dev:html
+npm run dev:astro
+npm run dev:angular
 ```
 
-Or for Solid (Vite):
-
-```bash
-cd packages/create-zenpanel/templates/solid
-npm install
-npm run dev
-```
-
-Or for Svelte (Vite):
-
-```bash
-cd packages/create-zenpanel/templates/svelte
-npm install
-npm run dev
-```
-
-Or for Vue (Vite):
-
-```bash
-cd packages/create-zenpanel/templates/vue
-npm install
-npm run dev
-```
-
-Or for Astro:
-
-```bash
-cd packages/create-zenpanel/templates/astro
-npm install
-npm run dev
-```
-
-Or for Angular:
-
-```bash
-cd packages/create-zenpanel/templates/angular
-npm install
-npm run dev
-```
+You can still `cd packages/create-zenpanel/templates/<framework>` and run `npm install` / `npm run dev` there if you prefer.
 
 Preview login: `admin` / `admin` at `/admin/login`.
 
@@ -115,7 +78,11 @@ Preview login: `admin` / `admin` at `/admin/login`.
 npm run build
 ```
 
-For template UI changes, also run `npm run build` inside the template you changed.
+For template UI changes, also build that template:
+
+```bash
+npm run template -- nextjs build   # or react, vue, …
+```
 
 5. Update the README if your change affects setup or customization
 

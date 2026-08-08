@@ -34,6 +34,17 @@
     "build": "npm run build -w create-zenpanel",
     "dev:cli": "npm run dev -w create-zenpanel",
     "typecheck": "npm run typecheck -w create-zenpanel",
-    "create-zenpanel": "node packages/create-zenpanel/dist/index.js"
+    "create-zenpanel": "node packages/create-zenpanel/dist/index.js",
+    "template": "node scripts/template.mjs",
+    "template:list": "node scripts/template.mjs list",
+    "dev:nextjs": "node scripts/template.mjs nextjs",
+    "dev:react": "node scripts/template.mjs react",
+    "dev:preact": "node scripts/template.mjs preact",
+    "dev:solid": "node scripts/template.mjs solid",
+    "dev:svelte": "node scripts/template.mjs svelte",
+    "dev:vue": "node scripts/template.mjs vue",
+    "dev:html": "node scripts/template.mjs html",
+    "dev:astro": "node scripts/template.mjs astro",
+    "dev:angular": "node scripts/template.mjs angular"
   }
 }
