@@ -22,13 +22,20 @@ export default function DocsPublishingPage() {
 
       <DocsH2 id="automated">Automated release</DocsH2>
       <DocsP>
-        Bump the version in <DocsCode>packages/create-zenpanel/package.json</DocsCode>,
-        push to <DocsCode>main</DocsCode>, and wait for CI. When CI passes, the{" "}
-        <DocsCode>Release</DocsCode> workflow publishes to npmjs (Trusted Publisher) and
-        GitHub Packages, then creates a GitHub Release with tag{" "}
-        <DocsCode>vX.Y.Z</DocsCode>. If CI fails, nothing is published.
+        Push to <DocsCode>main</DocsCode> and wait for CI. When CI passes, the{" "}
+        <DocsCode>Release</DocsCode> workflow auto-bumps the version, publishes to
+        npmjs (Trusted Publisher) and GitHub Packages, then creates a GitHub Release
+        with tag <DocsCode>vX.Y.Z</DocsCode>. If CI fails, nothing is published.
       </DocsP>
       <DocsUl>
+        <li>
+          Version scheme: <DocsCode>2.0.0</DocsCode> → <DocsCode>2.0.1</DocsCode> → … →{" "}
+          <DocsCode>2.0.9</DocsCode> → <DocsCode>2.1.0</DocsCode> (rolls over after{" "}
+          <DocsCode>9</DocsCode>)
+        </li>
+        <li>
+          Skip with <DocsCode>[skip release]</DocsCode> in the commit message
+        </li>
         <li>
           npmjs: <DocsCode>create-zenpanel</DocsCode> (OIDC Trusted Publisher — no{" "}
           <DocsCode>NPM_TOKEN</DocsCode>)
@@ -41,6 +48,7 @@ export default function DocsPublishingPage() {
           <DocsCode>release.yml</DocsCode>
         </li>
       </DocsUl>
+      <DocsPre>{`git commit -m "docs: fix typo [skip release]"`}</DocsPre>
 
       <DocsH2 id="prerequisites">Manual publish prerequisites</DocsH2>
       <DocsUl>
