@@ -20,7 +20,29 @@ export default function DocsPublishingPage() {
         <DocsCode>packages/create-zenpanel</DocsCode>.
       </DocsLead>
 
-      <DocsH2 id="prerequisites">Prerequisites</DocsH2>
+      <DocsH2 id="automated">Automated release</DocsH2>
+      <DocsP>
+        Bump the version in <DocsCode>packages/create-zenpanel/package.json</DocsCode>,
+        push to <DocsCode>main</DocsCode>, and wait for CI. When CI passes, the{" "}
+        <DocsCode>Release</DocsCode> workflow publishes to npmjs (Trusted Publisher) and
+        GitHub Packages, then creates a GitHub Release with tag{" "}
+        <DocsCode>vX.Y.Z</DocsCode>. If CI fails, nothing is published.
+      </DocsP>
+      <DocsUl>
+        <li>
+          npmjs: <DocsCode>create-zenpanel</DocsCode> (OIDC Trusted Publisher — no{" "}
+          <DocsCode>NPM_TOKEN</DocsCode>)
+        </li>
+        <li>
+          GitHub Packages: <DocsCode>@foisalislambd/create-zenpanel</DocsCode>
+        </li>
+        <li>
+          Trusted Publisher workflow filename must be exactly{" "}
+          <DocsCode>release.yml</DocsCode>
+        </li>
+      </DocsUl>
+
+      <DocsH2 id="prerequisites">Manual publish prerequisites</DocsH2>
       <DocsUl>
         <li>npm account with publish rights</li>
         <li>
@@ -29,7 +51,7 @@ export default function DocsPublishingPage() {
         <li>Clean git state (recommended)</li>
       </DocsUl>
 
-      <DocsH2 id="checklist">Checklist</DocsH2>
+      <DocsH2 id="checklist">Manual checklist</DocsH2>
       <DocsOl>
         <li>
           <strong>Build the CLI</strong>
@@ -72,11 +94,11 @@ npx create-zenpanel@latest --help`}</DocsPre>
         Root package <DocsCode>zenpanel</DocsCode> is{" "}
         <DocsCode>private: true</DocsCode> — only publish{" "}
         <DocsCode>create-zenpanel</DocsCode>. The package must stay named{" "}
-        <DocsCode>create-zenpanel</DocsCode> so{" "}
+        <DocsCode>create-zenpanel</DocsCode> on npmjs so{" "}
         <DocsCode>npm create zenpanel@latest</DocsCode> works.
       </DocsCallout>
       <DocsP>
-        Prefer tagging a git release that matches the npm version.
+        Prefer the automated Release workflow so the git tag matches the npm version.
       </DocsP>
     </DocsProse>
   );

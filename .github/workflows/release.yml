@@ -1,0 +1,140 @@
+# Publishes create-zenpanel after CI succeeds on main.
+# Order: build check → npmjs (Trusted Publisher / OIDC) → GitHub Packages → GitHub Release + tag.
+# If CI fails, this workflow does not run publish/release.
+#
+# npm Trusted Publisher setup (one-time on npmjs.com → create-zenpanel → Settings):
+#   Organization or user: foisalislambd
+#   Repository:           zenpanel
+#   Workflow filename:    release.yml
+#   Allowed actions:      npm publish
+
+name: Release
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish and release
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # No registry-url here: setup-node would write an empty _authToken and
+          # that can block npm Trusted Publisher (OIDC) authentication.
+          node-version: "24"
+          cache: npm
+
+      - name: Ensure npm supports Trusted Publisher (OIDC)
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CLI
+        run: npm run build
+
+      - name: Typecheck CLI
+        run: npm run typecheck
+
+      - name: Resolve version
+        id: meta
+        run: |
+          VERSION="$(node -p "require('./packages/create-zenpanel/package.json').version")"
+          TAG="v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Package version: ${VERSION}"
+
+      - name: Skip if already released
+        id: gate
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag ${TAG} already exists — skipping publish/release."
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            echo "publish_npmjs=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_publish=true" >> "$GITHUB_OUTPUT"
+
+          if npm view "create-zenpanel@${VERSION}" version >/dev/null 2>&1; then
+            echo "create-zenpanel@${VERSION} already on npmjs — will skip npmjs publish."
+            echo "publish_npmjs=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish_npmjs=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npmjs.com (Trusted Publisher)
+        if: steps.gate.outputs.should_publish == 'true' && steps.gate.outputs.publish_npmjs == 'true'
+        working-directory: packages/create-zenpanel
+        run: npm publish --access public
+        # No NODE_AUTH_TOKEN — OIDC Trusted Publisher authenticates this step.
+
+      - name: Publish to GitHub Packages
+        if: steps.gate.outputs.should_publish == 'true'
+        working-directory: packages/create-zenpanel
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s\n' \
+            '@foisalislambd:registry=https://npm.pkg.github.com' \
+            "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" \
+            > "$HOME/.npmrc-github"
+
+          VERSION="${{ steps.meta.outputs.version }}"
+          if npm view "@foisalislambd/create-zenpanel@${VERSION}" version \
+            --userconfig "$HOME/.npmrc-github" >/dev/null 2>&1; then
+            echo "@foisalislambd/create-zenpanel@${VERSION} already on GitHub Packages — skipping."
+            exit 0
+          fi
+
+          # GitHub Packages requires a scope matching the repo owner.
+          npm pkg set name="@foisalislambd/create-zenpanel"
+          npm pkg set publishConfig.registry="https://npm.pkg.github.com"
+          npm publish --userconfig "$HOME/.npmrc-github"
+
+      - name: Create GitHub Release with tag
+        if: steps.gate.outputs.should_publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          TARGET: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          NOTES="$(printf '%s\n' \
+            "Automated release of \`create-zenpanel@${VERSION}\`." \
+            "" \
+            "- npmjs: https://www.npmjs.com/package/create-zenpanel/v/${VERSION}" \
+            "- GitHub Packages: \`@foisalislambd/create-zenpanel@${VERSION}\`")"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --target "$TARGET" \
+            --notes "$NOTES"
