@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Categories — ZenPanel</title>
+    <title>Categories � ZenPanel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,11 +20,13 @@
     <script type="module">
       import { mountAdminLayout } from "/js/layout.js";
       import { renderResourcePage } from "/js/resource.js";
+      import { adminCategories } from "/js/data.js";
 
       mountAdminLayout({ title: "Categories" });
       renderResourcePage(document.getElementById("page-content"), {
         title: "Categories",
         resourceLabel: "category",
+        items: adminCategories,
       });
     </script>
   </body>

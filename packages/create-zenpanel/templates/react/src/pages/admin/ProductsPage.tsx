@@ -7,6 +7,7 @@ export default function AdminProductsPage() {
       title="Products"
       resourceLabel="product"
       items={adminProducts}
+      searchPlaceholder="Search title, price..."
     />
   );
 }

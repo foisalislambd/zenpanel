@@ -10,6 +10,7 @@ export type {
   PortalUserRow,
   PublicAdmin,
   RecentOrder,
+  UserAccountStatus,
 } from "./types";
 
 export {

@@ -10,10 +10,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 <script>
   import { mountAdminLayout } from "../../scripts/layout.js";
   import { renderResourcePage } from "../../scripts/resource.js";
+  import { adminProjects } from "../../scripts/data.js";
 
   mountAdminLayout({ title: "Projects" });
   renderResourcePage(document.getElementById("page-content"), {
     title: "Projects",
     resourceLabel: "project",
+    items: adminProjects,
   });
 </script>

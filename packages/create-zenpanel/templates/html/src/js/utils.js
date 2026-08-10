@@ -97,7 +97,7 @@ export function breadcrumbs(pageTitle) {
   `;
 }
 
-export function pageHeader(title) {
+export function pageHeader(title, actions = "") {
   return `
     <div class="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
       <div class="min-w-0 flex-1">
@@ -105,6 +105,7 @@ export function pageHeader(title) {
           ${escapeHtml(title)}
         </h1>
       </div>
+      ${actions}
     </div>
   `;
 }

@@ -28,6 +28,11 @@ export const demoUsers = [
     email: "sarah.m@example.com",
     authProvider: "google",
     createdAt: daysAgo(0, 9),
+    country: "United States",
+    phone: "+1 415 555 0182",
+    status: "active",
+    emailVerified: true,
+    lastIp: "104.28.41.12",
   },
   {
     id: "u-2",
@@ -35,6 +40,11 @@ export const demoUsers = [
     email: "james.chen@example.com",
     authProvider: "email",
     createdAt: daysAgo(1, 14),
+    country: "Singapore",
+    phone: "+65 8123 4567",
+    status: "active",
+    emailVerified: false,
+    lastIp: "103.25.88.41",
   },
   {
     id: "u-3",
@@ -42,6 +52,11 @@ export const demoUsers = [
     email: "emma.r@example.com",
     authProvider: "discord",
     createdAt: daysAgo(2, 11),
+    country: "Spain",
+    phone: null,
+    status: "active",
+    emailVerified: true,
+    lastIp: "88.12.203.55",
   },
   {
     id: "u-4",
@@ -49,6 +64,11 @@ export const demoUsers = [
     email: "michael.ob@example.com",
     authProvider: "apple",
     createdAt: daysAgo(3, 16),
+    country: "Ireland",
+    phone: "+353 87 123 4567",
+    status: "banned",
+    emailVerified: true,
+    lastIp: "78.153.201.9",
   },
   {
     id: "u-5",
@@ -56,6 +76,23 @@ export const demoUsers = [
     email: "priya.s@example.com",
     authProvider: "email",
     createdAt: daysAgo(4, 10),
+    country: "India",
+    phone: "+91 98765 43210",
+    status: "active",
+    emailVerified: true,
+    lastIp: "49.36.112.88",
+  },
+  {
+    id: "u-6",
+    name: "foisal",
+    email: "ifoisal463@gmail.com",
+    authProvider: "email",
+    createdAt: "2026-07-20T10:00:00.000Z",
+    country: null,
+    phone: null,
+    status: "active",
+    emailVerified: false,
+    lastIp: "103.112.45.19",
   },
 ];
 
@@ -161,14 +198,216 @@ export const demoOrders = [
   },
 ];
 
-/** Empty resource lists — wire your API for real data (matches Next resources.ts) */
-export const emptyResources = [];
-export const adminProjects = emptyResources;
-export const adminServices = emptyResources;
-export const adminBlogPosts = emptyResources;
-export const adminProducts = emptyResources;
-export const adminServiceOrders = emptyResources;
-export const adminTransactions = emptyResources;
-export const adminPayments = emptyResources;
-export const adminCategories = emptyResources;
-export const adminNewsletter = emptyResources;
+function resourceDaysAgo(days) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  d.setHours(12, 0, 0, 0);
+  return d.toISOString();
+}
+
+export const adminProjects = [
+  {
+    id: "prj-1",
+    title: "Acme website redesign",
+    status: "published",
+    updatedAt: resourceDaysAgo(1),
+    meta: "Web · Featured",
+  },
+  {
+    id: "prj-2",
+    title: "Nova mobile app",
+    status: "draft",
+    updatedAt: resourceDaysAgo(3),
+    meta: "iOS / Android",
+  },
+  {
+    id: "prj-3",
+    title: "GreenLeaf brand kit",
+    status: "published",
+    updatedAt: resourceDaysAgo(8),
+    meta: "Branding",
+  },
+  {
+    id: "prj-4",
+    title: "Legacy portal archive",
+    status: "archived",
+    updatedAt: resourceDaysAgo(40),
+    meta: "Internal",
+  },
+];
+
+export const adminServices = [
+  {
+    id: "svc-1",
+    title: "Website redesign",
+    status: "published",
+    updatedAt: resourceDaysAgo(2),
+    meta: "$2,400 · 4 weeks",
+  },
+  {
+    id: "svc-2",
+    title: "SEO audit",
+    status: "published",
+    updatedAt: resourceDaysAgo(5),
+    meta: "$450 · 1 week",
+  },
+  {
+    id: "svc-3",
+    title: "Brand identity",
+    status: "draft",
+    updatedAt: resourceDaysAgo(6),
+    meta: "$1,800 · 3 weeks",
+  },
+  {
+    id: "svc-4",
+    title: "Legacy support plan",
+    status: "archived",
+    updatedAt: resourceDaysAgo(60),
+    meta: "Retired",
+  },
+];
+
+export const adminBlogPosts = [
+  {
+    id: "post-1",
+    title: "How we ship admin panels faster",
+    status: "published",
+    updatedAt: resourceDaysAgo(2),
+    meta: "Product · 6 min read",
+  },
+  {
+    id: "post-2",
+    title: "Designing searchable data tables",
+    status: "draft",
+    updatedAt: resourceDaysAgo(4),
+    meta: "Design · Draft",
+  },
+  {
+    id: "post-3",
+    title: "Q2 product changelog",
+    status: "published",
+    updatedAt: resourceDaysAgo(12),
+    meta: "Changelog",
+  },
+];
+
+export const adminProducts = [
+  {
+    id: "prod-1",
+    title: "Starter license",
+    status: "published",
+    updatedAt: resourceDaysAgo(1),
+    meta: "$49 · Digital",
+  },
+  {
+    id: "prod-2",
+    title: "Pro license",
+    status: "published",
+    updatedAt: resourceDaysAgo(1),
+    meta: "$149 · Digital",
+  },
+  {
+    id: "prod-3",
+    title: "Agency bundle",
+    status: "draft",
+    updatedAt: resourceDaysAgo(7),
+    meta: "$399 · Bundle",
+  },
+  {
+    id: "prod-4",
+    title: "Legacy addon",
+    status: "archived",
+    updatedAt: resourceDaysAgo(90),
+    meta: "Discontinued",
+  },
+];
+
+export const adminCategories = [
+  {
+    id: "cat-1",
+    title: "Web development",
+    status: "published",
+    updatedAt: resourceDaysAgo(3),
+    meta: "12 items",
+  },
+  {
+    id: "cat-2",
+    title: "Design",
+    status: "published",
+    updatedAt: resourceDaysAgo(5),
+    meta: "8 items",
+  },
+  {
+    id: "cat-3",
+    title: "Marketing",
+    status: "draft",
+    updatedAt: resourceDaysAgo(9),
+    meta: "3 items",
+  },
+];
+
+export const adminTransactions = [
+  {
+    id: "txn-1",
+    title: "Wallet top-up",
+    status: "published",
+    updatedAt: resourceDaysAgo(0),
+    meta: "+$250 · Stripe",
+  },
+  {
+    id: "txn-2",
+    title: "Service payment",
+    status: "published",
+    updatedAt: resourceDaysAgo(1),
+    meta: "-$450 · ORD-1047",
+  },
+  {
+    id: "txn-3",
+    title: "Refund pending",
+    status: "draft",
+    updatedAt: resourceDaysAgo(2),
+    meta: "+$85 · Review",
+  },
+  {
+    id: "txn-4",
+    title: "Failed payout",
+    status: "archived",
+    updatedAt: resourceDaysAgo(10),
+    meta: "-$120 · Bank",
+  },
+];
+
+export const adminPayments = [
+  {
+    id: "pay-1",
+    title: "Stripe deposit",
+    status: "published",
+    updatedAt: resourceDaysAgo(0),
+    meta: "$850 · Completed",
+  },
+  {
+    id: "pay-2",
+    title: "Invoice #1042",
+    status: "published",
+    updatedAt: resourceDaysAgo(2),
+    meta: "$1,800 · Settled",
+  },
+  {
+    id: "pay-3",
+    title: "PayPal deposit",
+    status: "draft",
+    updatedAt: resourceDaysAgo(3),
+    meta: "$320 · Pending",
+  },
+  {
+    id: "pay-4",
+    title: "Chargeback case",
+    status: "archived",
+    updatedAt: resourceDaysAgo(18),
+    meta: "$99 · Closed",
+  },
+];
+
+/** Empty until you connect your API — not tagged in the shared list UI demo. */
+export const adminServiceOrders = [];
+export const adminNewsletter = [];

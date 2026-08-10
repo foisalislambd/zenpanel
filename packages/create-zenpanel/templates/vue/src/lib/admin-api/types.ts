@@ -27,12 +27,19 @@ export type DashboardStats = {
   publishedPosts: number;
 };
 
+export type UserAccountStatus = "active" | "banned";
+
 export type PortalUserRow = {
   id: string;
   name: string;
   email: string;
   authProvider: string;
   createdAt: string;
+  country: string | null;
+  phone: string | null;
+  status: UserAccountStatus;
+  emailVerified: boolean;
+  lastIp: string | null;
 };
 
 export type ChartDataPoint = {

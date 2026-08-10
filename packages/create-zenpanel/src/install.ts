@@ -57,7 +57,6 @@ const REACT_COPY_PATHS = [
 ] as const;
 
 const ASTRO_COPY_PATHS = [
-  "src/components/AdminResourcePage.astro",
   "src/layouts/AdminLayout.astro",
   "src/pages/admin",
   "src/scripts",
@@ -72,21 +71,35 @@ const HTML_COPY_PATHS = [
 
 const SVELTE_COPY_PATHS = [
   "src/lib",
+  "src/components",
+  "src/pages",
+  "src/layouts",
+  "src/context",
+  "src/hooks",
+  "src/config",
   "src/routes",
   "src/App.svelte",
   "src/admin.css",
   "src/main.ts",
+  "src/vite-env.d.ts",
+  "src/zenpanel-admin-routes.example.ts",
   "index.html",
   "public/favicon.svg",
 ] as const;
 
 const VUE_COPY_PATHS = [
   "src/lib",
-  "src/routes",
+  "src/components",
+  "src/pages",
+  "src/layouts",
+  "src/composables",
+  "src/config",
+  "src/router",
   "src/App.vue",
   "src/admin.css",
   "src/main.ts",
   "src/vite-env.d.ts",
+  "src/zenpanel-admin-routes.example.ts",
   "index.html",
   "public/favicon.svg",
 ] as const;

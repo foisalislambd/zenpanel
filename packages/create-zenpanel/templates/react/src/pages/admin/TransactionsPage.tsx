@@ -7,6 +7,7 @@ export default function AdminTransactionsPage() {
       title="Transactions"
       resourceLabel="transaction"
       items={adminTransactions}
+      searchPlaceholder="Search title, amount, reference..."
     />
   );
 }

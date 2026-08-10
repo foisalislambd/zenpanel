@@ -1,11 +1,9 @@
-import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
-import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
+import { AdminUsersPage } from "@/components/admin/users/admin-users-page";
 import { AdminLoading } from "@/components/admin/ui/admin-loading";
 import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 import { createResource, Show } from "solid-js";
 
-export default function AdminUsersPage() {
+export default function UsersPage() {
   const [users] = createResource<PortalUserRow[]>(async () => {
     const res = await previewFetchUsers();
     return res.users;
@@ -23,11 +21,7 @@ export default function AdminUsersPage() {
           </div>
         }
       >
-        <div class="admin-content space-y-6">
-          <AdminBreadcrumbs />
-          <AdminPageHeader title="Users" />
-          <RecentUsersTable users={users() ?? []} href={null} />
-        </div>
+        <AdminUsersPage users={users() ?? []} />
       </Show>
     </Show>
   );
