@@ -83,7 +83,7 @@ export function ResourcePage({
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onInput={(e) => setQuery(e.currentTarget.value)}
             placeholder={searchPlaceholder}
             className="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
             aria-label={`Search ${pluralize(resourceLabel, 2)}`}

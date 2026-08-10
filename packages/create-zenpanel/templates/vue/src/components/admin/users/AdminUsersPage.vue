@@ -203,8 +203,8 @@ const detailRows = computed(() => {
                 :item-label="user.name"
                 size="md"
                 :on-view="() => (selected = user)"
-                :on-edit="onEdit ? () => onEdit(user) : undefined"
-                :on-delete="onDelete ? () => onDelete(user) : undefined"
+                :on-edit="onEdit ? () => onEdit?.(user) : undefined"
+                :on-delete="onDelete ? () => onDelete?.(user) : undefined"
               />
             </div>
           </li>
@@ -281,8 +281,8 @@ const detailRows = computed(() => {
                   <AdminRowActions
                     :item-label="user.name"
                     :on-view="() => (selected = user)"
-                    :on-edit="onEdit ? () => onEdit(user) : undefined"
-                    :on-delete="onDelete ? () => onDelete(user) : undefined"
+                    :on-edit="onEdit ? () => onEdit?.(user) : undefined"
+                    :on-delete="onDelete ? () => onDelete?.(user) : undefined"
                   />
                 </td>
               </tr>

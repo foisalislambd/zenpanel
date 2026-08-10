@@ -146,9 +146,9 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
               <AdminRowActions
                 :item-label="item.title"
                 size="md"
-                :on-view="onView ? () => onView(item) : undefined"
-                :on-edit="onEdit ? () => onEdit(item) : undefined"
-                :on-delete="onDelete ? () => onDelete(item) : undefined"
+                :on-view="onView ? () => onView?.(item) : undefined"
+                :on-edit="onEdit ? () => onEdit?.(item) : undefined"
+                :on-delete="onDelete ? () => onDelete?.(item) : undefined"
               />
             </div>
           </li>
@@ -198,9 +198,9 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
                 <td class="px-5 py-3.5">
                   <AdminRowActions
                     :item-label="item.title"
-                    :on-view="onView ? () => onView(item) : undefined"
-                    :on-edit="onEdit ? () => onEdit(item) : undefined"
-                    :on-delete="onDelete ? () => onDelete(item) : undefined"
+                    :on-view="onView ? () => onView?.(item) : undefined"
+                    :on-edit="onEdit ? () => onEdit?.(item) : undefined"
+                    :on-delete="onDelete ? () => onDelete?.(item) : undefined"
                   />
                 </td>
               </tr>
