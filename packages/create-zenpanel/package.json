@@ -6,13 +6,13 @@
   "author": "Foisal Islam",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Foisalislambd/zenpanel.git",
+    "url": "git+https://github.com/foisalislambd/zenpanel.git",
     "directory": "packages/create-zenpanel"
   },
   "bugs": {
-    "url": "https://github.com/Foisalislambd/zenpanel/issues"
+    "url": "https://github.com/foisalislambd/zenpanel/issues"
   },
-  "homepage": "https://github.com/Foisalislambd/zenpanel#readme",
+  "homepage": "https://github.com/foisalislambd/zenpanel#readme",
   "keywords": [
     "zenpanel",
     "admin",
