@@ -1,0 +1,39 @@
+{
+  "name": "zenpanel",
+  "version": "0.1.0",
+  "description": "ZenPanel - open-source admin UI shell. Scaffold with: npm create zenpanel",
+  "license": "MIT",
+  "author": "Foisal Islam",
+  "type": "module",
+  "bin": {
+    "zenpanel": "./bin/zenpanel.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foisalislambd/zenpanel.git",
+    "directory": "packages/zenpanel"
+  },
+  "bugs": {
+    "url": "https://github.com/foisalislambd/zenpanel/issues"
+  },
+  "homepage": "https://github.com/foisalislambd/zenpanel#readme",
+  "keywords": [
+    "zenpanel",
+    "admin",
+    "dashboard",
+    "admin-panel",
+    "nextjs",
+    "react",
+    "create-zenpanel"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

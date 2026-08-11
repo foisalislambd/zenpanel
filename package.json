@@ -1,5 +1,5 @@
 {
-  "name": "zenpanel",
+  "name": "zenpanel-monorepo",
   "version": "1.0.1",
   "private": true,
   "description": "ZenPanel — open-source admin UI shell. Scaffold with npm create zenpanel.",
