@@ -7,6 +7,7 @@ export default function AdminPaymentsPage() {
       title="Payments"
       resourceLabel="payment"
       items={adminPayments}
+      searchPlaceholder="Search title, provider, amount..."
     />
   );
 }

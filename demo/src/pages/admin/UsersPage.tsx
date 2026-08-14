@@ -1,11 +1,9 @@
-import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
-import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
+import { AdminUsersPage } from "@/components/admin/users/admin-users-page";
 import { AdminLoading } from "@/components/admin/ui/admin-loading";
 import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 import { useEffect, useState } from "react";
 
-export default function AdminUsersPage() {
+export default function UsersPage() {
   const [users, setUsers] = useState<PortalUserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,11 +41,5 @@ export default function AdminUsersPage() {
     );
   }
 
-  return (
-    <div className="admin-content space-y-6">
-      <AdminBreadcrumbs />
-      <AdminPageHeader title="Users" />
-      <RecentUsersTable users={users} href={null} />
-    </div>
-  );
+  return <AdminUsersPage users={users} />;
 }

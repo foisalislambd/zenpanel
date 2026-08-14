@@ -7,6 +7,7 @@ export default function AdminBlogPage() {
       title="Blog"
       resourceLabel="post"
       items={adminBlogPosts}
+      searchPlaceholder="Search title, topic..."
     />
   );
 }
