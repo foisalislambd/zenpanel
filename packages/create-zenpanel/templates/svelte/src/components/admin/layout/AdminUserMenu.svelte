@@ -53,7 +53,7 @@
       {auth.admin?.username?.charAt(0)?.toUpperCase() ?? "A"}
     </span>
     <span class="hidden min-w-0 text-left md:block">
-      <span class="block truncate text-sm font-medium text-gray-800 dark:text-white/90">
+      <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
         {auth.admin?.username ?? "admin"}
       </span>
       <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
@@ -73,7 +73,7 @@
       class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
     >
       <div class="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
-        <p class="truncate text-sm font-medium text-gray-800 dark:text-white/90">
+        <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
           {auth.admin?.username}
         </p>
         <p class="truncate text-xs text-gray-500">{auth.admin?.email}</p>

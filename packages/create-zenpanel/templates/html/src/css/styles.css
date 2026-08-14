@@ -1673,11 +1673,11 @@
   --sidebar-expanded: 260px;
   --sidebar-collapsed: 80px;
   --background: 210 40% 98%;
-  --foreground: 222.2 84% 4.9%;
+  --foreground: 0 0% 0%;
 }
 .dark {
   --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+  --foreground: 0 0% 100%;
 }
 html {
   color-scheme: light;
@@ -1790,11 +1790,11 @@ button, input {
 @layer base {
   :root {
     --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 0%;
   }
   .dark {
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --foreground: 0 0% 100%;
   }
   body {
     background-color: hsl(var(--background));

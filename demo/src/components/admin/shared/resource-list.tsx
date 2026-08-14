@@ -82,7 +82,7 @@ export function ResourceList({ items, resourceLabel }: Props) {
                   key={item.id}
                   className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white/90">
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                     {item.title}
                   </td>
                   <td className="px-6 py-4">

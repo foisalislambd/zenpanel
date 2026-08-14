@@ -317,7 +317,7 @@ export function mountAdminLayout(options = {}) {
                 ${escapeHtml(initial)}
               </span>
               <span class="hidden min-w-0 text-left md:block">
-                <span class="block truncate text-sm font-medium text-gray-800 dark:text-white/90">
+                <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
                   ${escapeHtml(admin.username ?? "admin")}
                 </span>
                 <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
@@ -335,7 +335,7 @@ export function mountAdminLayout(options = {}) {
               ${userMenuOpen ? "" : "hidden"}
             >
               <div class="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
-                <p class="truncate text-sm font-medium text-gray-800 dark:text-white/90">${escapeHtml(admin.username ?? "")}</p>
+                <p class="truncate text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin.username ?? "")}</p>
                 <p class="truncate text-xs text-gray-500">${escapeHtml(admin.email ?? "")}</p>
               </div>
               <a

@@ -234,3 +234,14 @@
   background-color: #344054;
   color: #ecf3ff;
 }
+
+/* Primary text: solid black (light) / solid white (dark).
+   Muted text (gray-400/500/600) is left unchanged. */
+.text-gray-900 {
+  color: #000000;
+}
+
+.dark .text-gray-900,
+.dark .text-white\/90 {
+  color: #ffffff;
+}

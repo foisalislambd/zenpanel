@@ -5,12 +5,12 @@
   --sidebar-expanded: 260px;
   --sidebar-collapsed: 80px;
   --background: 210 40% 98%;
-  --foreground: 222.2 84% 4.9%;
+  --foreground: 0 0% 0%;
 }
 
 .dark {
   --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+  --foreground: 0 0% 100%;
 }
 
 html {
@@ -135,4 +135,15 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Primary text: solid black (light) / solid white (dark).
+   Muted text (gray-400/500/600) is left unchanged. */
+.text-gray-900 {
+  color: #000000;
+}
+
+.dark .text-gray-900,
+.dark .text-white\/90 {
+  color: #ffffff;
 }
