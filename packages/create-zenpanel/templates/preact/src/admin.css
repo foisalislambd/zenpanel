@@ -103,8 +103,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 3.5rem;
+  box-sizing: border-box;
   border-bottom: 1px solid #e4e7ec;
-  padding: 0.75rem 1rem;
+  padding: 0 1rem;
 }
 
 .dark .admin-content-editor-panel-header {

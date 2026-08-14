@@ -253,7 +253,7 @@ export function AdminChatPanel(props: Props) {
       >
         <div class="admin-content-editor-panel-header shrink-0">
           <div class="flex min-w-0 items-center gap-2.5">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
+            <div class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400">
               <Sparkles class="h-4 w-4" aria-hidden />
             </div>
             <div class="min-w-0">
