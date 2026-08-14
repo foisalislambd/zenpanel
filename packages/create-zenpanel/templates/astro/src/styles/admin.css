@@ -56,7 +56,7 @@ body {
 }
 
 .admin-topbar {
-  height: 4rem;
+  height: 3.5rem;
   flex-shrink: 0;
   border-bottom: 1px solid #e4e7ec;
 }

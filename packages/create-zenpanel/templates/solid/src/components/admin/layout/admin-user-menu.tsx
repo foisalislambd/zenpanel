@@ -45,12 +45,12 @@ export function AdminUserMenu() {
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white py-1.5 pr-2 pl-1.5 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
+        class="flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1.5 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
         aria-expanded={open()}
         aria-haspopup="menu"
         aria-controls={menuId}
       >
-        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white">
+        <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white">
           {admin()?.username?.charAt(0)?.toUpperCase() ?? "A"}
         </span>
         <span class="hidden min-w-0 text-left md:block">
