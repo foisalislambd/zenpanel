@@ -62,9 +62,6 @@ export function AdminUserMenu() {
           <span className="block truncate text-sm font-medium text-gray-900 dark:text-white">
             {admin?.username ?? "admin"}
           </span>
-          <span className="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
-            {admin?.email}
-          </span>
         </span>
         <ChevronDown
           className={`hidden h-4 w-4 shrink-0 text-gray-500 transition md:block ${open ? "rotate-180" : ""}`}
@@ -82,7 +79,6 @@ export function AdminUserMenu() {
             <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
               {admin?.username}
             </p>
-            <p className="truncate text-xs text-gray-500">{admin?.email}</p>
           </div>
           <Link
             href="/admin/settings"

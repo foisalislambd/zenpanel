@@ -24,9 +24,6 @@ import { IconComponent } from '@/app/shared/icon.component';
           <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">{{
             auth.admin()?.username ?? 'admin'
           }}</span>
-          <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">{{
-            auth.admin()?.email
-          }}</span>
         </span>
         <app-icon
           name="chevron-down"
@@ -45,7 +42,6 @@ import { IconComponent } from '@/app/shared/icon.component';
             <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
               {{ auth.admin()?.username }}
             </p>
-            <p class="truncate text-xs text-gray-500">{{ auth.admin()?.email }}</p>
           </div>
           <a
             routerLink="/admin/settings"

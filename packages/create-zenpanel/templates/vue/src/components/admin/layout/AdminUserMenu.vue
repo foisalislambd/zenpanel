@@ -62,9 +62,6 @@ function handleLogout() {
         <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
           {{ auth.admin?.username ?? "admin" }}
         </span>
-        <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
-          {{ auth.admin?.email }}
-        </span>
       </span>
       <ChevronDown
         :class="[
@@ -85,7 +82,6 @@ function handleLogout() {
         <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
           {{ auth.admin?.username }}
         </p>
-        <p class="truncate text-xs text-gray-500">{{ auth.admin?.email }}</p>
       </div>
       <RouterLink
         to="/admin/settings"

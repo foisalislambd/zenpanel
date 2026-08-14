@@ -320,9 +320,6 @@ export function mountAdminLayout(options = {}) {
                 <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
                   ${escapeHtml(admin.username ?? "admin")}
                 </span>
-                <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
-                  ${escapeHtml(admin.email ?? "")}
-                </span>
               </span>
               ${icon("chevron-down", `hidden h-4 w-4 shrink-0 text-gray-500 transition md:block ${userMenuOpen ? "rotate-180" : ""}`)}
             </button>
@@ -336,7 +333,6 @@ export function mountAdminLayout(options = {}) {
             >
               <div class="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
                 <p class="truncate text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin.username ?? "")}</p>
-                <p class="truncate text-xs text-gray-500">${escapeHtml(admin.email ?? "")}</p>
               </div>
               <a
                 href="/admin/settings"

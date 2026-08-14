@@ -56,9 +56,6 @@
       <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
         {auth.admin?.username ?? "admin"}
       </span>
-      <span class="block max-w-[140px] truncate text-xs text-gray-500 dark:text-gray-400">
-        {auth.admin?.email}
-      </span>
     </span>
     <ChevronDown
       class="hidden h-4 w-4 shrink-0 text-gray-500 transition md:block {open ? 'rotate-180' : ''}"
@@ -76,7 +73,6 @@
         <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
           {auth.admin?.username}
         </p>
-        <p class="truncate text-xs text-gray-500">{auth.admin?.email}</p>
       </div>
       <RouterLink
         href="/admin/settings"
