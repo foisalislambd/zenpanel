@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import fs from "fs-extra";
 import path from "node:path";
 import pc from "picocolors";
+import { writeZenpanelAgentFiles } from "./agent-files";
 import {
   getTemplatesDir,
   normalizeFrameworkId,
@@ -183,6 +184,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
     });
 
     await updatePackageName(targetDir, packageName);
+    await writeZenpanelAgentFiles(targetDir, framework);
     spinner.stop(`Project ${pc.cyan(path.basename(targetDir))} created.`);
   } catch (error) {
     spinner.stop("Failed to create project.");

@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import fs from "fs-extra";
 import path from "node:path";
 import pc from "picocolors";
+import { writeZenpanelAgentFiles } from "./agent-files";
 import { ADMIN_PEER_DEPS, getTemplatesDir } from "./constants";
 import {
   detectFrameworkFromPackage,
@@ -336,6 +337,8 @@ export async function installIntoExisting(
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
+
+    await writeZenpanelAgentFiles(cwd, framework);
 
     spinner.stop("Admin files copied.");
   } catch (error) {
