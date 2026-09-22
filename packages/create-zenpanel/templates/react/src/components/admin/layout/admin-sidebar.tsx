@@ -57,7 +57,6 @@ export function AdminSidebar() {
               <p className="truncate text-[15px] font-semibold text-gray-900 dark:text-white">
                 {brand.name}
               </p>
-              <p className="truncate text-xs text-gray-500">{brand.tagline}</p>
             </div>
           )}
         </Link>

@@ -160,7 +160,6 @@ export function mountAdminLayout(options = {}) {
             showLabels
               ? `<div class="min-w-0">
                   <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">${escapeHtml(brand.name)}</p>
-                  <p class="truncate text-xs text-gray-500">${escapeHtml(brand.tagline)}</p>
                 </div>`
               : ""
           }

@@ -46,7 +46,6 @@
           <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">
             {brand.name}
           </p>
-          <p class="truncate text-xs text-gray-500">{brand.tagline}</p>
         </div>
       {/if}
     </RouterLink>
