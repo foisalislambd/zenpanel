@@ -62,9 +62,6 @@ export function AdminLoginForm() {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
             Sign in
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-            Preview UI — credentials are prefilled. Click sign in to open the dashboard.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">

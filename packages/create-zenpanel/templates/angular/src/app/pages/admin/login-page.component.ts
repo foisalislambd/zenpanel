@@ -53,9 +53,6 @@ const DEMO_PASSWORD = 'admin';
             <h1 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
               Sign in
             </h1>
-            <p class="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-              Preview UI — credentials are prefilled. Click sign in to open the dashboard.
-            </p>
           </div>
 
           <form class="mt-8 space-y-5" (ngSubmit)="onSubmit()">
@@ -143,7 +140,7 @@ const DEMO_PASSWORD = 'admin';
           <p class="mt-3 text-sm leading-relaxed text-brand-100/90 sm:text-base">
             {{ brand.loginDescription }}
           </p>
-          <ul class="mt-8 space-y-3 text-left text-sm text-brand-100/85">
+          <ul class="mx-auto mt-8 w-fit space-y-3 text-left text-sm text-brand-100/85">
             @for (item of brand.loginFeatures; track item) {
               <li class="flex items-center gap-3">
                 <span

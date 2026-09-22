@@ -61,9 +61,6 @@ async function handleSubmit(e: Event) {
         >
           Sign in
         </h1>
-        <p class="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-          Preview UI — credentials are prefilled. Click sign in to open the dashboard.
-        </p>
       </div>
 
       <form class="mt-8 space-y-5" @submit="handleSubmit">

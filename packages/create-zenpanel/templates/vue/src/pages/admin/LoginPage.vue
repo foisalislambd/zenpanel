@@ -35,7 +35,7 @@ const { brand } = adminConfig;
         <p class="mt-3 text-sm leading-relaxed text-brand-100/90 sm:text-base">
           {{ brand.loginDescription }}
         </p>
-        <ul class="mt-8 space-y-3 text-left text-sm text-brand-100/85">
+        <ul class="mx-auto mt-8 w-fit space-y-3 text-left text-sm text-brand-100/85">
           <li v-for="item in brand.loginFeatures" :key="item" class="flex items-center gap-3">
             <span
               class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200"

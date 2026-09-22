@@ -57,9 +57,6 @@
       <h1 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
         Sign in
       </h1>
-      <p class="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-        Preview UI — credentials are prefilled. Click sign in to open the dashboard.
-      </p>
     </div>
 
     <form onsubmit={handleSubmit} class="mt-8 space-y-5">
