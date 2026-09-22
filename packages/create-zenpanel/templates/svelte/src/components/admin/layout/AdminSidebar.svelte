@@ -23,6 +23,17 @@
   const mobileClosed = $derived(!sidebar.isDesktop && !sidebar.isMobileOpen);
   const { brand } = adminConfig;
   const siteUrl = brand.siteUrl || "/";
+
+  const navGroups = adminNavItems.reduce<{ section: string; items: typeof adminNavItems }[]>(
+    (groups, item) => {
+      const section = item.section || "Menu";
+      const last = groups[groups.length - 1];
+      if (last?.section === section) last.items.push(item);
+      else groups.push({ section, items: [item] });
+      return groups;
+    },
+    [],
+  );
 </script>
 
 <aside
@@ -32,18 +43,18 @@
   aria-hidden={mobileClosed || undefined}
   inert={mobileClosed || undefined}
 >
-  <div class="admin-topbar flex items-center gap-3 px-4">
+  <div class="admin-topbar flex items-center gap-2 px-3">
     <RouterLink
       href="/admin"
       onclick={() => sidebar.closeMobileSidebar()}
-      class="flex min-w-0 flex-1 items-center gap-3 {!showLabels ? 'justify-center' : ''}"
+      class="flex min-w-0 flex-1 items-center gap-2 {!showLabels ? 'justify-center' : ''}"
     >
-      <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white">
+      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-bold text-white">
         {brand.letter}
       </span>
       {#if showLabels}
         <div class="min-w-0">
-          <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">
+          <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">
             {brand.name}
           </p>
         </div>
@@ -61,8 +72,17 @@
     {/if}
   </div>
 
-  <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-    {#each adminNavItems as item (item.href)}
+  <nav class="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-2.5 py-3">
+    {#each navGroups as group, index (group.section)}
+      <div class="flex flex-col gap-1">
+        {#if showLabels}
+          <p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500">
+            {group.section}
+          </p>
+        {:else if index > 0}
+          <div class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800" aria-hidden="true"></div>
+        {/if}
+    {#each group.items as item (item.href)}
       {@const active = isAdminNavActive(pathname.current, item.href)}
       {@const Icon = item.icon}
       <RouterLink
@@ -70,15 +90,17 @@
         onclick={() => sidebar.closeMobileSidebar()}
         title={!showLabels ? item.name : undefined}
         aria-current={active ? "page" : undefined}
-        class="group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 {active ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8'} {!showLabels ? 'justify-center px-0' : ''}"
+        class="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 {active ? 'bg-brand-500 text-white shadow-sm shadow-brand-500/20' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8'} {!showLabels ? 'justify-center px-0' : ''}"
       >
         <Icon
-          class="h-[22px] w-[22px] shrink-0 {active ? 'text-white' : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400'}"
+          class="h-[18px] w-[18px] shrink-0 {active ? 'text-white' : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400'}"
         />
         {#if showLabels}
           <span class="truncate">{item.name}</span>
         {/if}
       </RouterLink>
+    {/each}
+      </div>
     {/each}
   </nav>
 

@@ -30,6 +30,17 @@ const mobileClosed = computed(() => !sidebar.isDesktop && !sidebar.isMobileOpen)
 
 const { brand } = adminConfig;
 const siteUrl = brand.siteUrl || "/";
+
+const navGroups = computed(() => {
+  const groups: { section: string; items: typeof adminNavItems }[] = [];
+  for (const item of adminNavItems) {
+    const section = item.section || "Menu";
+    const last = groups[groups.length - 1];
+    if (last?.section === section) last.items.push(item);
+    else groups.push({ section, items: [item] });
+  }
+  return groups;
+});
 </script>
 
 <template>
@@ -48,22 +59,22 @@ const siteUrl = brand.siteUrl || "/";
     :aria-hidden="mobileClosed || undefined"
     :inert="mobileClosed || undefined"
   >
-    <div class="admin-topbar flex items-center gap-3 px-4">
+    <div class="admin-topbar flex items-center gap-2 px-3">
       <RouterLink
         to="/admin"
         :class="[
-          'flex min-w-0 flex-1 items-center gap-3',
+          'flex min-w-0 flex-1 items-center gap-2',
           !showLabels ? 'justify-center' : '',
         ]"
         @click="sidebar.closeMobileSidebar()"
       >
         <span
-          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-bold text-white"
         >
           {{ brand.letter }}
         </span>
         <div v-if="showLabels" class="min-w-0">
-          <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">
+          <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">
             {{ brand.name }}
           </p>
         </div>
@@ -79,15 +90,27 @@ const siteUrl = brand.siteUrl || "/";
       </button>
     </div>
 
-    <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
+    <nav class="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-2.5 py-3">
+      <div v-for="(group, index) in navGroups" :key="group.section" class="flex flex-col gap-1">
+        <p
+          v-if="showLabels"
+          class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500"
+        >
+          {{ group.section }}
+        </p>
+        <div
+          v-else-if="index > 0"
+          class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800"
+          aria-hidden="true"
+        />
       <RouterLink
-        v-for="item in adminNavItems"
+        v-for="item in group.items"
         :key="item.href"
         :to="item.href"
         :title="!showLabels ? item.name : undefined"
         :aria-current="isAdminNavActive(route.path, item.href) ? 'page' : undefined"
         :class="[
-          'group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40',
+          'group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40',
           isAdminNavActive(route.path, item.href)
             ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
             : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8',
@@ -98,7 +121,7 @@ const siteUrl = brand.siteUrl || "/";
         <component
           :is="item.icon"
           :class="[
-            'h-[22px] w-[22px] shrink-0',
+            'h-[18px] w-[18px] shrink-0',
             isAdminNavActive(route.path, item.href)
               ? 'text-white'
               : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400',
@@ -106,6 +129,7 @@ const siteUrl = brand.siteUrl || "/";
         />
         <span v-if="showLabels" class="truncate">{{ item.name }}</span>
       </RouterLink>
+      </div>
     </nav>
 
     <div class="shrink-0 space-y-1 border-t border-gray-200 p-3 dark:border-gray-800">

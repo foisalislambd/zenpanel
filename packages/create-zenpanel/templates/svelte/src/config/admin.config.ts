@@ -42,45 +42,46 @@ export type AdminNavItem = {
   href: string;
   icon: AdminNavIcon;
   description?: string;
+  section?: string;
 };
 
 export const adminNavItems: AdminNavItem[] = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Dashboard", section: "Overview", href: "/admin", icon: LayoutDashboard },
   {
-    name: "Projects",
+    name: "Projects", section: "Work",
     href: "/admin/projects",
     icon: FolderKanban,
     description: "Portfolio projects and case studies",
   },
   {
-    name: "Services",
+    name: "Services", section: "Work",
     href: "/admin/services",
     icon: Briefcase,
     description: "Service offerings and pricing",
   },
   {
-    name: "Service orders",
+    name: "Service orders", section: "Work",
     href: "/admin/service-orders",
     icon: ShoppingCart,
     description: "Customer service purchases",
   },
   {
-    name: "Transactions",
+    name: "Transactions", section: "Finance",
     href: "/admin/transactions",
     icon: Receipt,
     description: "Wallet and ledger activity",
   },
   {
-    name: "Payments",
+    name: "Payments", section: "Finance",
     href: "/admin/payments",
     icon: CreditCard,
     description: "Deposits and payment providers",
   },
-  { name: "Blog", href: "/admin/blog", icon: Newspaper },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Categories", href: "/admin/categories", icon: FolderTree },
-  { name: "Messages", href: "/admin/messages", icon: MessageCircle },
-  { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Blog", section: "Content", href: "/admin/blog", icon: Newspaper },
+  { name: "Products", section: "Content", href: "/admin/products", icon: Package },
+  { name: "Categories", section: "Content", href: "/admin/categories", icon: FolderTree },
+  { name: "Messages", section: "Inbox", href: "/admin/messages", icon: MessageCircle },
+  { name: "Newsletter", section: "Inbox", href: "/admin/newsletter", icon: Mail },
+  { name: "Users", section: "Account", href: "/admin/users", icon: Users },
+  { name: "Settings", section: "Account", href: "/admin/settings", icon: Settings },
 ];

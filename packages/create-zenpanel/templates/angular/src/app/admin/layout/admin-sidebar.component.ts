@@ -6,7 +6,19 @@ import {
   adminConfig,
   adminNavItems,
   SIDEBAR_WIDTH_EXPANDED,
+  type AdminNavItem,
 } from '@/app/core/admin.config';
+
+function groupNavItems(items: AdminNavItem[]) {
+  const groups: { section: string; items: AdminNavItem[] }[] = [];
+  for (const item of items) {
+    const section = item.section || 'Menu';
+    const last = groups[groups.length - 1];
+    if (last?.section === section) last.items.push(item);
+    else groups.push({ section, items: [item] });
+  }
+  return groups;
+}
 import { SidebarService } from '@/app/core/sidebar.service';
 import { isAdminNavActive, isExternalUrl, normalizePathname } from '@/app/core/admin-nav';
 import { IconComponent } from '@/app/shared/icon.component';
@@ -24,7 +36,7 @@ import { IconComponent } from '@/app/shared/icon.component';
       [attr.aria-hidden]="mobileClosed() || null"
       [attr.inert]="mobileClosed() ? '' : null"
     >
-      <div class="admin-topbar flex items-center gap-3 px-4">
+      <div class="admin-topbar flex items-center gap-2 px-3">
         <a
           routerLink="/admin"
           (click)="sidebar.closeMobileSidebar()"
@@ -32,12 +44,12 @@ import { IconComponent } from '@/app/shared/icon.component';
           [class.justify-center]="!showLabels()"
         >
           <span
-            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white"
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-bold text-white"
             >{{ brand.letter }}</span
           >
           @if (showLabels()) {
             <div class="min-w-0">
-              <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">
+              <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">
                 {{ brand.name }}
               </p>
             </div>
@@ -55,20 +67,33 @@ import { IconComponent } from '@/app/shared/icon.component';
         }
       </div>
 
-      <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-        @for (item of navItems; track item.href) {
-          <a
-            [routerLink]="item.href"
-            (click)="sidebar.closeMobileSidebar()"
-            [title]="!showLabels() ? item.name : undefined"
-            [attr.aria-current]="isActive(item.href) ? 'page' : null"
-            [class]="navLinkClass(item.href)"
-          >
-            <app-icon [name]="item.icon" [size]="22" [class]="navIconClass(item.href)" />
+      <nav class="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-2.5 py-3">
+        @for (group of navGroups; track group.section; let index = $index) {
+          <div class="flex flex-col gap-1">
             @if (showLabels()) {
-              <span class="truncate">{{ item.name }}</span>
+              <p
+                class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500"
+              >
+                {{ group.section }}
+              </p>
+            } @else if (index > 0) {
+              <div class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800" aria-hidden="true"></div>
             }
-          </a>
+            @for (item of group.items; track item.href) {
+              <a
+                [routerLink]="item.href"
+                (click)="sidebar.closeMobileSidebar()"
+                [title]="!showLabels() ? item.name : undefined"
+                [attr.aria-current]="isActive(item.href) ? 'page' : null"
+                [class]="navLinkClass(item.href)"
+              >
+                <app-icon [name]="item.icon" [size]="18" [class]="navIconClass(item.href)" />
+                @if (showLabels()) {
+                  <span class="truncate">{{ item.name }}</span>
+                }
+              </a>
+            }
+          </div>
         }
       </nav>
 
@@ -129,7 +154,7 @@ export class AdminSidebarComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly brand = adminConfig.brand;
-  readonly navItems = adminNavItems;
+  readonly navGroups = groupNavItems(adminNavItems);
   readonly siteUrl = this.brand.siteUrl || '/';
   readonly externalSite = isExternalUrl(this.siteUrl);
 
@@ -164,7 +189,7 @@ export class AdminSidebarComponent implements OnInit {
 
   navLinkClass(href: string): string {
     const base =
-      'group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40';
+      'group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40';
     const state = this.isActive(href)
       ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
       : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8';

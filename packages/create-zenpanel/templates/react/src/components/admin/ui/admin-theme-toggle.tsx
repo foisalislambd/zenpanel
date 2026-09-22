@@ -17,7 +17,7 @@ export function AdminThemeToggle({ className = "" }: Props) {
   if (!mounted) {
     return (
       <div
-        className={`h-10 w-10 shrink-0 rounded-lg border border-gray-200 dark:border-gray-800 ${className}`}
+        className={`h-9 w-9 shrink-0 rounded-lg border border-gray-200 dark:border-gray-800 ${className}`}
         aria-hidden
       />
     );
@@ -29,10 +29,10 @@ export function AdminThemeToggle({ className = "" }: Props) {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${className}`}
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${className}`}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </button>
   );
 }

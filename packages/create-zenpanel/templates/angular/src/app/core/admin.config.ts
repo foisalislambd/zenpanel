@@ -19,47 +19,48 @@ export type AdminNavItem = {
   href: string;
   icon: string;
   description?: string;
+  section?: string;
 };
 
 export const adminNavItems: AdminNavItem[] = [
-  { name: 'Dashboard', href: '/admin', icon: 'layout-dashboard' },
+  { name: 'Dashboard', section: 'Overview', href: '/admin', icon: 'layout-dashboard' },
   {
-    name: 'Projects',
+    name: 'Projects', section: 'Work',
     href: '/admin/projects',
     icon: 'folder-kanban',
     description: 'Portfolio projects and case studies',
   },
   {
-    name: 'Services',
+    name: 'Services', section: 'Work',
     href: '/admin/services',
     icon: 'briefcase',
     description: 'Service offerings and pricing',
   },
   {
-    name: 'Service orders',
+    name: 'Service orders', section: 'Work',
     href: '/admin/service-orders',
     icon: 'shopping-cart',
     description: 'Customer service purchases',
   },
   {
-    name: 'Transactions',
+    name: 'Transactions', section: 'Finance',
     href: '/admin/transactions',
     icon: 'receipt',
     description: 'Wallet and ledger activity',
   },
   {
-    name: 'Payments',
+    name: 'Payments', section: 'Finance',
     href: '/admin/payments',
     icon: 'credit-card',
     description: 'Deposits and payment providers',
   },
-  { name: 'Blog', href: '/admin/blog', icon: 'newspaper' },
-  { name: 'Products', href: '/admin/products', icon: 'package' },
-  { name: 'Categories', href: '/admin/categories', icon: 'folder-tree' },
-  { name: 'Messages', href: '/admin/messages', icon: 'message-circle' },
-  { name: 'Newsletter', href: '/admin/newsletter', icon: 'mail' },
-  { name: 'Users', href: '/admin/users', icon: 'users' },
-  { name: 'Settings', href: '/admin/settings', icon: 'settings' },
+  { name: 'Blog', section: 'Content', href: '/admin/blog', icon: 'newspaper' },
+  { name: 'Products', section: 'Content', href: '/admin/products', icon: 'package' },
+  { name: 'Categories', section: 'Content', href: '/admin/categories', icon: 'folder-tree' },
+  { name: 'Messages', section: 'Inbox', href: '/admin/messages', icon: 'message-circle' },
+  { name: 'Newsletter', section: 'Inbox', href: '/admin/newsletter', icon: 'mail' },
+  { name: 'Users', section: 'Account', href: '/admin/users', icon: 'users' },
+  { name: 'Settings', section: 'Account', href: '/admin/settings', icon: 'settings' },
 ];
 
 export const SIDEBAR_WIDTH_EXPANDED = 260;

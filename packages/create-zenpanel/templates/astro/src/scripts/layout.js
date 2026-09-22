@@ -22,6 +22,17 @@ function isActive(href) {
   return path === href || path === `${href}.html` || path.startsWith(`${href}/`);
 }
 
+function groupNavItems(items) {
+  const groups = [];
+  for (const item of items) {
+    const section = item.section || "Menu";
+    const last = groups[groups.length - 1];
+    if (last?.section === section) last.items.push(item);
+    else groups.push({ section, items: [item] });
+  }
+  return groups;
+}
+
 /**
  * @param {{ title?: string, fullBleed?: boolean }} options
  */
@@ -148,18 +159,18 @@ export function mountAdminLayout(options = {}) {
     }
 
     sidebar.innerHTML = `
-      <div class="admin-topbar flex items-center gap-3 px-4">
+      <div class="admin-topbar flex items-center gap-2 px-3">
         <a
           href="/admin"
-          class="flex min-w-0 flex-1 items-center gap-3 ${!showLabels ? "justify-center" : ""}"
+          class="flex min-w-0 flex-1 items-center gap-2 ${!showLabels ? "justify-center" : ""}"
         >
-          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-bold text-white">
             ${escapeHtml(brand.letter)}
           </span>
           ${
             showLabels
               ? `<div class="min-w-0">
-                  <p class="truncate text-[15px] font-semibold text-gray-900 dark:text-white">${escapeHtml(brand.name)}</p>
+                  <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">${escapeHtml(brand.name)}</p>
                 </div>`
               : ""
           }
@@ -171,24 +182,31 @@ export function mountAdminLayout(options = {}) {
         }
       </div>
 
-      <nav class="no-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-5">
-        ${adminNavItems
-          .map((item) => {
-            const active = isActive(item.href);
-            return `
+      <nav class="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-2.5 py-3">
+        ${groupNavItems(adminNavItems)
+          .map((group, index) => {
+            const heading = showLabels
+              ? `<p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500">${escapeHtml(group.section)}</p>`
+              : index > 0
+                ? `<div class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800" aria-hidden="true"></div>`
+                : "";
+            const links = group.items
+              .map((item) => {
+                const active = isActive(item.href);
+                return `
               <a
                 href="${escapeHtml(item.href)}"
                 title="${!showLabels ? escapeHtml(item.name) : ""}"
                 aria-current="${active ? "page" : "false"}"
-                class="group relative flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
+                class="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 ${
                   active
-                    ? "bg-brand-500 text-white shadow-md shadow-brand-500/25"
+                    ? "bg-brand-500 text-white shadow-sm shadow-brand-500/20"
                     : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8"
                 } ${!showLabels ? "justify-center px-0" : ""}"
               >
                 ${icon(
                   item.icon,
-                  `h-[22px] w-[22px] shrink-0 ${
+                  `h-[18px] w-[18px] shrink-0 ${
                     active
                       ? "text-white"
                       : "text-gray-500 group-hover:text-gray-700 dark:text-gray-400"
@@ -197,6 +215,9 @@ export function mountAdminLayout(options = {}) {
                 ${showLabels ? `<span class="truncate">${escapeHtml(item.name)}</span>` : ""}
               </a>
             `;
+              })
+              .join("");
+            return `<div class="flex flex-col gap-1">${heading}${links}</div>`;
           })
           .join("")}
       </nav>

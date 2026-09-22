@@ -17,7 +17,7 @@ export function AdminHeader() {
         <button
           type="button"
           onClick={toggleMobileSidebar}
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${isDesktop ? "lg:hidden" : ""}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${isDesktop ? "lg:hidden" : ""}`}
           aria-label={!isDesktop && isMobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={!isDesktop ? isMobileOpen : undefined}
         >
@@ -44,7 +44,7 @@ export function AdminHeader() {
               type="search"
               disabled
               placeholder="Search"
-              className="h-10 w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 py-2 pr-4 pl-10 text-sm text-gray-500 placeholder:text-gray-400 dark:border-gray-800 dark:bg-white/5 dark:text-gray-500"
+              className="h-9 w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 py-1.5 pr-4 pl-9 text-sm text-gray-500 placeholder:text-gray-400 dark:border-gray-800 dark:bg-white/5 dark:text-gray-500"
               aria-label="Search"
               aria-describedby="admin-search-hint"
             />
@@ -59,7 +59,7 @@ export function AdminHeader() {
             type="button"
             onClick={toggleChatPanel}
             className={cn(
-              "flex h-10 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
+              "flex h-9 items-center gap-2 rounded-lg border px-2.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
               isChatOpen
                 ? "border-brand-300 bg-brand-50 text-brand-700 dark:border-brand-500/40 dark:bg-brand-500/10 dark:text-brand-300"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5",
