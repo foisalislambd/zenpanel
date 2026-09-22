@@ -5,17 +5,11 @@ import { IconComponent } from '@/app/shared/icon.component';
 
 type StatCard = {
   label: string;
-  sublabel?: string;
   value: string;
   icon: string;
   iconColor: string;
   iconBg: string;
 };
-
-function formatChange(percent: number): string {
-  const sign = percent > 0 ? '+' : '';
-  return `${sign}${percent.toFixed(1)}%`;
-}
 
 @Component({
   selector: 'app-stats-cards',
@@ -32,11 +26,6 @@ function formatChange(percent: number): string {
               >
                 {{ card.label }}
               </p>
-              @if (card.sublabel) {
-                <p class="truncate text-[10px] text-gray-400 dark:text-gray-500">
-                  {{ card.sublabel }}
-                </p>
-              }
               <p
                 class="mt-1 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl"
               >
@@ -63,7 +52,6 @@ export class StatsCardsComponent {
     this.cards = [
       {
         label: 'Revenue',
-        sublabel: `All time · ${formatChange(value.revenueChangePercent)}`,
         value: formatCurrency(value.totalRevenue),
         icon: 'dollar-sign',
         iconColor: 'text-brand-600 dark:text-brand-400',
@@ -71,7 +59,6 @@ export class StatsCardsComponent {
       },
       {
         label: 'Users',
-        sublabel: `+${value.newUsersLast7Days.toLocaleString()} last 7 days`,
         value: value.totalUsers.toLocaleString(),
         icon: 'users',
         iconColor: 'text-blue-600 dark:text-blue-400',
@@ -79,7 +66,6 @@ export class StatsCardsComponent {
       },
       {
         label: 'Orders',
-        sublabel: `Last 7 days · ${formatChange(value.ordersChangePercent)}`,
         value: value.newOrdersLast7Days.toLocaleString(),
         icon: 'shopping-cart',
         iconColor: 'text-violet-600 dark:text-violet-400',
@@ -87,7 +73,6 @@ export class StatsCardsComponent {
       },
       {
         label: 'Messages',
-        sublabel: 'Unread',
         value: value.unreadMessages.toLocaleString(),
         icon: 'message-circle',
         iconColor: 'text-amber-600 dark:text-amber-400',
@@ -95,7 +80,6 @@ export class StatsCardsComponent {
       },
       {
         label: 'Projects',
-        sublabel: 'Total',
         value: value.totalProjects.toLocaleString(),
         icon: 'folder-kanban',
         iconColor: 'text-emerald-600 dark:text-emerald-400',
@@ -103,7 +87,6 @@ export class StatsCardsComponent {
       },
       {
         label: 'Subscribers',
-        sublabel: 'Newsletter',
         value: value.newsletterSubscribers.toLocaleString(),
         icon: 'mail',
         iconColor: 'text-rose-600 dark:text-rose-400',

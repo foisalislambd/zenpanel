@@ -9,7 +9,6 @@ import {
 } from "./data.js";
 import {
   escapeHtml,
-  formatChange,
   formatCurrency,
   formatRelativeTime,
   formatToday,
@@ -136,13 +135,12 @@ function renderWelcome(username) {
   `;
 }
 
-function renderStatCard({ label, sublabel, value, iconName, iconColor, iconBg }) {
+function renderStatCard({ label, value, iconName, iconColor, iconBg }) {
   return `
     <div class="admin-card overflow-hidden">
       <div class="flex items-center justify-between gap-3 p-4">
         <div class="min-w-0">
           <p class="truncate text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">${escapeHtml(label)}</p>
-          ${sublabel ? `<p class="truncate text-[10px] text-gray-400 dark:text-gray-500">${escapeHtml(sublabel)}</p>` : ""}
           <p class="mt-1 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">${escapeHtml(String(value))}</p>
         </div>
         <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconBg}">
@@ -158,7 +156,6 @@ function renderStatsCards(stats) {
     <div class="grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-6">
       ${renderStatCard({
         label: "Revenue",
-        sublabel: `All time · ${formatChange(stats.revenueChangePercent)}`,
         value: formatCurrency(stats.totalRevenue),
         iconName: "dollar-sign",
         iconColor: "text-brand-600 dark:text-brand-400",
@@ -166,7 +163,6 @@ function renderStatsCards(stats) {
       })}
       ${renderStatCard({
         label: "Users",
-        sublabel: `+${stats.newUsersLast7Days.toLocaleString()} last 7 days`,
         value: stats.totalUsers.toLocaleString(),
         iconName: "users",
         iconColor: "text-blue-600 dark:text-blue-400",
@@ -174,7 +170,6 @@ function renderStatsCards(stats) {
       })}
       ${renderStatCard({
         label: "Orders",
-        sublabel: `Last 7 days · ${formatChange(stats.ordersChangePercent)}`,
         value: stats.newOrdersLast7Days.toLocaleString(),
         iconName: "shopping-cart",
         iconColor: "text-violet-600 dark:text-violet-400",
@@ -182,7 +177,6 @@ function renderStatsCards(stats) {
       })}
       ${renderStatCard({
         label: "Messages",
-        sublabel: "Unread",
         value: stats.unreadMessages.toLocaleString(),
         iconName: "message-circle",
         iconColor: "text-amber-600 dark:text-amber-400",
@@ -190,7 +184,6 @@ function renderStatsCards(stats) {
       })}
       ${renderStatCard({
         label: "Projects",
-        sublabel: "Total",
         value: stats.totalProjects.toLocaleString(),
         iconName: "folder-kanban",
         iconColor: "text-emerald-600 dark:text-emerald-400",
@@ -198,7 +191,6 @@ function renderStatsCards(stats) {
       })}
       ${renderStatCard({
         label: "Subscribers",
-        sublabel: "Newsletter",
         value: stats.newsletterSubscribers.toLocaleString(),
         iconName: "mail",
         iconColor: "text-rose-600 dark:text-rose-400",

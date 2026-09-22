@@ -14,14 +14,8 @@
   type Props = { stats: DashboardStats };
   let { stats }: Props = $props();
 
-  function formatChange(percent: number) {
-    const sign = percent > 0 ? "+" : "";
-    return `${sign}${percent.toFixed(1)}%`;
-  }
-
   type StatCardProps = {
     label: string;
-    sublabel?: string;
     value: string | number;
     icon: LucideIcon;
     iconBg: string;
@@ -29,16 +23,13 @@
   };
 </script>
 
-{#snippet statCard({ label, sublabel, value, icon: Icon, iconBg, iconClass }: StatCardProps)}
+{#snippet statCard({ label, value, icon: Icon, iconBg, iconClass }: StatCardProps)}
   <div class="admin-card overflow-hidden">
     <div class="flex items-center justify-between gap-3 p-4">
       <div class="min-w-0">
         <p class="truncate text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
           {label}
         </p>
-        {#if sublabel}
-          <p class="truncate text-[10px] text-gray-400 dark:text-gray-500">{sublabel}</p>
-        {/if}
         <p class="mt-1 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {value}
         </p>
@@ -53,7 +44,6 @@
 <div class="grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-6">
   {@render statCard({
     label: "Revenue",
-    sublabel: `All time · ${formatChange(stats.revenueChangePercent)}`,
     value: formatCurrency(stats.totalRevenue),
     icon: DollarSign,
     iconBg: "bg-brand-50 dark:bg-brand-500/15",
@@ -61,7 +51,6 @@
   })}
   {@render statCard({
     label: "Users",
-    sublabel: `+${stats.newUsersLast7Days.toLocaleString()} last 7 days`,
     value: stats.totalUsers.toLocaleString(),
     icon: Users,
     iconBg: "bg-blue-50 dark:bg-blue-500/15",
@@ -69,7 +58,6 @@
   })}
   {@render statCard({
     label: "Orders",
-    sublabel: `Last 7 days · ${formatChange(stats.ordersChangePercent)}`,
     value: stats.newOrdersLast7Days.toLocaleString(),
     icon: ShoppingCart,
     iconBg: "bg-violet-50 dark:bg-violet-500/15",
@@ -77,7 +65,6 @@
   })}
   {@render statCard({
     label: "Messages",
-    sublabel: "Unread",
     value: stats.unreadMessages.toLocaleString(),
     icon: MessageCircle,
     iconBg: "bg-amber-50 dark:bg-amber-500/15",
@@ -85,7 +72,6 @@
   })}
   {@render statCard({
     label: "Projects",
-    sublabel: "Total",
     value: stats.totalProjects.toLocaleString(),
     icon: FolderKanban,
     iconBg: "bg-emerald-50 dark:bg-emerald-500/15",
@@ -93,7 +79,6 @@
   })}
   {@render statCard({
     label: "Subscribers",
-    sublabel: "Newsletter",
     value: stats.newsletterSubscribers.toLocaleString(),
     icon: Mail,
     iconBg: "bg-rose-50 dark:bg-rose-500/15",
