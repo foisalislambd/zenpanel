@@ -80,7 +80,7 @@ const DEFAULT_QUICK_ACTIONS: AdminChatQuickAction[] = [
             <div
               class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400"
             >
-              <app-icon name="sparkles" [size]="16" />
+              <app-icon name="bot" [size]="16" />
             </div>
             <div class="min-w-0">
               <p class="admin-content-editor-panel-title truncate">AI Assistant</p>
@@ -266,9 +266,6 @@ const DEFAULT_QUICK_ACTIONS: AdminChatQuickAction[] = [
               </button>
             </div>
           </div>
-          <p class="mt-2 text-center text-[10px] text-gray-400 dark:text-gray-500">
-            Enter to send · Shift+Enter for new line
-          </p>
         </div>
       </aside>
     }

@@ -13,7 +13,6 @@ import {
   Bot,
   Loader2,
   PanelRightClose,
-  Sparkles,
   Trash2,
   X,
 } from "lucide-solid";
@@ -254,7 +253,7 @@ export function AdminChatPanel(props: Props) {
         <div class="admin-content-editor-panel-header shrink-0">
           <div class="flex min-w-0 items-center gap-2.5">
             <div class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400">
-              <Sparkles class="h-4 w-4" aria-hidden />
+              <Bot class="h-4 w-4" aria-hidden />
             </div>
             <div class="min-w-0">
               <p class="admin-content-editor-panel-title truncate">AI Assistant</p>
@@ -395,9 +394,6 @@ export function AdminChatPanel(props: Props) {
               </button>
             </div>
           </div>
-          <p class="mt-2 text-center text-[10px] text-gray-400 dark:text-gray-500">
-            Enter to send · Shift+Enter for new line
-          </p>
         </div>
       </aside>
     </Show>

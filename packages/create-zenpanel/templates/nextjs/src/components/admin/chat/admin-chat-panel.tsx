@@ -15,7 +15,6 @@ import {
   Bot,
   Loader2,
   PanelRightClose,
-  Sparkles,
   Trash2,
   X,
 } from "lucide-react";
@@ -238,7 +237,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
         <div className="admin-content-editor-panel-header shrink-0">
           <div className="flex min-w-0 items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400">
-              <Sparkles className="h-4 w-4" aria-hidden />
+              <Bot className="h-4 w-4" aria-hidden />
             </div>
             <div className="min-w-0">
               <p className="admin-content-editor-panel-title truncate">AI Assistant</p>
@@ -373,9 +372,6 @@ export function AdminChatPanel({ overlay = false }: Props) {
               </button>
             </div>
           </div>
-          <p className="mt-2 text-center text-[10px] text-gray-400 dark:text-gray-500">
-            Enter to send · Shift+Enter for new line
-          </p>
         </div>
       </aside>
     </>
