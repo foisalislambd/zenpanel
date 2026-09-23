@@ -1,6 +1,5 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
@@ -140,7 +139,6 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
 
   return (
     <div class="admin-content space-y-6">
-      <AdminBreadcrumbs />
       <AdminPageHeader
         title="Users"
         actions={<AdminAddButton onClick={props.onAdd} />}
@@ -184,14 +182,7 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
       </div>
 
       <div class="admin-card w-full overflow-hidden">
-        <Show
-          when={filtered().length > 0}
-          fallback={
-            <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              No users match your filters
-            </div>
-          }
-        >
+        <Show when={filtered().length > 0}>
           <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
             <For each={filtered()}>
               {(user) => (
@@ -219,8 +210,11 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
               )}
             </For>
           </ul>
+        </Show>
 
-          <div class="admin-scrollbar hidden overflow-x-auto md:block">
+          <div
+            class={`admin-scrollbar overflow-x-auto ${filtered().length > 0 ? "hidden md:block" : ""}`}
+          >
             <table class="w-full min-w-[900px] text-left text-sm">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -248,6 +242,19 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <Show
+                  when={filtered().length > 0}
+                  fallback={
+                    <tr>
+                      <td
+                        colspan={7}
+                        class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        No users match your filters
+                      </td>
+                    </tr>
+                  }
+                >
                 <For each={filtered()}>
                   {(user) => (
                     <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
@@ -285,10 +292,10 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
                     </tr>
                   )}
                 </For>
+                </Show>
               </tbody>
             </table>
           </div>
-        </Show>
       </div>
 
       <Show when={selected()}>

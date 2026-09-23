@@ -1,11 +1,9 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import type { AdminResource, AdminResourceStatus } from '@/app/lib/admin-data/resources';
-import { AdminBreadcrumbsComponent } from '@/app/admin/ui/admin-breadcrumbs.component';
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 import { AdminAddButtonComponent } from '@/app/admin/ui/admin-add-button.component';
 import { AdminFilterGroupComponent } from '@/app/admin/ui/admin-filter-group.component';
 import { AdminRowActionsComponent } from '@/app/admin/ui/admin-row-actions.component';
-import { AdminEmptyStateComponent } from '@/app/admin/ui/admin-empty-state.component';
 import { IconComponent } from '@/app/shared/icon.component';
 
 type StatusFilter = 'all' | AdminResourceStatus;
@@ -33,17 +31,14 @@ function pluralize(label: string, count: number): string {
 @Component({
   selector: 'app-resource-page',
   imports: [
-    AdminBreadcrumbsComponent,
     AdminPageHeaderComponent,
     AdminAddButtonComponent,
     AdminFilterGroupComponent,
     AdminRowActionsComponent,
-    AdminEmptyStateComponent,
     IconComponent,
   ],
   template: `
     <div class="admin-content space-y-6">
-      <app-admin-breadcrumbs />
       <app-admin-page-header [title]="title">
         <app-admin-add-button actions [onClick]="onAdd" />
       </app-admin-page-header>
@@ -74,23 +69,7 @@ function pluralize(label: string, count: number): string {
       </div>
 
       <div class="admin-card w-full overflow-hidden">
-        @if (filtered().length === 0) {
-          @if (itemsSig().length === 0) {
-            <app-admin-empty-state
-              icon="database"
-              [title]="'No ' + resourceLabel.toLowerCase() + ' yet'"
-              [description]="
-                'This page is ready for your data. Connect your backend API to load, create, and manage ' +
-                resourceLabel.toLowerCase() +
-                ' from here.'
-              "
-            />
-          } @else {
-            <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              No {{ pluralize(resourceLabel, 2) }} match your filters
-            </div>
-          }
-        } @else {
+        @if (filtered().length > 0) {
           <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
             @for (item of filtered(); track item.id) {
               <li class="px-4 py-3.5">
@@ -119,8 +98,13 @@ function pluralize(label: string, count: number): string {
               </li>
             }
           </ul>
+        }
 
-          <div class="admin-scrollbar hidden overflow-x-auto md:block">
+          <div
+            [class]="
+              'admin-scrollbar overflow-x-auto' + (filtered().length > 0 ? ' hidden md:block' : '')
+            "
+          >
             <table class="w-full min-w-[720px] text-left text-sm">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -135,6 +119,25 @@ function pluralize(label: string, count: number): string {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                @if (filtered().length === 0) {
+                  <tr>
+                    <td colspan="5" class="px-6 py-16 text-center">
+                      <p class="text-base font-semibold text-gray-900 dark:text-white">
+                        @if (itemsSig().length === 0) {
+                          No {{ resourceLabel.toLowerCase() }} yet
+                        } @else {
+                          No {{ pluralize(resourceLabel, 2) }} match your filters
+                        }
+                      </p>
+                      @if (itemsSig().length === 0) {
+                        <p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                          This page is ready for your data. Connect your backend API to load, create, and
+                          manage {{ resourceLabel.toLowerCase() }} from here.
+                        </p>
+                      }
+                    </td>
+                  </tr>
+                }
                 @for (item of filtered(); track item.id) {
                   <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                     <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">{{ item.title }}</td>
@@ -164,7 +167,6 @@ function pluralize(label: string, count: number): string {
               </tbody>
             </table>
           </div>
-        }
       </div>
     </div>
   `,

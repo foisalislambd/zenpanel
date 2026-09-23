@@ -1,6 +1,5 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
@@ -147,7 +146,6 @@ export function AdminUsersPage({
 
   return (
     <div className="admin-content space-y-6">
-      <AdminBreadcrumbs />
       <AdminPageHeader title="Users" actions={<AdminAddButton onClick={onAdd} />} />
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -188,12 +186,7 @@ export function AdminUsersPage({
       </div>
 
       <div className="admin-card w-full overflow-hidden">
-        {filtered.length === 0 ? (
-          <div className="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-            No users match your filters
-          </div>
-        ) : (
-          <>
+        {filtered.length > 0 && (
             <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
               {filtered.map((user) => (
                 <li key={user.id} className="px-4 py-3.5">
@@ -221,8 +214,11 @@ export function AdminUsersPage({
                 </li>
               ))}
             </ul>
+        )}
 
-            <div className="admin-scrollbar hidden overflow-x-auto md:block">
+            <div
+              className={`admin-scrollbar overflow-x-auto ${filtered.length > 0 ? "hidden md:block" : ""}`}
+            >
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-800">
@@ -247,7 +243,17 @@ export function AdminUsersPage({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {filtered.map((user) => (
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        No users match your filters
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map((user) => (
                     <tr
                       key={user.id}
                       className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
@@ -284,12 +290,11 @@ export function AdminUsersPage({
                         />
                       </td>
                     </tr>
-                  ))}
+                  ))
+                  )}
                 </tbody>
               </table>
             </div>
-          </>
-        )}
       </div>
 
       {selected && (

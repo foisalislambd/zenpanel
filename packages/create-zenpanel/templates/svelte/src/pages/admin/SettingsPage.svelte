@@ -1,7 +1,6 @@
 <script lang="ts">
   import AccountSettings from "@/components/admin/settings/AccountSettings.svelte";
   import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.svelte";
-  import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.svelte";
   import { cn } from "@/lib/cn";
 
   const tabs = [
@@ -16,7 +15,6 @@
 </script>
 
 <div class="admin-content space-y-6">
-  <AdminBreadcrumbs />
   <AdminPageHeader title="Settings" />
 
   <div role="tablist" aria-label="Settings sections" class="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800">

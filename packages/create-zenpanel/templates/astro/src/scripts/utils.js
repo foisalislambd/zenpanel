@@ -70,32 +70,6 @@ export function emptyState({ iconName, title, description }) {
   `;
 }
 
-export function breadcrumbs(pageTitle) {
-  if (!pageTitle) return "";
-  return `
-    <nav aria-label="Breadcrumb" class="mb-4">
-      <ol class="flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-        <li>
-          <a
-            href="/admin"
-            class="inline-flex items-center gap-1 rounded-md transition hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:hover:text-gray-200"
-          >
-            ${icon("home", "h-3.5 w-3.5")}
-            <span class="sr-only">Dashboard</span>
-          </a>
-        </li>
-        <li aria-hidden>
-          ${icon("chevron-right", "h-3.5 w-3.5 text-gray-300 dark:text-gray-600")}
-        </li>
-        <li>
-          <span class="font-medium text-gray-700 dark:text-gray-300" aria-current="page">
-            ${escapeHtml(pageTitle)}
-          </span>
-        </li>
-      </ol>
-    </nav>
-  `;
-}
 
 export function pageHeader(title, actions = "") {
   return `

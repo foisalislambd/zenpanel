@@ -27,8 +27,10 @@ function statusStyle(status: string) {
   <div class="admin-card w-full overflow-hidden">
     <DashboardSectionHeader title="Recent orders" href="/admin/service-orders" />
 
-    <template v-if="orders.length > 0">
-      <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
+    <ul
+      v-if="orders.length > 0"
+      class="divide-y divide-gray-100 md:hidden dark:divide-gray-800"
+    >
         <li v-for="order in orders" :key="order.id" class="px-5 py-3">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
@@ -55,7 +57,12 @@ function statusStyle(status: string) {
         </li>
       </ul>
 
-      <div class="admin-scrollbar hidden overflow-x-auto md:block">
+      <div
+        :class="[
+          'admin-scrollbar overflow-x-auto',
+          orders.length > 0 ? 'hidden md:block' : '',
+        ]"
+      >
         <table class="w-full min-w-[600px] text-left text-sm">
           <thead>
             <tr
@@ -69,6 +76,11 @@ function statusStyle(status: string) {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            <tr v-if="orders.length === 0">
+              <td colspan="5" class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                No orders yet
+              </td>
+            </tr>
             <tr
               v-for="order in orders"
               :key="order.id"
@@ -96,9 +108,5 @@ function statusStyle(status: string) {
           </tbody>
         </table>
       </div>
-    </template>
-    <div v-else class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-      No orders yet
-    </div>
   </div>
 </template>

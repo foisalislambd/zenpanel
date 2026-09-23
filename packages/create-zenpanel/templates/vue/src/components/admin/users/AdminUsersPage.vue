@@ -2,7 +2,6 @@
 import { computed, ref } from "vue";
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.vue";
 import AdminAddButton from "@/components/admin/ui/AdminAddButton.vue";
-import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.vue";
 import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.vue";
 import AdminRowActions from "@/components/admin/ui/AdminRowActions.vue";
 import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
@@ -109,7 +108,6 @@ const detailRows = computed(() => {
 
 <template>
   <div class="admin-content space-y-6">
-    <AdminBreadcrumbs />
     <AdminPageHeader title="Users">
       <template #actions>
         <AdminAddButton :on-click="onAdd" />
@@ -155,14 +153,10 @@ const detailRows = computed(() => {
     </div>
 
     <div class="admin-card w-full overflow-hidden">
-      <div
-        v-if="filtered.length === 0"
-        class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+      <ul
+        v-if="filtered.length > 0"
+        class="divide-y divide-gray-100 md:hidden dark:divide-gray-800"
       >
-        No users match your filters
-      </div>
-      <template v-else>
-        <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
           <li v-for="user in filtered" :key="user.id" class="px-4 py-3.5">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
@@ -210,7 +204,12 @@ const detailRows = computed(() => {
           </li>
         </ul>
 
-        <div class="admin-scrollbar hidden overflow-x-auto md:block">
+        <div
+          :class="[
+            'admin-scrollbar overflow-x-auto',
+            filtered.length > 0 ? 'hidden md:block' : '',
+          ]"
+        >
           <table class="w-full min-w-[900px] text-left text-sm">
             <thead>
               <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -227,6 +226,14 @@ const detailRows = computed(() => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr v-if="filtered.length === 0">
+                <td
+                  colspan="7"
+                  class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                >
+                  No users match your filters
+                </td>
+              </tr>
               <tr
                 v-for="user in filtered"
                 :key="user.id"
@@ -289,7 +296,6 @@ const detailRows = computed(() => {
             </tbody>
           </table>
         </div>
-      </template>
     </div>
 
     <div v-if="selected" class="fixed inset-0 z-50 flex justify-end">

@@ -32,12 +32,7 @@ export function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
     <div className="admin-card w-full overflow-hidden">
       <DashboardSectionHeader title="Recent orders" href="/admin/service-orders" />
 
-      {orders.length === 0 ? (
-        <div className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-          No orders yet
-        </div>
-      ) : (
-        <>
+      {orders.length > 0 && (
           <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
             {orders.map((order) => (
               <li key={order.id} className="px-5 py-3">
@@ -59,8 +54,11 @@ export function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
               </li>
             ))}
           </ul>
+      )}
 
-          <div className="admin-scrollbar hidden overflow-x-auto md:block">
+          <div
+            className={`admin-scrollbar overflow-x-auto ${orders.length > 0 ? "hidden md:block" : ""}`}
+          >
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02]">
@@ -72,7 +70,17 @@ export function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {orders.map((order) => (
+                {orders.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      No orders yet
+                    </td>
+                  </tr>
+                ) : (
+                  orders.map((order) => (
                   <tr
                     key={order.id}
                     className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
@@ -91,12 +99,11 @@ export function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
                       <StatusBadge status={order.status} />
                     </td>
                   </tr>
-                ))}
+                ))
+                )}
               </tbody>
             </table>
           </div>
-        </>
-      )}
     </div>
   );
 }

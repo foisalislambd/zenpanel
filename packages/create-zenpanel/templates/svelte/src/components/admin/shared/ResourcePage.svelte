@@ -1,15 +1,13 @@
 <script lang="ts">
   import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.svelte";
   import AdminAddButton from "@/components/admin/ui/AdminAddButton.svelte";
-  import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.svelte";
-  import AdminEmptyState from "@/components/admin/ui/AdminEmptyState.svelte";
   import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.svelte";
   import AdminRowActions from "@/components/admin/ui/AdminRowActions.svelte";
   import type {
     AdminResource,
     AdminResourceStatus,
   } from "@/lib/admin-data/resources";
-  import { Database, Search } from "lucide-svelte";
+  import { Search } from "lucide-svelte";
 
   type StatusFilter = "all" | AdminResourceStatus;
 
@@ -72,7 +70,6 @@
 </script>
 
 <div class="admin-content space-y-6">
-  <AdminBreadcrumbs />
   <AdminPageHeader {title}>
     {#snippet actions()}
       <AdminAddButton onClick={onAdd} />
@@ -107,19 +104,7 @@
   </div>
 
   <div class="admin-card w-full overflow-hidden">
-    {#if filtered.length === 0}
-      {#if items.length === 0}
-        <AdminEmptyState
-          icon={Database}
-          title="No {resourceLabel.toLowerCase()} yet"
-          description="This page is ready for your data. Connect your backend API to load, create, and manage {resourceLabel.toLowerCase()} from here."
-        />
-      {:else}
-        <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          No {pluralize(resourceLabel, 2)} match your filters
-        </div>
-      {/if}
-    {:else}
+    {#if filtered.length > 0}
       <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
         {#each filtered as item (item.id)}
           <li class="px-4 py-3.5">
@@ -152,8 +137,11 @@
           </li>
         {/each}
       </ul>
+    {/if}
 
-      <div class="admin-scrollbar hidden overflow-x-auto md:block">
+      <div
+        class="admin-scrollbar overflow-x-auto {filtered.length > 0 ? 'hidden md:block' : ''}"
+      >
         <table class="w-full min-w-[720px] text-left text-sm">
           <thead>
             <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -170,6 +158,25 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            {#if filtered.length === 0}
+              <tr>
+                <td colspan="5" class="px-6 py-16 text-center">
+                  <p class="text-base font-semibold text-gray-900 dark:text-white">
+                    {items.length === 0
+                      ? `No ${resourceLabel.toLowerCase()} yet`
+                      : `No ${pluralize(resourceLabel, 2)} match your filters`}
+                  </p>
+                  {#if items.length === 0}
+                    <p
+                      class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                    >
+                      This page is ready for your data. Connect your backend API to load, create, and
+                      manage {resourceLabel.toLowerCase()} from here.
+                    </p>
+                  {/if}
+                </td>
+              </tr>
+            {:else}
             {#each filtered as item (item.id)}
               <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                 <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">
@@ -200,9 +207,9 @@
                 </td>
               </tr>
             {/each}
+            {/if}
           </tbody>
         </table>
       </div>
-    {/if}
   </div>
 </div>

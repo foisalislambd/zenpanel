@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import AccountSettings from "@/components/admin/settings/AccountSettings.vue";
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.vue";
-import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.vue";
 import { cn } from "@/lib/cn";
 
 const tabs = [
@@ -18,7 +17,6 @@ const baseId = `settings-tabs-${Math.random().toString(36).slice(2)}`;
 
 <template>
   <div class="admin-content space-y-6">
-    <AdminBreadcrumbs />
     <AdminPageHeader title="Settings" />
 
     <div

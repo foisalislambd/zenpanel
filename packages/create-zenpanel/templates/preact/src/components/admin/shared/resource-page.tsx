@@ -1,14 +1,12 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
-import { AdminEmptyState } from "@/components/admin/ui/admin-empty-state";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type {
   AdminResource,
   AdminResourceStatus,
 } from "@/lib/admin-data/resources";
-import { Database, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type StatusFilter = "all" | AdminResourceStatus;
@@ -74,7 +72,6 @@ export function ResourcePage({
 
   return (
     <div className="admin-content space-y-6">
-      <AdminBreadcrumbs />
       <AdminPageHeader title={title} actions={<AdminAddButton onClick={onAdd} />} />
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -83,7 +80,7 @@ export function ResourcePage({
           <input
             type="search"
             value={query}
-            onInput={(e) => setQuery(e.currentTarget.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder={searchPlaceholder}
             className="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
             aria-label={`Search ${pluralize(resourceLabel, 2)}`}
@@ -104,20 +101,7 @@ export function ResourcePage({
       </div>
 
       <div className="admin-card w-full overflow-hidden">
-        {filtered.length === 0 ? (
-          items.length === 0 ? (
-            <AdminEmptyState
-              icon={Database}
-              title={`No ${resourceLabel.toLowerCase()} yet`}
-              description={`This page is ready for your data. Connect your backend API to load, create, and manage ${resourceLabel.toLowerCase()} from here.`}
-            />
-          ) : (
-            <div className="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              No {pluralize(resourceLabel, 2)} match your filters
-            </div>
-          )
-        ) : (
-          <>
+        {filtered.length > 0 && (
             <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
               {filtered.map((item) => (
                 <li key={item.id} className="px-4 py-3.5">
@@ -144,8 +128,11 @@ export function ResourcePage({
                 </li>
               ))}
             </ul>
+        )}
 
-            <div className="admin-scrollbar hidden overflow-x-auto md:block">
+            <div
+              className={`admin-scrollbar overflow-x-auto ${filtered.length > 0 ? "hidden md:block" : ""}`}
+            >
               <table className="w-full min-w-[720px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-800">
@@ -164,7 +151,24 @@ export function ResourcePage({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {filtered.map((item) => (
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-16 text-center">
+                        <p className="text-base font-semibold text-gray-900 dark:text-white">
+                          {items.length === 0
+                            ? `No ${resourceLabel.toLowerCase()} yet`
+                            : `No ${pluralize(resourceLabel, 2)} match your filters`}
+                        </p>
+                        {items.length === 0 && (
+                          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                            This page is ready for your data. Connect your backend API to load,
+                            create, and manage {resourceLabel.toLowerCase()} from here.
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
@@ -190,12 +194,11 @@ export function ResourcePage({
                         />
                       </td>
                     </tr>
-                  ))}
+                  ))
+                  )}
                 </tbody>
               </table>
             </div>
-          </>
-        )}
       </div>
     </div>
   );

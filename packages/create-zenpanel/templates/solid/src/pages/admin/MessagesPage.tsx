@@ -1,12 +1,10 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
 import { AdminEmptyState } from "@/components/admin/ui/admin-empty-state";
 import { Inbox, MessageCircle } from "lucide-solid";
 
 export default function AdminMessagesPage() {
   return (
     <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-      <AdminBreadcrumbs />
       <AdminPageHeader title="Messages" />
 
       <div class="flex min-h-0 flex-1 gap-4 overflow-hidden">

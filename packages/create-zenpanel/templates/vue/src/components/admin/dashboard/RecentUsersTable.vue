@@ -26,8 +26,10 @@ const providerStyles: Record<string, string> = {
       :link-label="href ? 'View all' : undefined"
     />
 
-    <template v-if="users.length > 0">
-      <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
+    <ul
+      v-if="users.length > 0"
+      class="divide-y divide-gray-100 md:hidden dark:divide-gray-800"
+    >
         <li v-for="user in users" :key="user.id" class="px-5 py-3">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
@@ -49,7 +51,12 @@ const providerStyles: Record<string, string> = {
         </li>
       </ul>
 
-      <div class="admin-scrollbar hidden overflow-x-auto md:block">
+      <div
+        :class="[
+          'admin-scrollbar overflow-x-auto',
+          users.length > 0 ? 'hidden md:block' : '',
+        ]"
+      >
         <table class="w-full min-w-[600px] text-left text-sm">
           <thead>
             <tr
@@ -62,6 +69,11 @@ const providerStyles: Record<string, string> = {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            <tr v-if="users.length === 0">
+              <td colspan="4" class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                No users yet
+              </td>
+            </tr>
             <tr
               v-for="user in users"
               :key="user.id"
@@ -88,9 +100,5 @@ const providerStyles: Record<string, string> = {
           </tbody>
         </table>
       </div>
-    </template>
-    <div v-else class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-      No users yet
-    </div>
   </div>
 </template>

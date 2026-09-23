@@ -36,12 +36,7 @@ export function RecentUsersTable({
         linkLabel={href ? "View all" : undefined}
       />
 
-      {users.length === 0 ? (
-        <div className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-          No users yet
-        </div>
-      ) : (
-        <>
+      {users.length > 0 && (
           <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
             {users.map((user) => (
               <li key={user.id} className="px-5 py-3">
@@ -62,8 +57,11 @@ export function RecentUsersTable({
               </li>
             ))}
           </ul>
+      )}
 
-          <div className="admin-scrollbar hidden overflow-x-auto md:block">
+          <div
+            className={`admin-scrollbar overflow-x-auto ${users.length > 0 ? "hidden md:block" : ""}`}
+          >
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02]">
@@ -74,7 +72,17 @@ export function RecentUsersTable({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {users.map((user) => (
+                {users.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      No users yet
+                    </td>
+                  </tr>
+                ) : (
+                  users.map((user) => (
                   <tr
                     key={user.id}
                     className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
@@ -92,12 +100,11 @@ export function RecentUsersTable({
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
-                ))}
+                ))
+                )}
               </tbody>
             </table>
           </div>
-        </>
-      )}
     </div>
   );
 }

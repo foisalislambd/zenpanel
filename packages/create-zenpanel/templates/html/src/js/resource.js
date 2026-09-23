@@ -1,5 +1,4 @@
 import {
-  breadcrumbs,
   emptyState,
   escapeHtml,
   icon,
@@ -175,7 +174,6 @@ export function renderResourcePage(
 
     root.innerHTML = `
       <div class="admin-content space-y-6">
-        ${breadcrumbs(title)}
         ${pageHeader(title, addButton())}
 
         <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -199,15 +197,8 @@ export function renderResourcePage(
 
         <div class="admin-card w-full overflow-hidden">
           ${
-            filtered.length === 0
-              ? items.length === 0
-                ? emptyState({
-                    iconName: "database",
-                    title: `No ${resourceLabel.toLowerCase()} yet`,
-                    description: `This page is ready for your data. Connect your backend API to load, create, and manage ${resourceLabel.toLowerCase()} from here.`,
-                  })
-                : `<div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">No ${escapeHtml(pluralize(resourceLabel, 2))} match your filters</div>`
-              : `
+            filtered.length > 0
+              ? `
                 <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
                   ${filtered
                     .map(
@@ -226,8 +217,10 @@ export function renderResourcePage(
                     )
                     .join("")}
                 </ul>
-
-                <div class="admin-scrollbar hidden overflow-x-auto md:block">
+              `
+              : ""
+          }
+                <div class="admin-scrollbar overflow-x-auto ${filtered.length > 0 ? "hidden md:block" : ""}">
                   <table class="w-full min-w-[720px] text-left text-sm">
                     <thead>
                       <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -241,9 +234,25 @@ export function renderResourcePage(
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                      ${filtered
-                        .map(
-                          (item) => `
+                      ${
+                        filtered.length === 0
+                          ? `<tr>
+                        <td colspan="5" class="px-6 py-16 text-center">
+                          <p class="text-base font-semibold text-gray-900 dark:text-white">${
+                            items.length === 0
+                              ? `No ${escapeHtml(resourceLabel.toLowerCase())} yet`
+                              : `No ${escapeHtml(pluralize(resourceLabel, 2))} match your filters`
+                          }</p>
+                          ${
+                            items.length === 0
+                              ? `<p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">This page is ready for your data. Connect your backend API to load, create, and manage ${escapeHtml(resourceLabel.toLowerCase())} from here.</p>`
+                              : ""
+                          }
+                        </td>
+                      </tr>`
+                          : filtered
+                              .map(
+                                (item) => `
                         <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                           <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">${escapeHtml(item.title)}</td>
                           <td class="px-5 py-3.5">${statusBadge(item.status)}</td>
@@ -252,13 +261,12 @@ export function renderResourcePage(
                           <td class="px-5 py-3.5">${rowActions(item.title)}</td>
                         </tr>
                       `,
-                        )
-                        .join("")}
+                              )
+                              .join("")
+                      }
                     </tbody>
                   </table>
                 </div>
-              `
-          }
         </div>
       </div>
     `;
@@ -290,7 +298,6 @@ export function renderResourcePage(
 export function renderMessagesPage(root) {
   root.innerHTML = `
     <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-      ${breadcrumbs("Messages")}
       ${pageHeader("Messages")}
       <div class="flex min-h-0 flex-1 gap-4 overflow-hidden">
         <aside class="admin-card flex w-full max-w-xs shrink-0 flex-col overflow-hidden md:max-w-sm">
@@ -407,7 +414,6 @@ export function renderUsersPage(root) {
 
     root.innerHTML = `
       <div class="admin-content space-y-6">
-        ${breadcrumbs("Users")}
         ${pageHeader("Users", addButton())}
 
         <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -442,9 +448,8 @@ export function renderUsersPage(root) {
 
         <div class="admin-card w-full overflow-hidden">
           ${
-            filtered.length === 0
-              ? `<div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">No users match your filters</div>`
-              : `
+            filtered.length > 0
+              ? `
                 <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
                   ${filtered
                     .map(
@@ -466,8 +471,10 @@ export function renderUsersPage(root) {
                     )
                     .join("")}
                 </ul>
-
-                <div class="admin-scrollbar hidden overflow-x-auto md:block">
+              `
+              : ""
+          }
+                <div class="admin-scrollbar overflow-x-auto ${filtered.length > 0 ? "hidden md:block" : ""}">
                   <table class="w-full min-w-[900px] text-left text-sm">
                     <thead>
                       <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -481,9 +488,12 @@ export function renderUsersPage(root) {
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                      ${filtered
-                        .map(
-                          (user) => `
+                      ${
+                        filtered.length === 0
+                          ? `<tr><td colspan="7" class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">No users match your filters</td></tr>`
+                          : filtered
+                              .map(
+                                (user) => `
                         <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                           <td class="px-5 py-3.5">
                             <p class="font-medium text-gray-900 dark:text-white">${escapeHtml(user.name)}</p>
@@ -499,13 +509,12 @@ export function renderUsersPage(root) {
                           <td class="px-5 py-3.5">${rowActions(user.name, { viewEnabled: true, viewId: user.id })}</td>
                         </tr>
                       `,
-                        )
-                        .join("")}
+                              )
+                              .join("")
+                      }
                     </tbody>
                   </table>
                 </div>
-              `
-          }
         </div>
 
         ${selected ? userDetailPanel(selected) : ""}
@@ -561,7 +570,6 @@ export function renderSettingsPage(root) {
   const admin = getAdmin();
   root.innerHTML = `
     <div class="admin-content space-y-6">
-      ${breadcrumbs("Settings")}
       ${pageHeader("Settings")}
 
       <div role="tablist" aria-label="Settings sections" class="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800">

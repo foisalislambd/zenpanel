@@ -1,5 +1,4 @@
 import { Component, signal } from '@angular/core';
-import { AdminBreadcrumbsComponent } from '@/app/admin/ui/admin-breadcrumbs.component';
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 import { AccountSettingsComponent } from '@/app/admin/settings/account-settings.component';
 
@@ -12,10 +11,9 @@ const tabs: { id: TabId; label: string }[] = [
 
 @Component({
   selector: 'app-settings-page',
-  imports: [AdminBreadcrumbsComponent, AdminPageHeaderComponent, AccountSettingsComponent],
+  imports: [AdminPageHeaderComponent, AccountSettingsComponent],
   template: `
     <div class="admin-content space-y-6">
-      <app-admin-breadcrumbs />
       <app-admin-page-header title="Settings" />
 
       <div

@@ -2,7 +2,6 @@
 
 import { AccountSettings } from "@/components/admin/settings/account-settings";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
 import { cn } from "@/lib/cn";
 import { useId, useState } from "react";
 
@@ -19,7 +18,6 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="admin-content space-y-6">
-      <AdminBreadcrumbs />
       <AdminPageHeader title="Settings" />
 
       <div

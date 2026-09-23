@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.vue";
-import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.vue";
 import AdminEmptyState from "@/components/admin/ui/AdminEmptyState.vue";
 import { Inbox, MessageCircle } from "lucide-vue-next";
 </script>
 
 <template>
   <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-    <AdminBreadcrumbs />
     <AdminPageHeader title="Messages" />
 
     <div class="flex min-h-0 flex-1 gap-4 overflow-hidden">

@@ -2,15 +2,13 @@
 import { computed, ref } from "vue";
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.vue";
 import AdminAddButton from "@/components/admin/ui/AdminAddButton.vue";
-import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.vue";
-import AdminEmptyState from "@/components/admin/ui/AdminEmptyState.vue";
 import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.vue";
 import AdminRowActions from "@/components/admin/ui/AdminRowActions.vue";
 import type {
   AdminResource,
   AdminResourceStatus,
 } from "@/lib/admin-data/resources";
-import { Database, Search } from "lucide-vue-next";
+import { Search } from "lucide-vue-next";
 
 type StatusFilter = "all" | AdminResourceStatus;
 
@@ -72,7 +70,6 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
 
 <template>
   <div class="admin-content space-y-6">
-    <AdminBreadcrumbs />
     <AdminPageHeader :title="title">
       <template #actions>
         <AdminAddButton :on-click="onAdd" />
@@ -107,22 +104,10 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
     </div>
 
     <div class="admin-card w-full overflow-hidden">
-      <template v-if="filtered.length === 0">
-        <AdminEmptyState
-          v-if="items.length === 0"
-          :icon="Database"
-          :title="`No ${resourceLabel.toLowerCase()} yet`"
-          :description="`This page is ready for your data. Connect your backend API to load, create, and manage ${resourceLabel.toLowerCase()} from here.`"
-        />
-        <div
-          v-else
-          class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+        <ul
+          v-if="filtered.length > 0"
+          class="divide-y divide-gray-100 md:hidden dark:divide-gray-800"
         >
-          No {{ pluralize(resourceLabel, 2) }} match your filters
-        </div>
-      </template>
-      <template v-else>
-        <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
           <li v-for="item in filtered" :key="item.id" class="px-4 py-3.5">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
@@ -154,7 +139,12 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
           </li>
         </ul>
 
-        <div class="admin-scrollbar hidden overflow-x-auto md:block">
+        <div
+          :class="[
+            'admin-scrollbar overflow-x-auto',
+            filtered.length > 0 ? 'hidden md:block' : '',
+          ]"
+        >
           <table class="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -171,6 +161,24 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tr v-if="filtered.length === 0">
+                <td colspan="5" class="px-6 py-16 text-center">
+                  <p class="text-base font-semibold text-gray-900 dark:text-white">
+                    {{
+                      items.length === 0
+                        ? `No ${resourceLabel.toLowerCase()} yet`
+                        : `No ${pluralize(resourceLabel, 2)} match your filters`
+                    }}
+                  </p>
+                  <p
+                    v-if="items.length === 0"
+                    class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400"
+                  >
+                    This page is ready for your data. Connect your backend API to load, create, and
+                    manage {{ resourceLabel.toLowerCase() }} from here.
+                  </p>
+                </td>
+              </tr>
               <tr
                 v-for="item in filtered"
                 :key="item.id"
@@ -207,7 +215,6 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
             </tbody>
           </table>
         </div>
-      </template>
     </div>
   </div>
 </template>

@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
-import { AdminBreadcrumbsComponent } from '@/app/admin/ui/admin-breadcrumbs.component';
 import { AdminEmptyStateComponent } from '@/app/admin/ui/admin-empty-state.component';
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 
 @Component({
   selector: 'app-messages-page',
-  imports: [AdminBreadcrumbsComponent, AdminPageHeaderComponent, AdminEmptyStateComponent],
+  imports: [AdminPageHeaderComponent, AdminEmptyStateComponent],
   template: `
     <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-      <app-admin-breadcrumbs />
       <app-admin-page-header title="Messages" />
 
       <div class="flex min-h-0 flex-1 gap-4 overflow-hidden">

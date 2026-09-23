@@ -1,14 +1,12 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
-import { AdminBreadcrumbs } from "@/components/admin/ui/admin-breadcrumbs";
-import { AdminEmptyState } from "@/components/admin/ui/admin-empty-state";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type {
   AdminResource,
   AdminResourceStatus,
 } from "@/lib/admin-data/resources";
-import { Database, Search } from "lucide-solid";
+import { Search } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
 
 type StatusFilter = "all" | AdminResourceStatus;
@@ -67,7 +65,6 @@ export function ResourcePage(props: ResourcePageProps) {
 
   return (
     <div class="admin-content space-y-6">
-      <AdminBreadcrumbs />
       <AdminPageHeader
         title={props.title}
         actions={<AdminAddButton onClick={props.onAdd} />}
@@ -100,25 +97,7 @@ export function ResourcePage(props: ResourcePageProps) {
       </div>
 
       <div class="admin-card w-full overflow-hidden">
-        <Show
-          when={filtered().length > 0}
-          fallback={
-            <Show
-              when={props.items.length === 0}
-              fallback={
-                <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No {pluralize(props.resourceLabel, 2)} match your filters
-                </div>
-              }
-            >
-              <AdminEmptyState
-                icon={Database}
-                title={`No ${props.resourceLabel.toLowerCase()} yet`}
-                description={`This page is ready for your data. Connect your backend API to load, create, and manage ${props.resourceLabel.toLowerCase()} from here.`}
-              />
-            </Show>
-          }
-        >
+        <Show when={filtered().length > 0}>
           <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
             <For each={filtered()}>
               {(item) => (
@@ -147,8 +126,11 @@ export function ResourcePage(props: ResourcePageProps) {
               )}
             </For>
           </ul>
+        </Show>
 
-          <div class="admin-scrollbar hidden overflow-x-auto md:block">
+          <div
+            class={`admin-scrollbar overflow-x-auto ${filtered().length > 0 ? "hidden md:block" : ""}`}
+          >
             <table class="w-full min-w-[720px] text-left text-sm">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -166,6 +148,26 @@ export function ResourcePage(props: ResourcePageProps) {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <Show
+                  when={filtered().length > 0}
+                  fallback={
+                    <tr>
+                      <td colspan={5} class="px-6 py-16 text-center">
+                        <p class="text-base font-semibold text-gray-900 dark:text-white">
+                          {props.items.length === 0
+                            ? `No ${props.resourceLabel.toLowerCase()} yet`
+                            : `No ${pluralize(props.resourceLabel, 2)} match your filters`}
+                        </p>
+                        <Show when={props.items.length === 0}>
+                          <p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                            This page is ready for your data. Connect your backend API to load,
+                            create, and manage {props.resourceLabel.toLowerCase()} from here.
+                          </p>
+                        </Show>
+                      </td>
+                    </tr>
+                  }
+                >
                 <For each={filtered()}>
                   {(item) => (
                     <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
@@ -194,10 +196,10 @@ export function ResourcePage(props: ResourcePageProps) {
                     </tr>
                   )}
                 </For>
+                </Show>
               </tbody>
             </table>
           </div>
-        </Show>
       </div>
     </div>
   );

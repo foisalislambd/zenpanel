@@ -1,7 +1,6 @@
 <script lang="ts">
   import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.svelte";
   import AdminAddButton from "@/components/admin/ui/AdminAddButton.svelte";
-  import AdminBreadcrumbs from "@/components/admin/ui/AdminBreadcrumbs.svelte";
   import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.svelte";
   import AdminRowActions from "@/components/admin/ui/AdminRowActions.svelte";
   import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
@@ -93,7 +92,6 @@
 </script>
 
 <div class="admin-content space-y-6">
-  <AdminBreadcrumbs />
   <AdminPageHeader title="Users">
     {#snippet actions()}
       <AdminAddButton onClick={onAdd} />
@@ -139,11 +137,7 @@
   </div>
 
   <div class="admin-card w-full overflow-hidden">
-    {#if filtered.length === 0}
-      <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-        No users match your filters
-      </div>
-    {:else}
+    {#if filtered.length > 0}
       <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
         {#each filtered as user (user.id)}
           <li class="px-4 py-3.5">
@@ -194,8 +188,11 @@
           </li>
         {/each}
       </ul>
+    {/if}
 
-      <div class="admin-scrollbar hidden overflow-x-auto md:block">
+      <div
+        class="admin-scrollbar overflow-x-auto {filtered.length > 0 ? 'hidden md:block' : ''}"
+      >
         <table class="w-full min-w-[900px] text-left text-sm">
           <thead>
             <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -212,6 +209,16 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            {#if filtered.length === 0}
+              <tr>
+                <td
+                  colspan="7"
+                  class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                >
+                  No users match your filters
+                </td>
+              </tr>
+            {:else}
             {#each filtered as user (user.id)}
               <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                 <td class="px-5 py-3.5">
@@ -270,10 +277,10 @@
                 </td>
               </tr>
             {/each}
+            {/if}
           </tbody>
         </table>
       </div>
-    {/if}
   </div>
 
   {#if selected}

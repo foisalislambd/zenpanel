@@ -4,7 +4,6 @@ import {
   type PortalUserRow,
   type UserAccountStatus,
 } from '@/app/lib/admin-api';
-import { AdminBreadcrumbsComponent } from '@/app/admin/ui/admin-breadcrumbs.component';
 import { AdminLoadingComponent } from '@/app/admin/ui/admin-loading.component';
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 import { AdminAddButtonComponent } from '@/app/admin/ui/admin-add-button.component';
@@ -33,7 +32,6 @@ function dash(value: string | null | undefined) {
 @Component({
   selector: 'app-users-page',
   imports: [
-    AdminBreadcrumbsComponent,
     AdminPageHeaderComponent,
     AdminLoadingComponent,
     AdminAddButtonComponent,
@@ -50,7 +48,6 @@ function dash(value: string | null | undefined) {
       </div>
     } @else {
       <div class="admin-content space-y-6">
-        <app-admin-breadcrumbs />
         <app-admin-page-header title="Users">
           <app-admin-add-button actions />
         </app-admin-page-header>
@@ -89,11 +86,7 @@ function dash(value: string | null | undefined) {
         </div>
 
         <div class="admin-card w-full overflow-hidden">
-          @if (filtered().length === 0) {
-            <div class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-              No users match your filters
-            </div>
-          } @else {
+          @if (filtered().length > 0) {
             <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
               @for (user of filtered(); track user.id) {
                 <li class="px-4 py-3.5">
@@ -137,8 +130,13 @@ function dash(value: string | null | undefined) {
                 </li>
               }
             </ul>
+          }
 
-            <div class="admin-scrollbar hidden overflow-x-auto md:block">
+            <div
+              [class]="
+                'admin-scrollbar overflow-x-auto' + (filtered().length > 0 ? ' hidden md:block' : '')
+              "
+            >
               <table class="w-full min-w-[900px] text-left text-sm">
                 <thead>
                   <tr class="border-b border-gray-200 dark:border-gray-800">
@@ -153,6 +151,16 @@ function dash(value: string | null | undefined) {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                  @if (filtered().length === 0) {
+                    <tr>
+                      <td
+                        colspan="7"
+                        class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        No users match your filters
+                      </td>
+                    </tr>
+                  }
                   @for (user of filtered(); track user.id) {
                     <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                       <td class="px-5 py-3.5">
@@ -209,7 +217,6 @@ function dash(value: string | null | undefined) {
                 </tbody>
               </table>
             </div>
-          }
         </div>
 
         @if (selected(); as user) {
