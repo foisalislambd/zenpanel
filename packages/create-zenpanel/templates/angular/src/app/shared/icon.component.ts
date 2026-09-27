@@ -55,6 +55,7 @@ const PATHS: Record<string, string> = {
     'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M15 3v18 M11 9l3 3-3 3',
   'trash-2':
     'M10 11v6 M14 11v6 M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6 M3 6h18 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2',
+  'arrow-left': 'M19 12H5 M12 19l-7-7 7-7',
   'arrow-right': 'M5 12h14 m12 5 7 7-7 7',
   'loader-2': 'M21 12a9 9 0 1 1-6.219-8.56',
   'log-out': 'm16 17 5-5-5-5 M21 12H9 M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4',

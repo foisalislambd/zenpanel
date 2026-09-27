@@ -2,7 +2,7 @@
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,9 +38,10 @@ export function AdminLoginForm() {
       <div className="mx-auto w-full max-w-[400px]">
         <Link
           href={adminConfig.brand.siteUrl}
-          className="inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          ← Back to site
+          <ArrowLeft className="h-4 w-4" />
+          Back to site
         </Link>
 
         <div className="mt-8 lg:mt-10">

@@ -3,7 +3,7 @@
   import { adminConfig } from "@/config/admin.config";
   import { isExternalUrl } from "@/lib/admin-nav";
   import { navigate } from "@/lib/router.svelte";
-  import { Eye, EyeOff, Lock, User } from "lucide-svelte";
+  import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-svelte";
   import RouterLink from "@/components/RouterLink.svelte";
 
   const DEMO_USERNAME = "admin";
@@ -13,7 +13,7 @@
     "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
   const backLinkClass =
-    "inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
+    "inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
 
   const auth = useAdminAuth();
   let username = $state(DEMO_USERNAME);
@@ -45,9 +45,15 @@
 <div class="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
   <div class="mx-auto w-full max-w-[400px]">
     {#if isExternalUrl(siteUrl)}
-      <a href={siteUrl} class={backLinkClass}>← Back to site</a>
+      <a href={siteUrl} class={backLinkClass}>
+        <ArrowLeft class="h-4 w-4" />
+        Back to site
+      </a>
     {:else}
-      <RouterLink href={siteUrl} class={backLinkClass}>← Back to site</RouterLink>
+      <RouterLink href={siteUrl} class={backLinkClass}>
+        <ArrowLeft class="h-4 w-4" />
+        Back to site
+      </RouterLink>
     {/if}
 
     <div class="mt-8 lg:mt-10">

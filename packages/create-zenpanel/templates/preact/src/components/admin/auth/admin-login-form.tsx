@@ -1,7 +1,7 @@
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
 import { isExternalUrl } from "@/lib/admin-nav";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ const inputClass =
   "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
 const backLinkClass =
-  "inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
+  "inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
 
 export function AdminLoginForm() {
   const { login } = useAdminAuth();
@@ -47,11 +47,13 @@ export function AdminLoginForm() {
       <div className="mx-auto w-full max-w-[400px]">
         {isExternalUrl(siteUrl) ? (
           <a href={siteUrl} className={backLinkClass}>
-            ← Back to site
+            <ArrowLeft className="h-4 w-4" />
+            Back to site
           </a>
         ) : (
           <Link to={siteUrl} className={backLinkClass}>
-            ← Back to site
+            <ArrowLeft className="h-4 w-4" />
+            Back to site
           </Link>
         )}
 

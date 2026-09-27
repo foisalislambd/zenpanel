@@ -33,15 +33,19 @@ const DEMO_PASSWORD = 'admin';
           @if (externalSite) {
             <a
               [href]="siteUrl"
-              class="inline-flex text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400"
-              >← Back to site</a
+              class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400"
             >
+              <app-icon name="arrow-left" [size]="16" />
+              Back to site
+            </a>
           } @else {
             <a
               routerLink="/"
-              class="inline-flex text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400"
-              >← Back to site</a
+              class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400"
             >
+              <app-icon name="arrow-left" [size]="16" />
+              Back to site
+            </a>
           }
 
           <div class="mt-8 lg:mt-10">

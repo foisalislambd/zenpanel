@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { Eye, EyeOff, Lock, User } from "lucide-vue-next";
+import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-vue-next";
 import { useAdminAuth } from "@/composables/use-admin-auth";
 import { adminConfig } from "@/config/admin.config";
 import { isExternalUrl } from "@/lib/admin-nav";
@@ -13,7 +13,7 @@ const inputClass =
   "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
 const backLinkClass =
-  "inline-flex text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
+  "inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
 
 const auth = useAdminAuth();
 const router = useRouter();
@@ -47,8 +47,14 @@ async function handleSubmit(e: Event) {
 <template>
   <div class="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
     <div class="mx-auto w-full max-w-[400px]">
-      <a v-if="isExternalUrl(siteUrl)" :href="siteUrl" :class="backLinkClass">← Back to site</a>
-      <RouterLink v-else :to="siteUrl" :class="backLinkClass">← Back to site</RouterLink>
+      <a v-if="isExternalUrl(siteUrl)" :href="siteUrl" :class="backLinkClass">
+        <ArrowLeft class="h-4 w-4" />
+        Back to site
+      </a>
+      <RouterLink v-else :to="siteUrl" :class="backLinkClass">
+        <ArrowLeft class="h-4 w-4" />
+        Back to site
+      </RouterLink>
 
       <div class="mt-8 lg:mt-10">
         <div
