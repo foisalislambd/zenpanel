@@ -1,6 +1,6 @@
 {
   "name": "zenpanel-monorepo",
-  "version": "1.0.1",
+  "version": "2.0.9",
   "private": true,
   "description": "ZenPanel — open-source admin UI shell. Scaffold with npm create zenpanel.",
   "license": "MIT",

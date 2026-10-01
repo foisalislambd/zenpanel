@@ -4,34 +4,30 @@ This monorepo publishes the CLI package at `packages/create-zenpanel`.
 
 ## Automated release (recommended)
 
-Push to `main`. CI must pass first; only then Release publishes and creates a GitHub tag/release.
+Set the version in the root `package.json`, then push to `main`. CI must pass first. Release publishes only when that version is **strictly greater** than the latest GitHub Release.
 
-1. Push to `main` (no manual version bump needed).
-2. **CI** builds the CLI and every template.
-3. If CI succeeds, **Release** (`.github/workflows/release.yml`):
-   - Auto-bumps `create-zenpanel` version
-   - Publishes to **npmjs.com** via [Trusted Publisher](https://docs.npmjs.com/trusted-publishers/) (OIDC — no `NPM_TOKEN`)
-   - Publishes `@foisalislambd/create-zenpanel` to **GitHub Packages**
-   - Commits the version bump with `[skip release]`, then creates a GitHub Release + tag `vX.Y.Z`
-4. If CI fails, nothing is published and no release/tag is created.
+1. Set `"version"` in the root `package.json` (for example `1.0.2`). Do not rely on an automatic bump.
+2. Push to `main`.
+3. **CI** builds the CLI and every template.
+4. If CI succeeds, **Release** (`.github/workflows/release.yml`) reads the root `package.json` version and compares it to the highest `vX.Y.Z` GitHub Release:
+   - **Greater** — publishes `create-zenpanel` at that version to **npmjs.com** via [Trusted Publisher](https://docs.npmjs.com/trusted-publishers/) (OIDC — no `NPM_TOKEN`), publishes `@foisalislambd/create-zenpanel` to **GitHub Packages**, then creates a GitHub Release + tag `vX.Y.Z`
+   - **Equal or lower** — nothing is published and no tag/release is created
+5. If CI fails, nothing is published and no release/tag is created.
+6. A commit message containing `[skip release]` also skips npm, GitHub Packages, and the GitHub Release. CI still runs.
+
+The workflow copies the root version onto `packages/create-zenpanel` only in the publish job. It does not commit a version bump.
 
 ### Skip a release
 
-Put `[skip release]` in the **HEAD** commit message. CI still runs; npm / GitHub Packages / GitHub Release are skipped.
+Put `[skip release]` in the **HEAD** commit message.
 
 ```bash
 git commit -m "docs: fix typo [skip release]"
 ```
 
-Note: the release bot also commits version bumps with `[skip release]`. Those bot pushes use `GITHUB_TOKEN`, so they do not re-trigger CI/Release (no loop).
+### Version
 
-### Version scheme
-
-Starts at **2.0.0**. Each release increments the last digit; after `9` it rolls over:
-
-`2.0.0` → `2.0.1` → … → `2.0.9` → `2.1.0` → … → `2.9.9` → `3.0.0`
-
-Version is derived from existing `v*.*.*` git tags (not from editing `package.json` by hand).
+The root `package.json` `"version"` is the release version (`X.Y.Z`). Raise it above the current GitHub Release before pushing when you want a new release. A lower or equal version does not publish.
 
 ### One-time: configure Trusted Publisher on npmjs.com
 
@@ -74,7 +70,7 @@ npm install @foisalislambd/create-zenpanel --registry=https://npm.pkg.github.com
 
 2. **Confirm package metadata** in `packages/create-zenpanel/package.json`:
    - `name`: `create-zenpanel`
-   - `version` bumped as needed
+   - `version` set to the same `X.Y.Z` as the root `package.json` (the Release workflow does this for you)
    - `bin`, `files` (`dist`, `templates`)
    - `repository` / `license`
 
