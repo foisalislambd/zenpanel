@@ -6,7 +6,7 @@ This monorepo publishes the CLI package at `packages/create-zenpanel`.
 
 Set the version in the root `package.json`, then push to `main`. CI must pass first. Release publishes only when that version is **strictly greater** than the latest GitHub Release.
 
-1. Set `"version"` in the root `package.json` (for example `1.0.2`). Do not rely on an automatic bump.
+1. Set `"version"` in the root `package.json` to a version **higher** than the latest GitHub Release (the current release is `2.0.9`, so the next one would be `2.0.10` or above). Do not rely on an automatic bump.
 2. Push to `main`.
 3. **CI** builds the CLI and every template.
 4. If CI succeeds, **Release** (`.github/workflows/release.yml`) reads the root `package.json` version and compares it to the highest `vX.Y.Z` GitHub Release:
