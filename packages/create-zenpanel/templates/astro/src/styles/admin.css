@@ -138,7 +138,8 @@ body {
 }
 
 /* Primary text: solid black (light) / solid white (dark).
-   Muted text (gray-400/500/600) is left unchanged. */
+   Secondary text (gray-300–600) is a step brighter in dark mode.
+   Kept in the utilities layer so hover/focus text colors still win. */
 .text-gray-900 {
   color: #000000;
 }
@@ -146,4 +147,60 @@ body {
 .dark .text-gray-900,
 .dark .text-white\/90 {
   color: #ffffff;
+}
+
+@layer utilities {
+  :where(.dark .admin-shell) .text-gray-600 {
+    color: #738196;
+  }
+
+  :where(.dark .admin-shell) .text-gray-500 {
+    color: #8f9aab;
+  }
+
+  :where(.dark .admin-shell) .text-gray-400 {
+    color: #b4bcc8;
+  }
+
+  :where(.dark .admin-shell) .text-gray-300 {
+    color: #dce1e8;
+  }
+
+  :where(.dark .admin-shell) .dark\:text-gray-600 {
+    color: #738196;
+  }
+
+  :where(.dark .admin-shell) .dark\:text-gray-500 {
+    color: #8f9aab;
+  }
+
+  :where(.dark .admin-shell) .dark\:text-gray-400 {
+    color: #b4bcc8;
+  }
+
+  :where(.dark .admin-shell) .dark\:text-gray-300 {
+    color: #dce1e8;
+  }
+
+  :where(.dark .admin-shell) .fill-gray-500 {
+    fill: #8f9aab;
+  }
+
+  :where(.dark .admin-shell) .fill-gray-400 {
+    fill: #b4bcc8;
+  }
+
+  :where(.dark .admin-shell) .dark\:fill-gray-500 {
+    fill: #8f9aab;
+  }
+
+  :where(.dark .admin-shell) .dark\:fill-gray-400 {
+    fill: #b4bcc8;
+  }
+
+  :where(.dark .admin-shell) .placeholder\:text-gray-400::placeholder,
+  :where(.dark .admin-shell) .dark\:placeholder\:text-gray-500::placeholder,
+  :where(.dark .admin-shell) .dark\:placeholder\:text-gray-400::placeholder {
+    color: #a3adbe;
+  }
 }
