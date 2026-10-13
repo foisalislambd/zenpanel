@@ -14,6 +14,10 @@ export const metadata = {
   description: "Site administration",
 };
 
+// Client auth decides whether dashboard pages render, so this shell cannot
+// guarantee an instant static segment. Opt out of that validation.
+export const instant = false;
+
 export default function AdminRootLayout({
   children,
 }: {
