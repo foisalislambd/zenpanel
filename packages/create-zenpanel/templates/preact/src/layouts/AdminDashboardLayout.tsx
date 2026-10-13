@@ -59,7 +59,7 @@ export function AdminDashboardLayout() {
                   "w-full",
                   isFullBleedPage
                     ? "flex h-full min-h-0 flex-col px-0"
-                    : "px-4 py-5 sm:px-6 sm:py-6 lg:px-8",
+                    : "px-3 py-4 sm:px-4 sm:py-5",
                 )}
               >
                 <div className={cn("w-full", isFullBleedPage && "min-h-0 flex-1")}>

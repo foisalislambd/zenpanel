@@ -14,7 +14,7 @@ export function AdminHeader() {
 
   return (
     <header class="admin-topbar sticky top-0 z-30 w-full bg-white dark:bg-gray-900">
-      <div class="flex h-full items-center gap-3 px-4 sm:gap-4 sm:px-6">
+      <div class="flex h-full items-center gap-3 px-3 sm:gap-4 sm:px-4">
         <button
           type="button"
           onClick={toggleMobileSidebar}

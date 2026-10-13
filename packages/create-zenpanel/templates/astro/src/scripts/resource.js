@@ -297,7 +297,7 @@ export function renderResourcePage(
 
 export function renderMessagesPage(root) {
   root.innerHTML = `
-    <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+    <div class="admin-content flex h-full min-h-0 flex-col space-y-4 px-3 py-4 sm:px-4 sm:py-5">
       ${pageHeader("Messages")}
       <div class="flex min-h-0 flex-1 gap-4 overflow-hidden">
         <aside class="admin-card flex w-full max-w-xs shrink-0 flex-col overflow-hidden md:max-w-sm">

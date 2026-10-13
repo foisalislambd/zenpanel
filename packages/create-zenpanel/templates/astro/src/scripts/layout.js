@@ -262,7 +262,7 @@ export function mountAdminLayout(options = {}) {
     const initial = (admin.username || "A").charAt(0).toUpperCase();
 
     header.innerHTML = `
-      <div class="flex h-full items-center gap-3 px-4 sm:gap-4 sm:px-6">
+      <div class="flex h-full items-center gap-3 px-3 sm:gap-4 sm:px-4">
         <button
           type="button"
           data-action="${mobileOpen && !isDesktop() ? "close-mobile" : "open-mobile"}"
@@ -503,7 +503,7 @@ export function mountAdminLayout(options = {}) {
               data-main
               class="admin-scrollbar min-h-0 flex-1 ${fullBleed ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden"}"
             >
-              <div class="${fullBleed ? "flex h-full min-h-0 flex-col px-0" : "w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8"}">
+              <div class="${fullBleed ? "flex h-full min-h-0 flex-col px-0" : "w-full px-3 py-4 sm:px-4 sm:py-5"}">
                 <div class="${fullBleed ? "min-h-0 flex-1 w-full" : "w-full"}" data-main-slot></div>
               </div>
             </main>

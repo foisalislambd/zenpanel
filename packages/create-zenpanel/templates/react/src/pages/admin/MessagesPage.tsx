@@ -4,7 +4,7 @@ import { Inbox, MessageCircle } from "lucide-react";
 
 export default function AdminMessagesPage() {
   return (
-    <div className="admin-content flex h-full min-h-0 flex-col space-y-4 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+    <div className="admin-content flex h-full min-h-0 flex-col space-y-4 px-3 py-4 sm:px-4 sm:py-5">
       <AdminPageHeader title="Messages" />
 
       <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">

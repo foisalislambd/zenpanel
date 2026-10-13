@@ -53,11 +53,10 @@ import { AdminSidebarComponent } from './admin-sidebar.component';
               [class.min-h-0]="isFullBleedPage()"
               [class.flex-col]="isFullBleedPage()"
               [class.px-0]="isFullBleedPage()"
-              [class.px-4]="!isFullBleedPage()"
-              [class.py-5]="!isFullBleedPage()"
-              [class.sm:px-6]="!isFullBleedPage()"
-              [class.sm:py-6]="!isFullBleedPage()"
-              [class.lg:px-8]="!isFullBleedPage()"
+              [class.px-3]="!isFullBleedPage()"
+              [class.py-4]="!isFullBleedPage()"
+              [class.sm:px-4]="!isFullBleedPage()"
+              [class.sm:py-5]="!isFullBleedPage()"
             >
               <div class="w-full" [class.min-h-0]="isFullBleedPage()" [class.flex-1]="isFullBleedPage()">
                 <router-outlet />
