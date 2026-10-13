@@ -15,12 +15,17 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     }
   }, [admin, loading, router]);
 
-  if (loading) {
-    return <AdminLoading message="Loading…" fullHeight />;
-  }
-
-  if (!admin) {
-    return <AdminLoading message="Redirecting to sign in…" fullHeight />;
+  if (loading || !admin) {
+    return (
+      <>
+        <AdminLoading
+          message={loading ? "Loading…" : "Redirecting to sign in…"}
+          fullHeight
+        />
+        {/* Keep the page segment mounted so Cache Components can validate it. */}
+        <div hidden>{children}</div>
+      </>
+    );
   }
 
   return <>{children}</>;

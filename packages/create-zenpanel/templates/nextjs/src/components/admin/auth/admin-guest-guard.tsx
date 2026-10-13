@@ -16,12 +16,16 @@ export function AdminGuestGuard({ children }: { children: React.ReactNode }) {
     }
   }, [admin, loading, router]);
 
-  if (loading) {
-    return <AdminLoading message="Loading…" fullHeight />;
-  }
-
-  if (admin) {
-    return <AdminLoading message="Redirecting to dashboard…" fullHeight />;
+  if (loading || admin) {
+    return (
+      <>
+        <AdminLoading
+          message={loading ? "Loading…" : "Redirecting to dashboard…"}
+          fullHeight
+        />
+        <div hidden>{children}</div>
+      </>
+    );
   }
 
   return <>{children}</>;
