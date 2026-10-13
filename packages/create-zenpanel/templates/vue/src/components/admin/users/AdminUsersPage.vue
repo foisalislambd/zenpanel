@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.vue";
 import AdminAddButton from "@/components/admin/ui/AdminAddButton.vue";
 import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.vue";
+import AdminPagination from "@/components/admin/ui/AdminPagination.vue";
 import AdminRowActions from "@/components/admin/ui/AdminRowActions.vue";
 import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
 import { Search, X } from "lucide-vue-next";
@@ -71,6 +72,20 @@ const filtered = computed(() => {
       .toLowerCase();
     return haystack.includes(q);
   });
+});
+
+const page = ref(1);
+const pageSize = 5;
+watch([query, statusFilter, providerFilter], () => {
+  page.value = 1;
+});
+const pageCount = computed(() =>
+  Math.max(1, Math.ceil(filtered.value.length / pageSize)),
+);
+const currentPage = computed(() => Math.min(page.value, pageCount.value));
+const pageRows = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filtered.value.slice(start, start + pageSize);
 });
 
 const headings = [
@@ -157,7 +172,7 @@ const detailRows = computed(() => {
         v-if="filtered.length > 0"
         class="divide-y divide-gray-100 md:hidden dark:divide-gray-800"
       >
-          <li v-for="user in filtered" :key="user.id" class="px-4 py-3.5">
+          <li v-for="user in pageRows" :key="user.id" class="px-4 py-3.5">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
                 <p class="truncate font-medium text-gray-900 dark:text-white">
@@ -235,7 +250,7 @@ const detailRows = computed(() => {
                 </td>
               </tr>
               <tr
-                v-for="user in filtered"
+                v-for="user in pageRows"
                 :key="user.id"
                 class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
               >
@@ -296,6 +311,12 @@ const detailRows = computed(() => {
             </tbody>
           </table>
         </div>
+      <AdminPagination
+        :page="currentPage"
+        :page-count="pageCount"
+        :total="filtered.length"
+        @page-change="page = $event"
+      />
     </div>
 
     <div v-if="selected" class="fixed inset-0 z-50 flex justify-end">

@@ -1,6 +1,7 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
+import { AdminPagination, slicePage } from "@/components/admin/ui/admin-pagination";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type {
   AdminResource,
@@ -57,6 +58,7 @@ export function ResourcePage({
 }: ResourcePageProps) {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -70,6 +72,11 @@ export function ResourcePage({
     });
   }, [items, query, statusFilter]);
 
+  const { page: currentPage, pageCount, rows: pageRows } = useMemo(
+    () => slicePage(filtered, page),
+    [filtered, page],
+  );
+
   return (
     <div className="admin-content space-y-6">
       <AdminPageHeader title={title} actions={<AdminAddButton onClick={onAdd} />} />
@@ -80,7 +87,10 @@ export function ResourcePage({
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.currentTarget.value)}
+            onChange={(e) => {
+              setQuery(e.currentTarget.value);
+              setPage(1);
+            }}
             placeholder={searchPlaceholder}
             className="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
             aria-label={`Search ${pluralize(resourceLabel, 2)}`}
@@ -90,7 +100,10 @@ export function ResourcePage({
         <AdminFilterGroup
           ariaLabel="Filter by status"
           value={statusFilter}
-          onChange={setStatusFilter}
+          onChange={(value) => {
+            setStatusFilter(value);
+            setPage(1);
+          }}
           options={[
             { value: "all", label: "All" },
             { value: "published", label: "Published" },
@@ -103,7 +116,7 @@ export function ResourcePage({
       <div className="admin-card w-full overflow-hidden">
         {filtered.length > 0 && (
             <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-              {filtered.map((item) => (
+              {pageRows.map((item) => (
                 <li key={item.id} className="px-4 py-3.5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -168,7 +181,7 @@ export function ResourcePage({
                       </td>
                     </tr>
                   ) : (
-                    filtered.map((item) => (
+                    pageRows.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
@@ -199,6 +212,12 @@ export function ResourcePage({
                 </tbody>
               </table>
             </div>
+        <AdminPagination
+          page={currentPage}
+          pageCount={pageCount}
+          total={filtered.length}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

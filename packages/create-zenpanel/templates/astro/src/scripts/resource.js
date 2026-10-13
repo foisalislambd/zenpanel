@@ -39,6 +39,63 @@ function dash(value) {
   return value && String(value).trim() ? value : "—";
 }
 
+const PAGE_SIZE = 5;
+
+function pageWindow(page, pageCount) {
+  if (pageCount <= 7) return Array.from({ length: pageCount }, (_, index) => index + 1);
+  const items = [1];
+  const start = Math.max(2, page - 1);
+  const end = Math.min(pageCount - 1, page + 1);
+  if (start > 2) items.push("ellipsis");
+  for (let index = start; index <= end; index += 1) items.push(index);
+  if (end < pageCount - 1) items.push("ellipsis");
+  items.push(pageCount);
+  return items;
+}
+
+function paginate(items, page) {
+  const total = items.length;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  const current = Math.min(Math.max(1, page), pageCount);
+  const start = (current - 1) * PAGE_SIZE;
+  return {
+    page: current,
+    pageCount,
+    rows: items.slice(start, start + PAGE_SIZE),
+  };
+}
+
+function paginationNav(page, pageCount, total) {
+  if (total === 0) return "";
+  const start = (page - 1) * PAGE_SIZE + 1;
+  const end = Math.min(page * PAGE_SIZE, total);
+  const button =
+    "inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40";
+  const idle =
+    "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/5";
+  const active = "bg-brand-500 text-white shadow-sm shadow-brand-500/20";
+  const pages = pageWindow(page, pageCount)
+    .map((item) =>
+      item === "ellipsis"
+        ? `<span class="px-1 text-sm text-gray-400">…</span>`
+        : `<button type="button" data-page="${item}" ${item === page ? 'aria-current="page"' : ""} class="${button} ${item === page ? active : idle}">${item}</button>`,
+    )
+    .join("");
+  return `
+    <nav aria-label="Pagination" class="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Showing <span class="font-medium text-gray-700 dark:text-gray-200">${start}–${end}</span>
+        of <span class="font-medium text-gray-700 dark:text-gray-200">${total}</span>
+      </p>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button type="button" data-page="${page - 1}" ${page <= 1 ? "disabled" : ""} class="${button} ${idle}" aria-label="Previous page">${icon("chevron-left", "h-4 w-4")}</button>
+        ${pages}
+        <button type="button" data-page="${page + 1}" ${page >= pageCount ? "disabled" : ""} class="${button} ${idle}" aria-label="Next page">${icon("chevron-right", "h-4 w-4")}</button>
+      </div>
+    </nav>
+  `;
+}
+
 function addButton() {
   return `
     <button
@@ -151,6 +208,7 @@ export function renderResourcePage(
 ) {
   let query = "";
   let statusFilter = "all";
+  let page = 1;
 
   function filteredItems() {
     const q = query.trim().toLowerCase();
@@ -166,6 +224,9 @@ export function renderResourcePage(
 
   function paint() {
     const filtered = filteredItems();
+    const paged = paginate(filtered, page);
+    page = paged.page;
+    const rows = paged.rows;
     const searchFocused = document.activeElement?.hasAttribute?.("data-search");
     const cursor =
       searchFocused && document.activeElement instanceof HTMLInputElement
@@ -200,7 +261,7 @@ export function renderResourcePage(
             filtered.length > 0
               ? `
                 <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-                  ${filtered
+                  ${rows
                     .map(
                       (item) => `
                     <li class="px-4 py-3.5">
@@ -250,7 +311,7 @@ export function renderResourcePage(
                           }
                         </td>
                       </tr>`
-                          : filtered
+                          : rows
                               .map(
                                 (item) => `
                         <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
@@ -267,6 +328,7 @@ export function renderResourcePage(
                     </tbody>
                   </table>
                 </div>
+          ${paginationNav(page, paged.pageCount, filtered.length)}
         </div>
       </div>
     `;
@@ -274,12 +336,22 @@ export function renderResourcePage(
     const searchEl = root.querySelector("[data-search]");
     searchEl?.addEventListener("input", (e) => {
       query = e.target.value;
+      page = 1;
       paint();
     });
 
     root.querySelectorAll("[data-status-filter]").forEach((btn) => {
       btn.addEventListener("click", () => {
         statusFilter = btn.getAttribute("data-status-filter");
+        page = 1;
+        paint();
+      });
+    });
+
+    root.querySelectorAll("[data-page]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.hasAttribute("disabled")) return;
+        page = Number(btn.getAttribute("data-page"));
         paint();
       });
     });
@@ -381,6 +453,7 @@ export function renderUsersPage(root) {
   let statusFilter = "all";
   let providerFilter = "all";
   let selectedId = null;
+  let page = 1;
 
   function filteredUsers() {
     const q = query.trim().toLowerCase();
@@ -405,6 +478,9 @@ export function renderUsersPage(root) {
 
   function paint() {
     const filtered = filteredUsers();
+    const paged = paginate(filtered, page);
+    page = paged.page;
+    const rows = paged.rows;
     const selected = demoUsers.find((u) => u.id === selectedId) ?? null;
     const searchFocused = document.activeElement?.hasAttribute?.("data-search");
     const cursor =
@@ -451,7 +527,7 @@ export function renderUsersPage(root) {
             filtered.length > 0
               ? `
                 <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-                  ${filtered
+                  ${rows
                     .map(
                       (user) => `
                     <li class="px-4 py-3.5">
@@ -491,7 +567,7 @@ export function renderUsersPage(root) {
                       ${
                         filtered.length === 0
                           ? `<tr><td colspan="7" class="px-5 py-12 text-center text-sm text-gray-500 dark:text-gray-400">No users match your filters</td></tr>`
-                          : filtered
+                          : rows
                               .map(
                                 (user) => `
                         <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
@@ -515,6 +591,7 @@ export function renderUsersPage(root) {
                     </tbody>
                   </table>
                 </div>
+          ${paginationNav(page, paged.pageCount, filtered.length)}
         </div>
 
         ${selected ? userDetailPanel(selected) : ""}
@@ -524,12 +601,14 @@ export function renderUsersPage(root) {
     const searchEl = root.querySelector("[data-search]");
     searchEl?.addEventListener("input", (e) => {
       query = e.target.value;
+      page = 1;
       paint();
     });
 
     root.querySelectorAll("[data-status-filter]").forEach((btn) => {
       btn.addEventListener("click", () => {
         statusFilter = btn.getAttribute("data-status-filter");
+        page = 1;
         paint();
       });
     });
@@ -537,6 +616,7 @@ export function renderUsersPage(root) {
     root.querySelectorAll("[data-provider-filter]").forEach((btn) => {
       btn.addEventListener("click", () => {
         providerFilter = btn.getAttribute("data-provider-filter");
+        page = 1;
         paint();
       });
     });
@@ -551,6 +631,14 @@ export function renderUsersPage(root) {
     root.querySelectorAll("[data-close-drawer]").forEach((btn) => {
       btn.addEventListener("click", () => {
         selectedId = null;
+        paint();
+      });
+    });
+
+    root.querySelectorAll("[data-page]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.hasAttribute("disabled")) return;
+        page = Number(btn.getAttribute("data-page"));
         paint();
       });
     });

@@ -2,6 +2,7 @@
   import AdminPageHeader from "@/components/admin/layout/AdminPageHeader.svelte";
   import AdminAddButton from "@/components/admin/ui/AdminAddButton.svelte";
   import AdminFilterGroup from "@/components/admin/ui/AdminFilterGroup.svelte";
+  import AdminPagination from "@/components/admin/ui/AdminPagination.svelte";
   import AdminRowActions from "@/components/admin/ui/AdminRowActions.svelte";
   import type {
     AdminResource,
@@ -66,6 +67,19 @@
     });
   });
 
+  let page = $state(1);
+  const pageSize = 5;
+  $effect(() => {
+    query;
+    statusFilter;
+    page = 1;
+  });
+  const pageCount = $derived(Math.max(1, Math.ceil(filtered.length / pageSize)));
+  const currentPage = $derived(Math.min(page, pageCount));
+  const pageRows = $derived(
+    filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+  );
+
   const headings = ["Title", "Status", "Details", "Updated", "Actions"];
 </script>
 
@@ -106,7 +120,7 @@
   <div class="admin-card w-full overflow-hidden">
     {#if filtered.length > 0}
       <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-        {#each filtered as item (item.id)}
+        {#each pageRows as item (item.id)}
           <li class="px-4 py-3.5">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
@@ -177,7 +191,7 @@
                 </td>
               </tr>
             {:else}
-            {#each filtered as item (item.id)}
+            {#each pageRows as item (item.id)}
               <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                 <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">
                   {item.title}
@@ -211,5 +225,11 @@
           </tbody>
         </table>
       </div>
+    <AdminPagination
+      page={currentPage}
+      {pageCount}
+      total={filtered.length}
+      onPageChange={(next) => (page = next)}
+    />
   </div>
 </div>

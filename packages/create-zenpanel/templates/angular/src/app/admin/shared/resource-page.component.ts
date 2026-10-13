@@ -3,6 +3,10 @@ import type { AdminResource, AdminResourceStatus } from '@/app/lib/admin-data/re
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 import { AdminAddButtonComponent } from '@/app/admin/ui/admin-add-button.component';
 import { AdminFilterGroupComponent } from '@/app/admin/ui/admin-filter-group.component';
+import {
+  ADMIN_PAGE_SIZE,
+  AdminPaginationComponent,
+} from '@/app/admin/ui/admin-pagination.component';
 import { AdminRowActionsComponent } from '@/app/admin/ui/admin-row-actions.component';
 import { IconComponent } from '@/app/shared/icon.component';
 
@@ -34,6 +38,7 @@ function pluralize(label: string, count: number): string {
     AdminPageHeaderComponent,
     AdminAddButtonComponent,
     AdminFilterGroupComponent,
+    AdminPaginationComponent,
     AdminRowActionsComponent,
     IconComponent,
   ],
@@ -53,7 +58,7 @@ function pluralize(label: string, count: number): string {
           <input
             type="search"
             [value]="query()"
-            (input)="query.set($any($event.target).value)"
+            (input)="onQuery($any($event.target).value)"
             [placeholder]="searchPlaceholder"
             class="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
             [attr.aria-label]="'Search ' + pluralize(resourceLabel, 2)"
@@ -71,7 +76,7 @@ function pluralize(label: string, count: number): string {
       <div class="admin-card w-full overflow-hidden">
         @if (filtered().length > 0) {
           <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-            @for (item of filtered(); track item.id) {
+            @for (item of pageRows(); track item.id) {
               <li class="px-4 py-3.5">
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0 flex-1">
@@ -138,7 +143,7 @@ function pluralize(label: string, count: number): string {
                     </td>
                   </tr>
                 }
-                @for (item of filtered(); track item.id) {
+                @for (item of pageRows(); track item.id) {
                   <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                     <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">{{ item.title }}</td>
                     <td class="px-5 py-3.5">
@@ -167,6 +172,12 @@ function pluralize(label: string, count: number): string {
               </tbody>
             </table>
           </div>
+        <app-admin-pagination
+          [page]="currentPage()"
+          [pageCount]="pageCount()"
+          [total]="filtered().length"
+          (pageChange)="page.set($event)"
+        />
       </div>
     </div>
   `,
@@ -193,6 +204,7 @@ export class ResourcePageComponent {
 
   readonly query = signal('');
   readonly statusFilter = signal<StatusFilter>('all');
+  readonly page = signal(1);
   readonly statusStyles = statusStyles;
   readonly pluralize = pluralize;
   readonly tableHeadings = ['Title', 'Status', 'Details', 'Updated', 'Actions'];
@@ -214,8 +226,23 @@ export class ResourcePageComponent {
     });
   });
 
+  readonly pageCount = computed(() =>
+    Math.max(1, Math.ceil(this.filtered().length / ADMIN_PAGE_SIZE)),
+  );
+  readonly currentPage = computed(() => Math.min(this.page(), this.pageCount()));
+  readonly pageRows = computed(() => {
+    const start = (this.currentPage() - 1) * ADMIN_PAGE_SIZE;
+    return this.filtered().slice(start, start + ADMIN_PAGE_SIZE);
+  });
+
+  onQuery(value: string): void {
+    this.query.set(value);
+    this.page.set(1);
+  }
+
   onStatusFilter(value: string): void {
     this.statusFilter.set(value as StatusFilter);
+    this.page.set(1);
   }
 
   formatDate(iso: string): string {

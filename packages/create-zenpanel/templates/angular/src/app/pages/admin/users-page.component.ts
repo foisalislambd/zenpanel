@@ -8,6 +8,10 @@ import { AdminLoadingComponent } from '@/app/admin/ui/admin-loading.component';
 import { AdminPageHeaderComponent } from '@/app/admin/layout/admin-page-header.component';
 import { AdminAddButtonComponent } from '@/app/admin/ui/admin-add-button.component';
 import { AdminFilterGroupComponent } from '@/app/admin/ui/admin-filter-group.component';
+import {
+  ADMIN_PAGE_SIZE,
+  AdminPaginationComponent,
+} from '@/app/admin/ui/admin-pagination.component';
 import { AdminRowActionsComponent } from '@/app/admin/ui/admin-row-actions.component';
 import { IconComponent } from '@/app/shared/icon.component';
 
@@ -36,6 +40,7 @@ function dash(value: string | null | undefined) {
     AdminLoadingComponent,
     AdminAddButtonComponent,
     AdminFilterGroupComponent,
+    AdminPaginationComponent,
     AdminRowActionsComponent,
     IconComponent,
   ],
@@ -62,7 +67,7 @@ function dash(value: string | null | undefined) {
             <input
               type="search"
               [value]="query()"
-              (input)="query.set($any($event.target).value)"
+              (input)="onQuery($any($event.target).value)"
               placeholder="Search name, email, phone, IP..."
               class="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
               aria-label="Search users"
@@ -88,7 +93,7 @@ function dash(value: string | null | undefined) {
         <div class="admin-card w-full overflow-hidden">
           @if (filtered().length > 0) {
             <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-              @for (user of filtered(); track user.id) {
+              @for (user of pageRows(); track user.id) {
                 <li class="px-4 py-3.5">
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0 flex-1">
@@ -161,7 +166,7 @@ function dash(value: string | null | undefined) {
                       </td>
                     </tr>
                   }
-                  @for (user of filtered(); track user.id) {
+                  @for (user of pageRows(); track user.id) {
                     <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                       <td class="px-5 py-3.5">
                         <p class="font-medium text-gray-900 dark:text-white">{{ user.name }}</p>
@@ -217,6 +222,12 @@ function dash(value: string | null | undefined) {
                 </tbody>
               </table>
             </div>
+          <app-admin-pagination
+            [page]="currentPage()"
+            [pageCount]="pageCount()"
+            [total]="filtered().length"
+            (pageChange)="page.set($event)"
+          />
         </div>
 
         @if (selected(); as user) {
@@ -299,6 +310,7 @@ export class UsersPageComponent implements OnInit {
   readonly statusFilter = signal<StatusFilter>('all');
   readonly providerFilter = signal<ProviderFilter>('all');
   readonly selected = signal<PortalUserRow | null>(null);
+  readonly page = signal(1);
 
   readonly dash = dash;
   readonly tableHeadings = [
@@ -342,6 +354,15 @@ export class UsersPageComponent implements OnInit {
     });
   });
 
+  readonly pageCount = computed(() =>
+    Math.max(1, Math.ceil(this.filtered().length / ADMIN_PAGE_SIZE)),
+  );
+  readonly currentPage = computed(() => Math.min(this.page(), this.pageCount()));
+  readonly pageRows = computed(() => {
+    const start = (this.currentPage() - 1) * ADMIN_PAGE_SIZE;
+    return this.filtered().slice(start, start + ADMIN_PAGE_SIZE);
+  });
+
   ngOnInit(): void {
     previewFetchUsers()
       .then((res) => this.users.set(res.users))
@@ -351,12 +372,19 @@ export class UsersPageComponent implements OnInit {
       .finally(() => this.loading.set(false));
   }
 
+  onQuery(value: string): void {
+    this.query.set(value);
+    this.page.set(1);
+  }
+
   onStatusFilter(value: string): void {
     this.statusFilter.set(value as StatusFilter);
+    this.page.set(1);
   }
 
   onProviderFilter(value: string): void {
     this.providerFilter.set(value as ProviderFilter);
+    this.page.set(1);
   }
 
   providerStyle(provider: string): string {

@@ -1,6 +1,7 @@
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { AdminAddButton } from "@/components/admin/ui/admin-add-button";
 import { AdminFilterGroup } from "@/components/admin/ui/admin-filter-group";
+import { AdminPagination, slicePage } from "@/components/admin/ui/admin-pagination";
 import { AdminRowActions } from "@/components/admin/ui/admin-row-actions";
 import type { PortalUserRow, UserAccountStatus } from "@/lib/admin-api";
 import { Search, X } from "lucide-solid";
@@ -115,6 +116,7 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
   const [statusFilter, setStatusFilter] = createSignal<StatusFilter>("all");
   const [providerFilter, setProviderFilter] = createSignal<ProviderFilter>("all");
   const [selected, setSelected] = createSignal<PortalUserRow | null>(null);
+  const [page, setPage] = createSignal(1);
 
   const filtered = createMemo(() => {
     const q = query().trim().toLowerCase();
@@ -137,6 +139,8 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
     });
   });
 
+  const paged = createMemo(() => slicePage(filtered(), page()));
+
   return (
     <div class="admin-content space-y-6">
       <AdminPageHeader
@@ -150,7 +154,10 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
           <input
             type="search"
             value={query()}
-            onInput={(e) => setQuery(e.currentTarget.value)}
+            onInput={(e) => {
+              setQuery(e.currentTarget.value);
+              setPage(1);
+            }}
             placeholder="Search name, email, phone, IP..."
             class="h-11 w-full rounded-xl border border-gray-200 bg-white pr-4 pl-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500"
             aria-label="Search users"
@@ -161,7 +168,10 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
           <AdminFilterGroup
             ariaLabel="Filter by status"
             value={statusFilter()}
-            onChange={setStatusFilter}
+            onChange={(value) => {
+              setStatusFilter(value);
+              setPage(1);
+            }}
             options={[
               { value: "all", label: "All" },
               { value: "active", label: "Active" },
@@ -171,7 +181,10 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
           <AdminFilterGroup
             ariaLabel="Filter by provider"
             value={providerFilter()}
-            onChange={setProviderFilter}
+            onChange={(value) => {
+              setProviderFilter(value);
+              setPage(1);
+            }}
             options={[
               { value: "all", label: "All" },
               { value: "email", label: "Email" },
@@ -184,7 +197,7 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
       <div class="admin-card w-full overflow-hidden">
         <Show when={filtered().length > 0}>
           <ul class="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
-            <For each={filtered()}>
+            <For each={paged().rows}>
               {(user) => (
                 <li class="px-4 py-3.5">
                   <div class="flex items-start justify-between gap-3">
@@ -255,7 +268,7 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
                     </tr>
                   }
                 >
-                <For each={filtered()}>
+                <For each={paged().rows}>
                   {(user) => (
                     <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                       <td class="px-5 py-3.5">
@@ -296,6 +309,12 @@ export function AdminUsersPage(props: AdminUsersPageProps) {
               </tbody>
             </table>
           </div>
+        <AdminPagination
+          page={paged().page}
+          pageCount={paged().pageCount}
+          total={filtered().length}
+          onPageChange={setPage}
+        />
       </div>
 
       <Show when={selected()}>
