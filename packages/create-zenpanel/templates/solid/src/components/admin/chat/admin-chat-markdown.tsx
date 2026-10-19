@@ -4,7 +4,7 @@ type Props = {
   content: string;
 };
 
-/** Lightweight assistant text — supports **bold** and line breaks without extra deps. */
+/** Lightweight assistant text - supports **bold** and line breaks without extra deps. */
 export function AdminChatMarkdown(props: Props) {
   const parts = createMemo(() => props.content.split(/(\*\*[^*]+\*\*)/g));
 

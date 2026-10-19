@@ -407,7 +407,7 @@ export function mountAdminLayout(options = {}) {
         <div class="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800">
           <div>
             <p class="text-sm font-semibold text-gray-900 dark:text-white">AI assistant</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">Preview stub — connect your API</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Preview stub - connect your API</p>
           </div>
           <button type="button" data-action="toggle-chat" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10" aria-label="Close AI assistant">
             ${icon("x", "h-4 w-4")}
@@ -425,7 +425,7 @@ export function mountAdminLayout(options = {}) {
             <input
               type="text"
               disabled
-              placeholder="Message — connect API to enable"
+              placeholder="Message - connect API to enable"
               class="h-10 flex-1 cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-white/5"
             />
             <button type="button" disabled class="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-lg bg-brand-500/50 text-white">

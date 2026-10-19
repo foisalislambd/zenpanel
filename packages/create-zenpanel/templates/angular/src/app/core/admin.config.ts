@@ -5,7 +5,7 @@ export const adminConfig = {
     letter: 'Z',
     siteUrl: '/',
     loginDescription:
-      'Professional control panel for your platform — monitor users, review activity, and manage everything securely.',
+      'Professional control panel for your platform - monitor users, review activity, and manage everything securely.',
     loginFeatures: [
       'Portal analytics overview',
       'Secure admin-only access',

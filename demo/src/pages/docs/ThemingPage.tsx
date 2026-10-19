@@ -35,14 +35,14 @@ export default function DocsThemingPage() {
       <DocsP>Brand colors live in the template CSS / <DocsCode>@theme</DocsCode> block:</DocsP>
       <DocsUl>
         <li>
-          <DocsCode>brand-500</DocsCode> / <DocsCode>brand-600</DocsCode> — primary
+          <DocsCode>brand-500</DocsCode> / <DocsCode>brand-600</DocsCode> - primary
           actions and active nav
         </li>
         <li>
-          <DocsCode>gray-*</DocsCode> — surfaces, borders, muted text
+          <DocsCode>gray-*</DocsCode> - surfaces, borders, muted text
         </li>
         <li>
-          <DocsCode>success-*</DocsCode> / <DocsCode>error-*</DocsCode> — status
+          <DocsCode>success-*</DocsCode> / <DocsCode>error-*</DocsCode> - status
           accents
         </li>
       </DocsUl>

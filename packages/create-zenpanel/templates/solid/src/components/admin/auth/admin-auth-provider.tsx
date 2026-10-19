@@ -38,7 +38,7 @@ export function AdminAuthProvider(props: { children: JSX.Element }) {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(res.admin));
     } catch {
-      // Ignore quota / private-mode failures — in-memory auth still works.
+      // Ignore quota / private-mode failures - in-memory auth still works.
     }
   }
 

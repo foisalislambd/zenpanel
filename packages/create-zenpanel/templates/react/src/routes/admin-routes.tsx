@@ -17,7 +17,7 @@ import TransactionsPage from "@/pages/admin/TransactionsPage";
 import UsersPage from "@/pages/admin/UsersPage";
 import { Route } from "react-router-dom";
 
-/** Shared admin route tree — used by App and install-mode example. */
+/** Shared admin route tree - used by App and install-mode example. */
 export const zenPanelAdminRoute = (
   <Route path="/admin" element={<AdminRootLayout />}>
     <Route element={<AdminAuthLayout />}>

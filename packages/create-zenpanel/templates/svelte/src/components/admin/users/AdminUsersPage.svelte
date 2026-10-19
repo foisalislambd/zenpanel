@@ -27,7 +27,7 @@
   };
 
   function dash(value: string | null | undefined) {
-    return value?.trim() ? value : "—";
+    return value?.trim() ? value : "-";
   }
 
   function providerClass(provider: string) {

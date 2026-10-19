@@ -130,7 +130,7 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
                   {{ item.title }}
                 </p>
                 <p class="mt-0.5 truncate text-sm text-gray-500">
-                  {{ item.meta ?? "—" }}
+                  {{ item.meta ?? "-" }}
                 </p>
                 <div class="mt-2">
                   <span
@@ -213,7 +213,7 @@ const headings = ["Title", "Status", "Details", "Updated", "Actions"];
                   </span>
                 </td>
                 <td class="max-w-[220px] truncate px-5 py-3.5 text-gray-500">
-                  {{ item.meta ?? "—" }}
+                  {{ item.meta ?? "-" }}
                 </td>
                 <td class="px-5 py-3.5 whitespace-nowrap text-gray-500">
                   {{ new Date(item.updatedAt).toLocaleDateString() }}

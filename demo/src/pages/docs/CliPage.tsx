@@ -17,7 +17,7 @@ export default function DocsCliPage() {
       <DocsH1>CLI reference</DocsH1>
       <DocsLead>
         Package: <DocsCode>create-zenpanel</DocsCode>. Same convention as Vite and
-        Next — users run <DocsCode>npm create zenpanel</DocsCode>.
+        Next - users run <DocsCode>npm create zenpanel</DocsCode>.
       </DocsLead>
 
       <DocsH2 id="usage">Usage</DocsH2>

@@ -3,4 +3,4 @@
 - CLI: `packages/create-zenpanel`
 - Templates: `packages/create-zenpanel/templates/{nextjs,react,preact,solid,svelte,vue,html,astro,angular}`
 
-When editing the Next.js template, read `node_modules/next/dist/docs/` inside that template after install — this Next.js version may differ from training data.
+When editing the Next.js template, read `node_modules/next/dist/docs/` inside that template after install - this Next.js version may differ from training data.

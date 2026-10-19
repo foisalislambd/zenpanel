@@ -18,7 +18,7 @@ export function AccountSettings() {
             Username
           </dt>
           <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-            {admin()?.username ?? "—"}
+            {admin()?.username ?? "-"}
           </dd>
         </div>
         <div>
@@ -26,7 +26,7 @@ export function AccountSettings() {
             Email
           </dt>
           <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-            {admin()?.email ?? "—"}
+            {admin()?.email ?? "-"}
           </dd>
         </div>
         <div>
@@ -34,7 +34,7 @@ export function AccountSettings() {
             Role
           </dt>
           <dd class="mt-1 text-sm font-medium capitalize text-gray-900 dark:text-white">
-            {admin()?.role ?? "—"}
+            {admin()?.role ?? "-"}
           </dd>
         </div>
         <div>
@@ -44,7 +44,7 @@ export function AccountSettings() {
           <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
             {admin()?.lastLoginAt
               ? new Date(admin()!.lastLoginAt!).toLocaleString()
-              : "—"}
+              : "-"}
           </dd>
         </div>
       </dl>

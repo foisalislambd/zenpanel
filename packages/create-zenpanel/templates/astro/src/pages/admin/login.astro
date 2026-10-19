@@ -50,11 +50,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 data-lucide="user"
                 class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400"
               ></i>
+              <!-- Preview only. Do not prefill username or password in production. -->
               <input
                 id="admin-username"
                 name="username"
                 type="text"
                 autocomplete="username"
+                placeholder="Enter username"
                 value="admin"
                 class="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
               />
@@ -78,6 +80,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 name="password"
                 type="password"
                 autocomplete="current-password"
+                placeholder="Enter password"
                 value="admin"
                 class="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-11 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
               />
@@ -104,7 +107,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </form>
 
         <p class="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          UI preview only — no real authentication.
+          UI preview only - no real authentication.
         </p>
       </div>
     </div>

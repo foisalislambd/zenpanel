@@ -55,7 +55,7 @@ export function buildZenpanelAgentRulesBlock(framework: FrameworkId): string {
 
 # ZenPanel admin
 
-This repo includes a ZenPanel admin shell. When the user asks to change the admin panel, extend these files — do not replace them with a new dashboard.
+This repo includes a ZenPanel admin shell. When the user asks to change the admin panel, extend these files - do not replace them with a new dashboard.
 
 ## Preview auth
 
@@ -100,7 +100,7 @@ export function upsertZenpanelAgentRulesBlock(
       const after = existing.slice(endIdx + ZENPANEL_AGENT_RULES_END.length);
       return before + normalizedBlock + after;
     }
-    // Start marker without a matching end — replace from the start marker to EOF
+    // Start marker without a matching end - replace from the start marker to EOF
     // so a second install cannot append a duplicate block.
     return existing.slice(0, startIdx) + normalizedBlock + eol;
   }

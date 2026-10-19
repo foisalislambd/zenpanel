@@ -25,7 +25,7 @@ function MessagesRoute() {
   );
 }
 
-/** Shared admin route tree — used by App and install-mode example. */
+/** Shared admin route tree - used by App and install-mode example. */
 export function ZenPanelAdminRoutes() {
   return (
     <Route path="/admin" component={AdminRootLayout}>

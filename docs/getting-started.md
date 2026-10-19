@@ -1,6 +1,6 @@
 # Getting started
 
-ZenPanel is an **admin UI shell** (sidebar, dashboard, resources, login, dark mode). There is no backend — preview data is included so you can review the UI first.
+ZenPanel is an **admin UI shell** (sidebar, dashboard, resources, login, dark mode). There is no backend - preview data is included so you can review the UI first.
 
 ## Requirements
 
@@ -39,7 +39,7 @@ npm run dev
 | Astro | http://localhost:4321/admin/login |
 | Angular | http://localhost:4200/admin/login |
 
-**Preview credentials:** `admin` / `admin` (UI only — not real authentication).
+**Preview credentials:** `admin` / `admin` (UI only - not real authentication).
 
 ## Install into an existing app
 

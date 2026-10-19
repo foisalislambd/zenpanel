@@ -1,4 +1,4 @@
-# Only ignore package tooling — never templates/*/src
+# Only ignore package tooling - never templates/*/src
 /src
 /tsup.config.ts
 /tsconfig.json

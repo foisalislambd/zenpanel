@@ -1,6 +1,6 @@
 # ZenPanel (HTML)
 
-Plain HTML / CSS / JavaScript — **no Vite / no React**. Tailwind CSS **v4** via the official CLI (`@import "tailwindcss"` in CSS).
+Plain HTML / CSS / JavaScript - **no Vite / no React**. Tailwind CSS **v4** via the official CLI (`@import "tailwindcss"` in CSS).
 
 ## Scripts
 
@@ -22,7 +22,7 @@ src/
   admin/           # login, dashboard, resource pages
   css/
     input.css      # Tailwind v4 source (@import "tailwindcss")
-    styles.css     # generated — linked from HTML
+    styles.css     # generated - linked from HTML
     admin.css
     shell.css
   js/

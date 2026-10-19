@@ -17,7 +17,7 @@ export function applyTheme(theme) {
   try {
     localStorage.setItem(THEME_KEY, theme);
   } catch {
-    // Private mode / blocked storage — theme still applies for this page load.
+    // Private mode / blocked storage - theme still applies for this page load.
   }
 }
 

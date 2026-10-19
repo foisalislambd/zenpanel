@@ -14,7 +14,7 @@ export function AdminChatRouteBridge() {
   const { setPageContext } = useAdminChatPanel();
 
   useEffect(() => {
-    // Dashboard registers rich context via useAdminChatPageContext — do not overwrite it.
+    // Dashboard registers rich context via useAdminChatPageContext - do not overwrite it.
     if (pathname === "/admin") {
       return;
     }
@@ -26,7 +26,7 @@ export function AdminChatRouteBridge() {
       title: nav?.name ?? "Admin",
       description:
         nav?.description ??
-        `Ask me anything about ${nav?.name ?? "this page"} — analyze data, get suggestions, or plan your next steps.`,
+        `Ask me anything about ${nav?.name ?? "this page"} - analyze data, get suggestions, or plan your next steps.`,
       route: pathname,
       getSnapshot: () => ({ route: pathname }),
     });

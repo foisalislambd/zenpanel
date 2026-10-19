@@ -27,7 +27,7 @@ function buildDashboardReply(data: Record<string, unknown>, prompt: string): str
     const orders = formatNumber(data.newOrdersLast7Days);
     const messages = formatNumber(data.unreadMessages);
     const revenueText =
-      typeof revenue === "number" ? formatCurrency(revenue) : "—";
+      typeof revenue === "number" ? formatCurrency(revenue) : "-";
 
     return `Here's a quick read on your dashboard metrics:
 
@@ -59,7 +59,7 @@ function buildPageReply(page: AdminChatPageContextPayload, prompt: string): stri
 
 ${page.description ? `\n${page.description}` : ""}
 
-This panel is a UI shell — wire your backend AI endpoint to unlock generation and apply-to-editor flows.`;
+This panel is a UI shell - wire your backend AI endpoint to unlock generation and apply-to-editor flows.`;
   }
 
   if (/write|create|draft|generate/.test(lower)) {
@@ -77,7 +77,7 @@ For now, this preview assistant confirms the chat panel is working and page cont
 }
 
 /**
- * Preview chat — replace with a real API call when your backend is ready.
+ * Preview chat - replace with a real API call when your backend is ready.
  */
 export async function previewSendAdminChatMessage(input: {
   messages: ChatMessageInput[];
@@ -102,7 +102,7 @@ export async function previewSendAdminChatMessage(input: {
   } else if (page) {
     reply = buildPageReply(page, prompt);
   } else {
-    reply = `Hello from **${brand} AI** (preview mode). Ask anything about the admin panel — connect your API for full assistant capabilities.`;
+    reply = `Hello from **${brand} AI** (preview mode). Ask anything about the admin panel - connect your API for full assistant capabilities.`;
   }
 
   return { reply };

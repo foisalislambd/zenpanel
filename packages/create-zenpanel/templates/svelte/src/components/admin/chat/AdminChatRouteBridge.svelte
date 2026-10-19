@@ -20,7 +20,7 @@
       title: nav?.name ?? "Admin",
       description:
         nav?.description ??
-        `Ask me anything about ${nav?.name ?? "this page"} — analyze data, get suggestions, or plan your next steps.`,
+        `Ask me anything about ${nav?.name ?? "this page"} - analyze data, get suggestions, or plan your next steps.`,
       route: path,
       getSnapshot: () => ({ route: path }),
     });

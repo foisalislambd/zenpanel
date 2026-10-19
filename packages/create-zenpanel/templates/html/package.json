@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "ZenPanel admin UI shell — plain HTML, CSS, and JavaScript (Tailwind CSS v4 CLI, no Vite)",
+  "description": "ZenPanel admin UI shell - plain HTML, CSS, and JavaScript (Tailwind CSS v4 CLI, no Vite)",
   "scripts": {
     "css:build": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
     "css:watch": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --watch",

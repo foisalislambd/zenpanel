@@ -14,25 +14,25 @@
     <div>
       <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Username</dt>
       <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-        {auth.admin?.username ?? "—"}
+        {auth.admin?.username ?? "-"}
       </dd>
     </div>
     <div>
       <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Email</dt>
       <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-        {auth.admin?.email ?? "—"}
+        {auth.admin?.email ?? "-"}
       </dd>
     </div>
     <div>
       <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Role</dt>
       <dd class="mt-1 text-sm font-medium capitalize text-gray-900 dark:text-white">
-        {auth.admin?.role ?? "—"}
+        {auth.admin?.role ?? "-"}
       </dd>
     </div>
     <div>
       <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Last login</dt>
       <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-        {auth.admin?.lastLoginAt ? new Date(auth.admin.lastLoginAt).toLocaleString() : "—"}
+        {auth.admin?.lastLoginAt ? new Date(auth.admin.lastLoginAt).toLocaleString() : "-"}
       </dd>
     </div>
   </dl>

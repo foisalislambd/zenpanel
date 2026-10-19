@@ -18,7 +18,7 @@ import NewsletterPage from "@/pages/admin/NewsletterPage.vue";
 import UsersPage from "@/pages/admin/UsersPage.vue";
 import SettingsPage from "@/pages/admin/SettingsPage.vue";
 
-/** Shared admin route tree — used by router and install-mode example. */
+/** Shared admin route tree - used by router and install-mode example. */
 export const adminRouteIds = [
   "admin-login",
   "admin-dashboard",

@@ -5,6 +5,7 @@ import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-solid";
 import { A, useNavigate } from "@solidjs/router";
 import { createSignal, Show } from "solid-js";
 
+// Preview only. Do not prefill username or password in production.
 const DEMO_USERNAME = "admin";
 const DEMO_PASSWORD = "admin";
 
@@ -83,6 +84,7 @@ export function AdminLoginForm() {
                 id="admin-username"
                 type="text"
                 autocomplete="username"
+                placeholder="Enter username"
                 value={username()}
                 onInput={(e) => setUsername(e.currentTarget.value)}
                 class={inputClass}
@@ -103,6 +105,7 @@ export function AdminLoginForm() {
                 id="admin-password"
                 type={showPassword() ? "text" : "password"}
                 autocomplete="current-password"
+                placeholder="Enter password"
                 value={password()}
                 onInput={(e) => setPassword(e.currentTarget.value)}
                 class={`${inputClass} pr-11`}
@@ -136,7 +139,7 @@ export function AdminLoginForm() {
         </form>
 
         <p class="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          UI preview only — no real authentication.
+          UI preview only - no real authentication.
         </p>
       </div>
     </div>

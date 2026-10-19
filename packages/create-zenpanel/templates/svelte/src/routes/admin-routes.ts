@@ -1,5 +1,5 @@
 /**
- * Shared admin route mapping — mirrors Solid's admin-routes.tsx.
+ * Shared admin route mapping - mirrors Solid's admin-routes.tsx.
  * Used by App.svelte for route-to-page resolution.
  */
 import type { AdminRouteId } from "@/lib/router.svelte";

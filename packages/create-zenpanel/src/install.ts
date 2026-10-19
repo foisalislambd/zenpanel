@@ -189,7 +189,7 @@ export async function installIntoExisting(
   const packageManager = options.packageManager ?? getPackageManager();
 
   p.intro(pc.bgCyan(pc.black(" create-zenpanel ")));
-  p.log.info("Detected an existing project — installing ZenPanel admin shell.");
+  p.log.info("Detected an existing project - installing ZenPanel admin shell.");
 
   const pkg = await readPackageJson(cwd);
   if (!pkg) {
@@ -301,7 +301,7 @@ export async function installIntoExisting(
     });
 
     if (p.isCancel(confirmed) || !confirmed) {
-      p.cancel("Cancelled — existing files left untouched.");
+      p.cancel("Cancelled - existing files left untouched.");
       process.exit(0);
     }
   }
@@ -452,20 +452,20 @@ export async function installIntoExisting(
               ]
             : framework === "astro"
           ? [
-              "Admin pages were copied to src/pages/admin — open /admin/login after `npm run dev`.",
+              "Admin pages were copied to src/pages/admin - open /admin/login after `npm run dev`.",
               "Customize branding in src/scripts/config.js.",
               "Preview credentials: admin / admin.",
             ]
           : framework === "angular"
             ? [
-                "Open /admin/login after `npm run dev` (ng serve — port 4200).",
+                "Open /admin/login after `npm run dev` (ng serve - port 4200).",
                 "Customize branding in src/app/core/admin.config.ts.",
                 "Ensure Tailwind + @tailwindcss/postcss are configured (see templates/angular).",
                 "Preview credentials: admin / admin.",
               ]
           : [
-              "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI — port 5173).",
-              "Open /admin/login — preview credentials: admin / admin.",
+              "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI - port 5173).",
+              "Open /admin/login - preview credentials: admin / admin.",
               "Customize branding in src/js/config.js.",
             ];
 
@@ -572,7 +572,7 @@ function isThemeProviderWrapped(content: string): boolean {
 /**
  * Wire next-themes ThemeProvider into the host root layout (or admin layout
  * as a fallback) so the moon toggle and class-based dark mode work.
- * Only writes when the JSX wrap succeeds — never leaves a dangling import.
+ * Only writes when the JSX wrap succeeds - never leaves a dangling import.
  */
 async function ensureNextThemeProvider(projectDir: string): Promise<void> {
   const srcRoot = await detectNextSrcRoot(projectDir);
@@ -623,7 +623,7 @@ async function ensureNextThemeProvider(projectDir: string): Promise<void> {
 }
 
 function patchNextRootLayout(content: string): string {
-  // Preview wrap first — refuse import-only patches when JSX can't be wrapped.
+  // Preview wrap first - refuse import-only patches when JSX can't be wrapped.
   const canWrap =
     /<body[\s>][\s\S]*\{children\}[\s\S]*<\/body>/.test(content) &&
     !isThemeProviderWrapped(content);

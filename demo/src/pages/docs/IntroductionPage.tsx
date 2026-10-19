@@ -42,8 +42,8 @@ export default function DocsIntroductionPage() {
 
       <DocsH2 id="what-is-zenpanel">What is ZenPanel?</DocsH2>
       <DocsP>
-        ZenPanel is an open-source <strong>admin UI shell</strong> — login,
-        sidebar, dashboard widgets, resource pages, messages, and settings —
+        ZenPanel is an open-source <strong>admin UI shell</strong> - login,
+        sidebar, dashboard widgets, resource pages, messages, and settings -
         ready to wire to your own API. There is no backend in the scaffold;
         preview data is included so you can review UX first.
       </DocsP>

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// Preview only. Do not prefill username or password in production.
 const DEMO_USERNAME = "admin";
 const DEMO_PASSWORD = "admin";
 
@@ -67,6 +68,7 @@ export function AdminLoginForm() {
                 id="admin-username"
                 type="text"
                 autoComplete="username"
+                placeholder="Enter username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className={inputClass}
@@ -87,6 +89,7 @@ export function AdminLoginForm() {
                 id="admin-password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={`${inputClass} pr-11`}
@@ -116,7 +119,7 @@ export function AdminLoginForm() {
         </form>
 
         <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          UI preview only — no real authentication.
+          UI preview only - no real authentication.
         </p>
       </div>
     </div>

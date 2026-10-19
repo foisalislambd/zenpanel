@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 type MarkdownLine = { text: string; isLast: boolean };
 type MarkdownPart = { bold: boolean; lines: MarkdownLine[] };
 
-/** Lightweight assistant text — supports **bold** and line breaks without extra deps. */
+/** Lightweight assistant text - supports **bold** and line breaks without extra deps. */
 @Component({
   selector: 'app-admin-chat-markdown',
   template: `

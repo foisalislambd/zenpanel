@@ -18,7 +18,7 @@ const providerStyles: Record<string, string> = {
 };
 
 function dash(value: string | null | undefined) {
-  return value?.trim() ? value : "—";
+  return value?.trim() ? value : "-";
 }
 
 function ProviderBadge(props: { provider: string }) {

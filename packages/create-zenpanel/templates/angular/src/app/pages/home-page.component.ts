@@ -17,7 +17,7 @@ import { adminConfig } from '@/app/core/admin.config';
         {{ brand.name }}
       </h1>
       <p class="mt-3 max-w-md text-gray-600 dark:text-gray-400">
-        Admin panel shell for Angular — same UI as Next.js.
+        Admin panel shell for Angular - same UI as Next.js.
       </p>
       <a
         routerLink="/admin/login"

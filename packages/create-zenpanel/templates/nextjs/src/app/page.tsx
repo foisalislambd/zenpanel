@@ -12,7 +12,7 @@ export default function HomePage() {
           {adminConfig.brand.name}
         </h1>
         <p className="mt-3 text-gray-600 dark:text-gray-400">
-          Admin panel shell — scaffolded with create-zenpanel.
+          Admin panel shell - scaffolded with create-zenpanel.
         </p>
         <Link
           href="/admin/login"

@@ -5,7 +5,7 @@ function daysAgo(days, hour = 12) {
   return d.toISOString();
 }
 
-/** Dashboard preview sample data — matches Next.js preview.ts */
+/** Dashboard preview sample data - matches Next.js preview.ts */
 export const demoStats = {
   totalUsers: 2847,
   usersByProvider: { email: 1420, google: 890, apple: 312, discord: 225 },
@@ -408,6 +408,6 @@ export const adminPayments = [
   },
 ];
 
-/** Empty until you connect your API — not tagged in the shared list UI demo. */
+/** Empty until you connect your API - not tagged in the shared list UI demo. */
 export const adminServiceOrders = [];
 export const adminNewsletter = [];

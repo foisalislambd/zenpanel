@@ -10,8 +10,8 @@ Set the version in the root `package.json`, then push to `main`. CI must pass fi
 2. Push to `main`.
 3. **CI** builds the CLI and every template.
 4. If CI succeeds, **Release** (`.github/workflows/release.yml`) reads the root `package.json` version and compares it to the highest `vX.Y.Z` GitHub Release:
-   - **Greater** — publishes `create-zenpanel` at that version to **npmjs.com** via [Trusted Publisher](https://docs.npmjs.com/trusted-publishers/) (OIDC — no `NPM_TOKEN`), publishes `@foisalislambd/create-zenpanel` to **GitHub Packages**, then creates a GitHub Release + tag `vX.Y.Z`
-   - **Equal or lower** — nothing is published and no tag/release is created
+   - **Greater** - publishes `create-zenpanel` at that version to **npmjs.com** via [Trusted Publisher](https://docs.npmjs.com/trusted-publishers/) (OIDC - no `NPM_TOKEN`), publishes `@foisalislambd/create-zenpanel` to **GitHub Packages**, then creates a GitHub Release + tag `vX.Y.Z`
+   - **Equal or lower** - nothing is published and no tag/release is created
 5. If CI fails, nothing is published and no release/tag is created.
 6. A commit message containing `[skip release]` also skips npm, GitHub Packages, and the GitHub Release. CI still runs.
 
@@ -45,7 +45,7 @@ No GitHub secret `NPM_TOKEN` is required for npmjs publishes.
 ### Install from either registry
 
 ```bash
-# npmjs.com (default — what users should use)
+# npmjs.com (default - what users should use)
 npm create zenpanel@latest
 
 # GitHub Packages
@@ -108,7 +108,7 @@ npm install @foisalislambd/create-zenpanel --registry=https://npm.pkg.github.com
 
 ## Notes
 
-- Root package `zenpanel` is `private: true` — only publish `create-zenpanel`.
+- Root package `zenpanel` is `private: true` - only publish `create-zenpanel`.
 - Package **must** stay named `create-zenpanel` on npmjs so `npm create zenpanel@latest` works (same as `create-vite` / `create-next-app`).
 - GitHub Packages uses the scoped name `@foisalislambd/create-zenpanel` (required by the registry).
 - Prefer letting the Release workflow create the git tag that matches the npm version.

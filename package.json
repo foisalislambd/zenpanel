@@ -1,8 +1,8 @@
 {
   "name": "zenpanel-monorepo",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": true,
-  "description": "ZenPanel — open-source admin UI shell. Scaffold with npm create zenpanel.",
+  "description": "ZenPanel - open-source admin UI shell. Scaffold with npm create zenpanel.",
   "license": "MIT",
   "author": "Foisal Islam",
   "repository": {

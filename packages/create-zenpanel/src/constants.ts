@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/** Package root (packages/create-zenpanel) — works from src/ and dist/. */
+/** Package root (packages/create-zenpanel) - works from src/ and dist/. */
 export function getPackageRoot(): string {
   return path.resolve(__dirname, "..");
 }

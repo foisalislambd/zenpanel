@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ZenPanel — Frontend Admin Demo",
-  description: "Admin UI/UX kit — layouts and sample data only. No backend.",
+  title: "ZenPanel - Frontend Admin Demo",
+  description: "Admin UI/UX kit - layouts and sample data only. No backend.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

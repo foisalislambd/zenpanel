@@ -51,7 +51,7 @@ jobs:
           echo "Head commit message:"
           printf '%s\n' "$MSG"
           if printf '%s\n' "$MSG" | grep -qi '\[skip release\]'; then
-            echo "Skipping release — commit contains [skip release]."
+            echo "Skipping release - commit contains [skip release]."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -129,9 +129,9 @@ jobs:
           echo "package.json version: ${VERSION}"
           echo "Latest GitHub Release: ${LATEST}"
           if [ "$PUBLISH" = "true" ]; then
-            echo "Version is greater than the current release — publishing."
+            echo "Version is greater than the current release - publishing."
           else
-            echo "Skipping release — ${VERSION} is not greater than the current release (${LATEST})."
+            echo "Skipping release - ${VERSION} is not greater than the current release (${LATEST})."
           fi
 
       - name: Setup Node
@@ -168,7 +168,7 @@ jobs:
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
           if npm view "create-zenpanel@${VERSION}" version >/dev/null 2>&1; then
-            echo "create-zenpanel@${VERSION} already on npmjs — will skip npmjs publish."
+            echo "create-zenpanel@${VERSION} already on npmjs - will skip npmjs publish."
             echo "publish_npmjs=false" >> "$GITHUB_OUTPUT"
           else
             echo "publish_npmjs=true" >> "$GITHUB_OUTPUT"
@@ -178,7 +178,7 @@ jobs:
         if: steps.skip.outputs.skip != 'true' && steps.meta.outputs.publish == 'true' && steps.gate.outputs.publish_npmjs == 'true'
         working-directory: packages/create-zenpanel
         run: npm publish --access public
-        # No NODE_AUTH_TOKEN — OIDC Trusted Publisher authenticates this step.
+        # No NODE_AUTH_TOKEN - OIDC Trusted Publisher authenticates this step.
 
       - name: Publish to GitHub Packages
         if: steps.skip.outputs.skip != 'true' && steps.meta.outputs.publish == 'true'
@@ -194,7 +194,7 @@ jobs:
           VERSION="${{ steps.meta.outputs.version }}"
           if npm view "@foisalislambd/create-zenpanel@${VERSION}" version \
             --userconfig "$HOME/.npmrc-github" >/dev/null 2>&1; then
-            echo "@foisalislambd/create-zenpanel@${VERSION} already on GitHub Packages — skipping."
+            echo "@foisalislambd/create-zenpanel@${VERSION} already on GitHub Packages - skipping."
             exit 0
           fi
 
@@ -219,7 +219,7 @@ jobs:
             "- GitHub Packages: \`@foisalislambd/create-zenpanel@${VERSION}\`")"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release ${TAG} already exists — skipping create."
+            echo "Release ${TAG} already exists - skipping create."
             exit 0
           fi
 

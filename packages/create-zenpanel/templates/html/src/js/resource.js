@@ -36,7 +36,7 @@ const providerStyles = {
 const pendingTitle = "Available after you connect your API";
 
 function dash(value) {
-  return value && String(value).trim() ? value : "—";
+  return value && String(value).trim() ? value : "-";
 }
 
 const PAGE_SIZE = 5;
@@ -268,7 +268,7 @@ export function renderResourcePage(
                       <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0 flex-1">
                           <p class="truncate font-medium text-gray-900 dark:text-white">${escapeHtml(item.title)}</p>
-                          <p class="mt-0.5 truncate text-sm text-gray-500">${escapeHtml(item.meta ?? "—")}</p>
+                          <p class="mt-0.5 truncate text-sm text-gray-500">${escapeHtml(item.meta ?? "-")}</p>
                           <div class="mt-2">${statusBadge(item.status)}</div>
                         </div>
                         ${rowActions(item.title, { size: "md" })}
@@ -317,7 +317,7 @@ export function renderResourcePage(
                         <tr class="transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02]">
                           <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-white">${escapeHtml(item.title)}</td>
                           <td class="px-5 py-3.5">${statusBadge(item.status)}</td>
-                          <td class="max-w-[220px] truncate px-5 py-3.5 text-gray-500">${escapeHtml(item.meta ?? "—")}</td>
+                          <td class="max-w-[220px] truncate px-5 py-3.5 text-gray-500">${escapeHtml(item.meta ?? "-")}</td>
                           <td class="px-5 py-3.5 whitespace-nowrap text-gray-500">${new Date(item.updatedAt).toLocaleDateString()}</td>
                           <td class="px-5 py-3.5">${rowActions(item.title)}</td>
                         </tr>
@@ -678,22 +678,22 @@ export function renderSettingsPage(root) {
           <dl class="grid gap-4 sm:grid-cols-2">
             <div>
               <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Username</dt>
-              <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin?.username ?? "—")}</dd>
+              <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin?.username ?? "-")}</dd>
             </div>
             <div>
               <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Email</dt>
-              <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin?.email ?? "—")}</dd>
+              <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(admin?.email ?? "-")}</dd>
             </div>
             <div>
               <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Role</dt>
-              <dd class="mt-1 text-sm font-medium capitalize text-gray-900 dark:text-white">${escapeHtml(admin?.role ?? "—")}</dd>
+              <dd class="mt-1 text-sm font-medium capitalize text-gray-900 dark:text-white">${escapeHtml(admin?.role ?? "-")}</dd>
             </div>
             <div>
               <dt class="text-xs font-medium tracking-wide text-gray-500 uppercase">Last login</dt>
               <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">${
                 admin?.lastLoginAt
                   ? escapeHtml(new Date(admin.lastLoginAt).toLocaleString())
-                  : "—"
+                  : "-"
               }</dd>
             </div>
           </dl>

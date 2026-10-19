@@ -14,7 +14,7 @@ export default function DocsFrameworksPage() {
       <DocsH1>Frameworks</DocsH1>
       <DocsLead>
         All templates share the same admin UI/UX. Next.js is the visual source of
-        truth — pick the stack that matches your app.
+        truth - pick the stack that matches your app.
       </DocsLead>
 
       <DocsH2 id="matrix">Supported templates</DocsH2>
@@ -30,7 +30,7 @@ export default function DocsFrameworksPage() {
           ["HTML", "HTML/CSS/JS + Tailwind CLI", "5173", "No Vite; static serve"],
           ["Astro", "Astro 7 + Tailwind", "4321", "Vanilla JS (same as HTML), MPA"],
           ["Angular", "Angular 22 + Tailwind", "4200", "Native Angular components"],
-          ["Remix", "—", "—", "Coming soon"],
+          ["Remix", "-", "-", "Coming soon"],
         ]}
       />
 
@@ -62,7 +62,7 @@ export default function DocsFrameworksPage() {
           to match across frameworks.
         </li>
         <li>
-          Preview auth is in-memory / <DocsCode>sessionStorage</DocsCode> only —
+          Preview auth is in-memory / <DocsCode>sessionStorage</DocsCode> only -
           wire real auth when you connect a backend.
         </li>
         <li>

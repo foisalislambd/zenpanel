@@ -43,7 +43,7 @@ export default function DocsCustomizationPage() {
         </li>
         <li>Login description + feature bullets</li>
         <li>
-          <DocsCode>adminNavItems</DocsCode> — sidebar links (
+          <DocsCode>adminNavItems</DocsCode> - sidebar links (
           <DocsCode>name</DocsCode>, <DocsCode>href</DocsCode>, icon)
         </li>
       </DocsUl>
@@ -54,21 +54,21 @@ export default function DocsCustomizationPage() {
       <DocsH2 id="layout">Layout pieces</DocsH2>
       <DocsUl>
         <li>
-          <strong>Sidebar / header</strong> — layout components under{" "}
+          <strong>Sidebar / header</strong> - layout components under{" "}
           <DocsCode>components/admin/layout</DocsCode> (or HTML/Astro{" "}
           <DocsCode>layout.js</DocsCode>)
         </li>
         <li>
-          <strong>Dashboard widgets</strong> —{" "}
+          <strong>Dashboard widgets</strong> -{" "}
           <DocsCode>components/admin/dashboard/*</DocsCode> or{" "}
           <DocsCode>dashboard.js</DocsCode>
         </li>
         <li>
-          <strong>Resource empty states</strong> — resource list / page
+          <strong>Resource empty states</strong> - resource list / page
           components
         </li>
         <li>
-          <strong>Settings</strong> — account settings UI
+          <strong>Settings</strong> - account settings UI
         </li>
       </DocsUl>
 

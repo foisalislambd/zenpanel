@@ -1,4 +1,4 @@
-/** ZenPanel Astro config — branding + navigation (matches Next.js admin.config) */
+/** ZenPanel Astro config - branding + navigation (matches Next.js admin.config) */
 export const adminConfig = {
   brand: {
     name: "ZenPanel",
@@ -6,7 +6,7 @@ export const adminConfig = {
     letter: "Z",
     siteUrl: "/",
     loginDescription:
-      "Professional control panel for your platform — monitor users, review activity, and manage everything securely.",
+      "Professional control panel for your platform - monitor users, review activity, and manage everything securely.",
     loginFeatures: [
       "Portal analytics overview",
       "Secure admin-only access",
@@ -15,7 +15,7 @@ export const adminConfig = {
   },
 };
 
-/** Admin routes — Astro pages under src/pages/admin/ */
+/** Admin routes - Astro pages under src/pages/admin/ */
 export const adminNavItems = [
   { name: "Dashboard", section: "Overview", href: "/admin", icon: "layout-dashboard" },
   {

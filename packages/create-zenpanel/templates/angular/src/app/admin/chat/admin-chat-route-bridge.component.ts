@@ -33,7 +33,7 @@ export class AdminChatRouteBridgeComponent implements OnInit {
   private apply(url: string): void {
     const path = normalizePathname(url.split('?')[0] ?? '/');
 
-    // Dashboard registers rich context via its own component — do not overwrite it.
+    // Dashboard registers rich context via its own component - do not overwrite it.
     if (path === '/admin') {
       this.ownedPath = null;
       return;
@@ -47,7 +47,7 @@ export class AdminChatRouteBridgeComponent implements OnInit {
       title: nav?.name ?? 'Admin',
       description:
         nav?.description ??
-        `Ask me anything about ${nav?.name ?? 'this page'} — analyze data, get suggestions, or plan your next steps.`,
+        `Ask me anything about ${nav?.name ?? 'this page'} - analyze data, get suggestions, or plan your next steps.`,
       route: path,
       getSnapshot: () => ({ route: path }),
     });

@@ -17,7 +17,7 @@ export default function DocsGettingStartedPage() {
       <DocsH1>Getting started</DocsH1>
       <DocsLead>
         ZenPanel is an admin UI shell (sidebar, dashboard, resources, login, dark
-        mode). There is no backend — preview data is included so you can review
+        mode). There is no backend - preview data is included so you can review
         the UI first.
       </DocsLead>
 
@@ -50,7 +50,7 @@ npm run dev`}</DocsPre>
       />
       <DocsCallout title="Preview credentials">
         Use <DocsCode>admin</DocsCode> / <DocsCode>admin</DocsCode>. This is UI-only
-        auth — not real authentication. Try it in this demo via{" "}
+        auth - not real authentication. Try it in this demo via{" "}
         <Link to="/admin/login" className="font-medium text-brand-600 hover:underline dark:text-brand-300">
           Admin sign in
         </Link>

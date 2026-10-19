@@ -1,6 +1,6 @@
 # zenpanel
 
-Open-source admin UI shell — same polished dashboard across Next.js, React, Preact, Solid, Svelte, Vue, HTML, Astro, and Angular.
+Open-source admin UI shell - same polished dashboard across Next.js, React, Preact, Solid, Svelte, Vue, HTML, Astro, and Angular.
 
 ## Quick start
 

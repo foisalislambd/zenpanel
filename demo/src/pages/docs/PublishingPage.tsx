@@ -37,7 +37,7 @@ export default function DocsPublishingPage() {
           Skip with <DocsCode>[skip release]</DocsCode> in the commit message
         </li>
         <li>
-          npmjs: <DocsCode>create-zenpanel</DocsCode> (OIDC Trusted Publisher — no{" "}
+          npmjs: <DocsCode>create-zenpanel</DocsCode> (OIDC Trusted Publisher - no{" "}
           <DocsCode>NPM_TOKEN</DocsCode>)
         </li>
         <li>
@@ -100,7 +100,7 @@ npx create-zenpanel@latest --help`}</DocsPre>
       <DocsH2 id="notes">Notes</DocsH2>
       <DocsCallout title="Package name matters">
         Root package <DocsCode>zenpanel</DocsCode> is{" "}
-        <DocsCode>private: true</DocsCode> — only publish{" "}
+        <DocsCode>private: true</DocsCode> - only publish{" "}
         <DocsCode>create-zenpanel</DocsCode>. The package must stay named{" "}
         <DocsCode>create-zenpanel</DocsCode> on npmjs so{" "}
         <DocsCode>npm create zenpanel@latest</DocsCode> works.

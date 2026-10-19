@@ -37,7 +37,7 @@ export type ResourcePageProps = {
   resourceLabel: string;
   items: AdminResource[];
   searchPlaceholder?: string;
-  /** Optional handlers — omit to keep the UI-shell preview (disabled actions) */
+  /** Optional handlers - omit to keep the UI-shell preview (disabled actions) */
   onAdd?: () => void;
   onView?: (item: AdminResource) => void;
   onEdit?: (item: AdminResource) => void;
@@ -126,7 +126,7 @@ export function ResourcePage({
                         {item.title}
                       </p>
                       <p className="mt-0.5 truncate text-sm text-gray-500">
-                        {item.meta ?? "—"}
+                        {item.meta ?? "-"}
                       </p>
                       <div className="mt-2">
                         <StatusBadge status={item.status} />
@@ -195,7 +195,7 @@ export function ResourcePage({
                         <StatusBadge status={item.status} />
                       </td>
                       <td className="max-w-[220px] truncate px-5 py-3.5 text-gray-500">
-                        {item.meta ?? "—"}
+                        {item.meta ?? "-"}
                       </td>
                       <td className="px-5 py-3.5 whitespace-nowrap text-gray-500">
                         {new Date(item.updatedAt).toLocaleDateString()}

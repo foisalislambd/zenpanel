@@ -12,16 +12,16 @@ Thanks for your interest in contributing. This guide keeps changes focused and r
 
 ## Repository layout
 
-- `packages/create-zenpanel` — CLI published as `create-zenpanel`
-- `packages/create-zenpanel/templates/nextjs` — Next.js template
-- `packages/create-zenpanel/templates/react` — React + Vite template
-- `packages/create-zenpanel/templates/preact` — Preact + Vite template
-- `packages/create-zenpanel/templates/solid` — Solid + Vite template
-- `packages/create-zenpanel/templates/svelte` — Svelte 5 + Vite template
-- `packages/create-zenpanel/templates/vue` — Vue 3 + Vite template
-- `packages/create-zenpanel/templates/html` — Plain HTML / CSS / JS template
-- `packages/create-zenpanel/templates/astro` — Astro 7 template
-- `packages/create-zenpanel/templates/angular` — Angular 22 + Tailwind (Next.js UI)
+- `packages/create-zenpanel` - CLI published as `create-zenpanel`
+- `packages/create-zenpanel/templates/nextjs` - Next.js template
+- `packages/create-zenpanel/templates/react` - React + Vite template
+- `packages/create-zenpanel/templates/preact` - Preact + Vite template
+- `packages/create-zenpanel/templates/solid` - Solid + Vite template
+- `packages/create-zenpanel/templates/svelte` - Svelte 5 + Vite template
+- `packages/create-zenpanel/templates/vue` - Vue 3 + Vite template
+- `packages/create-zenpanel/templates/html` - Plain HTML / CSS / JS template
+- `packages/create-zenpanel/templates/astro` - Astro 7 template
+- `packages/create-zenpanel/templates/angular` - Angular 22 + Tailwind (Next.js UI)
 
 ## Development setup
 
@@ -70,7 +70,7 @@ Preview login: `admin` / `admin` at `/admin/login`.
 ## Before you open a PR
 
 1. Create a branch from `main` (`feat/...`, `fix/...`, or `docs/...`)
-2. Keep the diff focused — one concern per PR
+2. Keep the diff focused - one concern per PR
 3. Match existing patterns in the template admin components and `admin.config.ts`
 4. Run checks locally:
 
@@ -98,7 +98,7 @@ npm run template -- nextjs build   # or react, vue, …
 - Prefer small, readable components over large one-off pages
 - Reuse shared admin UI (`resource-list`, layout pieces, empty/loading states)
 - Keep branding and nav configurable via `admin.config.ts`
-- Do not introduce a real backend or auth provider unless discussed in an issue first — this project is a UI shell with preview data
+- Do not introduce a real backend or auth provider unless discussed in an issue first - this project is a UI shell with preview data
 - Keep Next.js and React templates in sync when changing shared admin UX
 
 ## Reporting bugs

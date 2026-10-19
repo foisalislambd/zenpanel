@@ -218,6 +218,6 @@ export const adminPayments: AdminResource[] = [
   },
 ];
 
-/** Empty until you connect your API — not tagged in the shared list UI demo. */
+/** Empty until you connect your API - not tagged in the shared list UI demo. */
 export const adminServiceOrders: AdminResource[] = [];
 export const adminNewsletter: AdminResource[] = [];

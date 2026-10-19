@@ -6,7 +6,7 @@ import { escapeHtml, refreshIcons } from "./utils.js";
 initTheme();
 
 if (!requireGuest()) {
-  // Already signed in — redirect in progress.
+  // Already signed in - redirect in progress.
 } else {
   const brand = adminConfig.brand;
   const form = document.getElementById("login-form");
@@ -40,6 +40,7 @@ if (!requireGuest()) {
       .join("");
   }
 
+  // Preview only. Do not prefill username or password in production.
   if (usernameInput) usernameInput.value = DEMO_USERNAME;
   if (passwordInput) passwordInput.value = DEMO_PASSWORD;
 

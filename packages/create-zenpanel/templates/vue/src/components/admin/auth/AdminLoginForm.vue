@@ -6,6 +6,7 @@ import { useAdminAuth } from "@/composables/use-admin-auth";
 import { adminConfig } from "@/config/admin.config";
 import { isExternalUrl } from "@/lib/admin-nav";
 
+// Preview only. Do not prefill username or password in production.
 const DEMO_USERNAME = "admin";
 const DEMO_PASSWORD = "admin";
 
@@ -86,6 +87,7 @@ async function handleSubmit(e: Event) {
               v-model="username"
               type="text"
               autocomplete="username"
+              placeholder="Enter username"
               :class="inputClass"
             />
           </div>
@@ -107,6 +109,7 @@ async function handleSubmit(e: Event) {
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               autocomplete="current-password"
+              placeholder="Enter password"
               :class="`${inputClass} pr-11`"
             />
             <button
@@ -133,7 +136,7 @@ async function handleSubmit(e: Event) {
       </form>
 
       <p class="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-        UI preview only — no real authentication.
+        UI preview only - no real authentication.
       </p>
     </div>
   </div>

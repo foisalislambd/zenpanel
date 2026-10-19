@@ -7,5 +7,5 @@ export function formatCurrency(amount: number, currency = "USD") {
 }
 
 export function formatNumber(value: unknown): string {
-  return typeof value === "number" ? value.toLocaleString() : "—";
+  return typeof value === "number" ? value.toLocaleString() : "-";
 }

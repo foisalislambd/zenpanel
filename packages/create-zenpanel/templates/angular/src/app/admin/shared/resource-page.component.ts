@@ -81,7 +81,7 @@ function pluralize(label: string, count: number): string {
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0 flex-1">
                     <p class="truncate font-medium text-gray-900 dark:text-white">{{ item.title }}</p>
-                    <p class="mt-0.5 truncate text-sm text-gray-500">{{ item.meta ?? '—' }}</p>
+                    <p class="mt-0.5 truncate text-sm text-gray-500">{{ item.meta ?? '-' }}</p>
                     <div class="mt-2">
                       <span
                         [class]="
@@ -155,7 +155,7 @@ function pluralize(label: string, count: number): string {
                         >{{ item.status }}</span
                       >
                     </td>
-                    <td class="max-w-[220px] truncate px-5 py-3.5 text-gray-500">{{ item.meta ?? '—' }}</td>
+                    <td class="max-w-[220px] truncate px-5 py-3.5 text-gray-500">{{ item.meta ?? '-' }}</td>
                     <td class="px-5 py-3.5 whitespace-nowrap text-gray-500">
                       {{ formatDate(item.updatedAt) }}
                     </td>
@@ -186,7 +186,7 @@ export class ResourcePageComponent {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) resourceLabel!: string;
   @Input() searchPlaceholder = 'Search title, details...';
-  /** Optional handlers — omit to keep the UI-shell preview (disabled actions) */
+  /** Optional handlers - omit to keep the UI-shell preview (disabled actions) */
   @Input() onAdd?: () => void;
   @Input() onView?: (item: AdminResource) => void;
   @Input() onEdit?: (item: AdminResource) => void;

@@ -7,6 +7,7 @@ import { ThemeService } from '@/app/core/theme.service';
 import { isExternalUrl } from '@/app/core/admin-nav';
 import { IconComponent } from '@/app/shared/icon.component';
 
+// Preview only. Do not prefill username or password in production.
 const DEMO_USERNAME = 'admin';
 const DEMO_PASSWORD = 'admin';
 
@@ -73,8 +74,9 @@ const DEMO_PASSWORD = 'admin';
                   name="username"
                   type="text"
                   autocomplete="username"
+                  placeholder="Enter username"
                   [(ngModel)]="username"
-                  class="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                  class="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -92,8 +94,9 @@ const DEMO_PASSWORD = 'admin';
                   name="password"
                   [type]="showPassword() ? 'text' : 'password'"
                   autocomplete="current-password"
+                  placeholder="Enter password"
                   [(ngModel)]="password"
-                  class="h-11 w-full rounded-lg border border-gray-200 bg-white py-2 pr-11 pl-10 text-sm text-gray-900 shadow-sm focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                  class="h-11 w-full rounded-lg border border-gray-200 bg-white py-2 pr-11 pl-10 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                 />
                 <button
                   type="button"
@@ -120,7 +123,7 @@ const DEMO_PASSWORD = 'admin';
           </form>
 
           <p class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-            UI preview only — no real authentication.
+            UI preview only - no real authentication.
           </p>
         </div>
       </div>

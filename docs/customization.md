@@ -17,7 +17,7 @@ Typical fields:
 - `brand.name`, `brand.tagline`, `brand.letter`
 - `brand.siteUrl` (sidebar “View site”)
 - Login description + feature bullets
-- `adminNavItems` — sidebar links (`name`, `href`, icon)
+- `adminNavItems` - sidebar links (`name`, `href`, icon)
 
 After changing nav hrefs, make sure matching routes/pages exist.
 
@@ -25,10 +25,10 @@ After changing nav hrefs, make sure matching routes/pages exist.
 
 Common areas to edit:
 
-- **Sidebar / header** — layout components under `components/admin/layout` (or HTML/Astro `layout.js`)
-- **Dashboard widgets** — `components/admin/dashboard/*` or `dashboard.js`
-- **Resource empty states** — resource list / page components
-- **Settings** — account settings UI
+- **Sidebar / header** - layout components under `components/admin/layout` (or HTML/Astro `layout.js`)
+- **Dashboard widgets** - `components/admin/dashboard/*` or `dashboard.js`
+- **Resource empty states** - resource list / page components
+- **Settings** - account settings UI
 
 ## Preview auth
 

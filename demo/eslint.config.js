@@ -19,7 +19,7 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
-  // Context providers also export hooks / constants — allowed for this pattern.
+  // Context providers also export hooks / constants - allowed for this pattern.
   {
     files: [
       "**/context/**/*.{ts,tsx}",

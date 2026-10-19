@@ -1,4 +1,4 @@
-/** ZenPanel HTML config — branding + navigation (matches Next.js admin.config) */
+/** ZenPanel HTML config - branding + navigation (matches Next.js admin.config) */
 export const adminConfig = {
   brand: {
     name: "ZenPanel",
@@ -6,7 +6,7 @@ export const adminConfig = {
     letter: "Z",
     siteUrl: "/",
     loginDescription:
-      "Professional control panel for your platform — monitor users, review activity, and manage everything securely.",
+      "Professional control panel for your platform - monitor users, review activity, and manage everything securely.",
     loginFeatures: [
       "Portal analytics overview",
       "Secure admin-only access",

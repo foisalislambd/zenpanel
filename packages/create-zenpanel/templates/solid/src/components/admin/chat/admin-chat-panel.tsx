@@ -301,7 +301,7 @@ export function AdminChatPanel(props: Props) {
                 </h3>
                 <p class="mt-1 max-w-[260px] text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                   {pageContext()?.description ??
-                    "Ask anything about this admin page — get suggestions, analyze data, or plan your workflow."}
+                    "Ask anything about this admin page - get suggestions, analyze data, or plan your workflow."}
                 </p>
                 <div class="mt-4 flex flex-wrap justify-center gap-2">
                   <For each={quickActions()}>

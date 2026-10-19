@@ -10,7 +10,7 @@ Same dashboard design across **Next.js**, **React**, **Preact**, **Solid**, **Sv
 npm create zenpanel@latest
 ```
 
-Same convention as Vite (`npm create vite@latest`) — npm runs the `create-zenpanel` package. Equivalent: `npx create-zenpanel@latest`.
+Same convention as Vite (`npm create vite@latest`) - npm runs the `create-zenpanel` package. Equivalent: `npx create-zenpanel@latest`.
 
 ```bash
 npm create zenpanel@latest my-admin -- --framework nextjs
@@ -82,4 +82,4 @@ npm’s create shortcut maps `npm create <name>` → package `create-<name>`:
 | `npm create next-app@latest` | `create-next-app` |
 | `npm create zenpanel@latest` | `create-zenpanel` |
 
-So the published package name stays `create-zenpanel` (not `zenpanel`) — same pattern as Vite and Next.
+So the published package name stays `create-zenpanel` (not `zenpanel`) - same pattern as Vite and Next.
