@@ -258,7 +258,7 @@ export function RevenueChart({ data }: Props) {
               >
                 <p className="font-medium text-gray-900 dark:text-white">{activePoint.label}</p>
                 <p className="text-gray-500 dark:text-gray-400">
-                  {formatCurrency(activePoint.revenue)} Â· {activePoint.orders} orders
+                  {formatCurrency(activePoint.revenue)} · {activePoint.orders} orders
                 </p>
               </div>
             )}

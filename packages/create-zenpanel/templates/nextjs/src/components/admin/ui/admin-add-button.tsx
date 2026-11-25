@@ -5,13 +5,13 @@ import { Plus } from "lucide-react";
 type Props = {
   label?: string;
   onClick?: () => void;
-  /** When true, button stays disabled even if onClick is set */
+  /** When true (default for shell), button is disabled until API is wired */
   pending?: boolean;
 };
 
 /**
  * Primary “Add new” control for resource/list pages.
- * Pass `onClick` after connecting your API to enable the button.
+ * Pass `onClick` and `pending={false}` after connecting your API.
  */
 export function AdminAddButton({
   label = "Add new",
@@ -25,7 +25,7 @@ export function AdminAddButton({
       type="button"
       onClick={enabled ? onClick : undefined}
       disabled={!enabled}
-      title={enabled ? label : "Available after you connect your API"}
+      title={enabled ? undefined : "Available after you connect your API"}
       className={`inline-flex h-9 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white ${
         enabled
           ? "bg-brand-500 shadow-sm shadow-brand-500/20 hover:bg-brand-600"

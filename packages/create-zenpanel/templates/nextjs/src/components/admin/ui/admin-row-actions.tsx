@@ -6,9 +6,11 @@ import type { ButtonHTMLAttributes } from "react";
 const pendingTitle = "Available after you connect your API";
 
 const btnBase =
-  "flex items-center justify-center rounded-lg text-gray-400 transition-colors";
+  "flex items-center justify-center rounded-lg text-gray-500 transition-colors dark:text-gray-400";
 const btnEnabled =
   "hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200";
+const btnDanger =
+  "hover:bg-error-50 hover:text-error-500 dark:hover:bg-error-500/15 dark:hover:text-error-500";
 const btnDisabled = "cursor-not-allowed opacity-70";
 
 type ActionButtonProps = {
@@ -17,6 +19,7 @@ type ActionButtonProps = {
   onClick?: () => void;
   pending?: boolean;
   size?: "sm" | "md";
+  tone?: "default" | "danger";
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "children">;
 
 function ActionButton({
@@ -25,6 +28,7 @@ function ActionButton({
   onClick,
   pending = false,
   size = "sm",
+  tone = "default",
   className = "",
   ...rest
 }: ActionButtonProps) {
@@ -37,9 +41,9 @@ function ActionButton({
       type="button"
       onClick={enabled ? onClick : undefined}
       disabled={!enabled}
-      title={enabled ? label : pendingTitle}
+      title={enabled ? undefined : pendingTitle}
       aria-label={label}
-      className={`${btnBase} ${dim} ${enabled ? btnEnabled : btnDisabled} ${className}`}
+      className={`${btnBase} ${dim} ${enabled ? (tone === "danger" ? btnDanger : btnEnabled) : btnDisabled} ${className}`}
       {...rest}
     >
       <Icon className={iconSize} aria-hidden />
@@ -94,6 +98,7 @@ export function AdminRowActions({
         onClick={onDelete}
         pending={pending}
         size={size}
+        tone="danger"
       />
     </div>
   );

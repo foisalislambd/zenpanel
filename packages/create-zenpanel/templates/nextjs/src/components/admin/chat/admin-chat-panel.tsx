@@ -106,6 +106,19 @@ export function AdminChatPanel({ overlay = false }: Props) {
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
   }, [prompt]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        closePanel();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, closePanel]);
+
   const buildPagePayload = useCallback(() => {
     if (!pageContext) return undefined;
 
@@ -232,6 +245,8 @@ export function AdminChatPanel({ overlay = false }: Props) {
             : "h-full shrink-0",
         )}
         style={{ width: isDesktop && !overlay ? CHAT_PANEL_WIDTH : "min(100vw, 400px)" }}
+        role={overlay || !isDesktop ? "dialog" : undefined}
+        aria-modal={overlay || !isDesktop ? true : undefined}
         aria-label="AI assistant panel"
       >
         <div className="admin-content-editor-panel-header shrink-0">

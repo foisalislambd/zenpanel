@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -16,7 +18,7 @@ export function DashboardSectionHeader({
 }: Props) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3.5 dark:border-gray-800">
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h3>
+      <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
       {trailing}
       {href && !trailing && (
         <Link

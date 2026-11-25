@@ -1,5 +1,8 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
 import { adminBlogPosts } from "@/lib/admin-data/resources";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Blog" };
 
 export default function AdminBlogPage() {
   return (

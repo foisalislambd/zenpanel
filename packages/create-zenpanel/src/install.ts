@@ -31,10 +31,13 @@ const NEXT_RELATIVE_PATHS = [
   "lib/admin-api",
   "lib/admin-data",
   "lib/admin-nav.ts",
+  "lib/admin-ui.ts",
   "lib/brand-theme.ts",
   "lib/cn.ts",
   "lib/delay.ts",
   "lib/format.ts",
+  "lib/pagination.ts",
+  "lib/sort.ts",
 ] as const;
 
 const REACT_COPY_PATHS = [

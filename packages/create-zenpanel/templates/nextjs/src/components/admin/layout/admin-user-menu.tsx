@@ -1,7 +1,7 @@
 "use client";
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
-import { ChevronDown, LogOut, Settings } from "lucide-react";
+import { ChevronDown, LogOut, Settings, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -26,12 +26,23 @@ export function AdminUserMenu() {
 
   useEffect(() => {
     if (!open) return;
+    const items = () => [...(ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [])];
+    items()[0]?.focus();
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setOpen(false);
         triggerRef.current?.focus();
+        return;
       }
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        const list = items();
+        const index = list.indexOf(document.activeElement as HTMLElement);
+        const next = e.key === "ArrowDown" ? (index + 1) % list.length : (index - 1 + list.length) % list.length;
+        list[next]?.focus();
+      }
+      if (e.key === "Tab") setOpen(false);
     }
 
     document.addEventListener("keydown", handleKeyDown);
@@ -50,10 +61,11 @@ export function AdminUserMenu() {
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1.5 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
+        className="flex h-9 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-controls={menuId}
+        aria-controls={open ? menuId : undefined}
+        aria-label={`Account menu for ${admin?.username ?? "admin"}`}
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white">
           {admin?.username?.charAt(0)?.toUpperCase() ?? "A"}
@@ -73,12 +85,14 @@ export function AdminUserMenu() {
         <div
           id={menuId}
           role="menu"
+          aria-label="Account"
           className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
         >
-          <div className="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
-            <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+          <div className="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+            <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
               {admin?.username}
             </p>
+            <p className="truncate text-xs text-gray-500 dark:text-gray-400">{admin?.email}</p>
           </div>
           <Link
             href="/admin/settings"
@@ -87,8 +101,18 @@ export function AdminUserMenu() {
             className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
           >
             <Settings className="h-4 w-4" aria-hidden />
-            Settings
+            Account settings
           </Link>
+          <Link
+            href="/admin/settings?tab=preferences"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
+          >
+            <SlidersHorizontal className="h-4 w-4" aria-hidden />
+            Preferences
+          </Link>
+          <div className="my-1 h-px bg-gray-100 dark:bg-gray-800" role="separator" />
           <button
             type="button"
             role="menuitem"

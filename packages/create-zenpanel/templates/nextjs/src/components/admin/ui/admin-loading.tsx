@@ -1,3 +1,5 @@
+"use client";
+
 type Props = {
   message?: string;
   className?: string;

@@ -22,10 +22,21 @@ function ProviderBadge({ provider }: { provider: string }) {
   );
 }
 
-export function RecentUsersTable({ users }: { users: PortalUserRow[] }) {
+export function RecentUsersTable({
+  users,
+  href = "/admin/users",
+}: {
+  users: PortalUserRow[];
+  /** Pass `null` to hide the “View all” link (e.g. on the Users page). */
+  href?: string | null;
+}) {
   return (
     <div className="admin-card w-full overflow-hidden">
-      <DashboardSectionHeader title="Recent users" href="/admin/users" />
+      <DashboardSectionHeader
+        title="Recent users"
+        href={href ?? undefined}
+        linkLabel={href ? "View all" : undefined}
+      />
 
       {users.length > 0 && (
           <ul className="divide-y divide-gray-100 md:hidden dark:divide-gray-800">
@@ -52,6 +63,9 @@ export function RecentUsersTable({ users }: { users: PortalUserRow[] }) {
 
           <div
             className={`admin-scrollbar overflow-x-auto ${users.length > 0 ? "hidden md:block" : ""}`}
+            tabIndex={0}
+            role="region"
+            aria-label="Recent users table"
           >
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead>

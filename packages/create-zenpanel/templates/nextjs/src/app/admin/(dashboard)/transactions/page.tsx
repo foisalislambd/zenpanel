@@ -1,5 +1,8 @@
 import { ResourcePage } from "@/components/admin/shared/resource-page";
 import { adminTransactions } from "@/lib/admin-data/resources";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Transactions" };
 
 export default function AdminTransactionsPage() {
   return (
@@ -8,6 +11,8 @@ export default function AdminTransactionsPage() {
       resourceLabel="transaction"
       items={adminTransactions}
       searchPlaceholder="Search title, amount, reference..."
+      metaLabel="Amount"
+      statusLabels={{ published: "Settled", draft: "Pending", archived: "Reversed" }}
     />
   );
 }

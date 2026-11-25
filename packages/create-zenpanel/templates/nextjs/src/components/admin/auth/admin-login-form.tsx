@@ -2,6 +2,7 @@
 
 import { useAdminAuth } from "@/components/admin/auth/admin-auth-provider";
 import { adminConfig } from "@/config/admin.config";
+import { isExternalUrl } from "@/lib/admin-nav";
 import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,11 @@ const DEMO_PASSWORD = "admin";
 const inputClass =
   "h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
+const errorInputClass = "border-error-500 focus:border-error-500 focus:ring-error-500/20 dark:border-error-500";
+
+const backLinkClass =
+  "inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200";
+
 export function AdminLoginForm() {
   const { login } = useAdminAuth();
   const router = useRouter();
@@ -21,12 +27,29 @@ export function AdminLoginForm() {
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
+
+  const siteUrl = adminConfig.brand.siteUrl || "/";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    const nextErrors: typeof fieldErrors = {};
+    if (!username.trim()) nextErrors.username = "Enter your username.";
+    if (!password) nextErrors.password = "Enter your password.";
+    setFieldErrors(nextErrors);
+    if (nextErrors.username || nextErrors.password) {
+      document.getElementById(nextErrors.username ? "admin-username" : "admin-password")?.focus();
+      return;
+    }
     setSubmitting(true);
 
     try {
+      if (password !== DEMO_PASSWORD) {
+        setError("Invalid credentials. Use admin / admin for the preview.");
+        return;
+      }
       await login(username.trim() || DEMO_USERNAME);
       router.replace("/admin");
     } finally {
@@ -37,13 +60,17 @@ export function AdminLoginForm() {
   return (
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10 sm:px-10 lg:px-14 xl:px-16">
       <div className="mx-auto w-full max-w-[400px]">
-        <Link
-          href={adminConfig.brand.siteUrl}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to site
-        </Link>
+        {isExternalUrl(siteUrl) ? (
+          <a href={siteUrl} className={backLinkClass}>
+            <ArrowLeft className="h-4 w-4" aria-hidden />
+            Back to site
+          </a>
+        ) : (
+          <Link href={siteUrl} className={backLinkClass}>
+            <ArrowLeft className="h-4 w-4" aria-hidden />
+            Back to site
+          </Link>
+        )}
 
         <div className="mt-8 lg:mt-10">
           <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-base font-bold text-white lg:hidden">
@@ -54,7 +81,7 @@ export function AdminLoginForm() {
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
           <div>
             <label
               htmlFor="admin-username"
@@ -63,7 +90,7 @@ export function AdminLoginForm() {
               Username
             </label>
             <div className="relative">
-              <User className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <User aria-hidden className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 id="admin-username"
                 type="text"
@@ -71,9 +98,16 @@ export function AdminLoginForm() {
                 placeholder="Enter username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={inputClass}
+                aria-invalid={Boolean(fieldErrors.username)}
+                aria-describedby={fieldErrors.username ? "admin-username-error" : undefined}
+                className={`${inputClass} ${fieldErrors.username ? errorInputClass : ""}`}
               />
             </div>
+            {fieldErrors.username && (
+              <p id="admin-username-error" className="mt-1.5 text-sm text-error-500">
+                {fieldErrors.username}
+              </p>
+            )}
           </div>
 
           <div>
@@ -84,7 +118,7 @@ export function AdminLoginForm() {
               Password
             </label>
             <div className="relative">
-              <Lock className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Lock aria-hidden className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 id="admin-password"
                 type={showPassword ? "text" : "password"}
@@ -92,12 +126,14 @@ export function AdminLoginForm() {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`${inputClass} pr-11`}
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={fieldErrors.password ? "admin-password-error" : undefined}
+                className={`${inputClass} pr-11 ${fieldErrors.password ? errorInputClass : ""}`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-300"
+                className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-300"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -107,7 +143,18 @@ export function AdminLoginForm() {
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p id="admin-password-error" className="mt-1.5 text-sm text-error-500">
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
+
+          {error && (
+            <p className="rounded-lg border border-error-500/30 bg-error-50 px-3 py-2.5 text-sm text-error-500 dark:bg-error-500/10" role="alert">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
@@ -118,8 +165,9 @@ export function AdminLoginForm() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-          UI preview only - no real authentication.
+        <p className="mt-8 rounded-lg border border-dashed border-gray-300 px-3 py-2.5 text-center text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+          Demo preview - sign in with <strong className="font-semibold text-gray-700 dark:text-gray-200">admin</strong> /{" "}
+          <strong className="font-semibold text-gray-700 dark:text-gray-200">admin</strong>. No real authentication.
         </p>
       </div>
     </div>

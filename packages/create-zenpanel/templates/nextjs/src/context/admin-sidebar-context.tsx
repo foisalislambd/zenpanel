@@ -1,6 +1,7 @@
 "use client";
 
 import { useIsDesktop } from "@/hooks/use-is-desktop";
+import { useStoredValue } from "@/hooks/use-stored-value";
 import {
   createContext,
   useCallback,
@@ -12,6 +13,7 @@ import {
 
 export const SIDEBAR_WIDTH_EXPANDED = 260;
 export const SIDEBAR_WIDTH_COLLAPSED = 80;
+const SIDEBAR_STORAGE_KEY = "zenpanel-sidebar";
 
 type SidebarContextValue = {
   isExpanded: boolean;
@@ -27,7 +29,8 @@ const SidebarContext = createContext<SidebarContextValue | null>(null);
 
 export function AdminSidebarProvider({ children }: { children: React.ReactNode }) {
   const isDesktop = useIsDesktop();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [stored, setStored] = useStoredValue(SIDEBAR_STORAGE_KEY, "expanded");
+  const isExpanded = stored !== "collapsed";
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const effectiveExpanded = isDesktop ? isExpanded : true;
@@ -41,11 +44,15 @@ export function AdminSidebarProvider({ children }: { children: React.ReactNode }
   }, [effectiveMobileOpen]);
 
   const toggleSidebar = useCallback(() => {
-    setIsExpanded((v) => !v);
-  }, []);
+    setStored(isExpanded ? "collapsed" : "expanded");
+  }, [isExpanded, setStored]);
 
   const toggleMobileSidebar = useCallback(() => setIsMobileOpen((v) => !v), []);
   const closeMobileSidebar = useCallback(() => setIsMobileOpen(false), []);
+  const setExpanded = useCallback(
+    (value: boolean) => setStored(value ? "expanded" : "collapsed"),
+    [setStored],
+  );
 
   const value = useMemo(
     () => ({
@@ -55,7 +62,7 @@ export function AdminSidebarProvider({ children }: { children: React.ReactNode }
       toggleSidebar,
       toggleMobileSidebar,
       closeMobileSidebar,
-      setExpanded: setIsExpanded,
+      setExpanded,
     }),
     [
       effectiveExpanded,
@@ -64,6 +71,7 @@ export function AdminSidebarProvider({ children }: { children: React.ReactNode }
       toggleSidebar,
       toggleMobileSidebar,
       closeMobileSidebar,
+      setExpanded,
     ],
   );
 

@@ -16,8 +16,8 @@ const quickLinks = [
   { name: "Manage projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Manage services", href: "/admin/services", icon: Briefcase },
   { name: "View messages", href: "/admin/messages", icon: MessageCircle },
-  { name: "Write blog post", href: "/admin/blog", icon: Newspaper },
-  { name: "Add product", href: "/admin/products", icon: Package },
+  { name: "Write blog post", href: "/admin/blog?new=1", icon: Newspaper },
+  { name: "Add product", href: "/admin/products?new=1", icon: Package },
   { name: "Manage users", href: "/admin/users", icon: Users },
 ];
 

@@ -1,6 +1,8 @@
 import { AdminAuthProvider } from "@/components/admin/auth/admin-auth-provider";
+import { AdminToastProvider } from "@/components/admin/ui/admin-toast-provider";
 import { AdminChatPanelProvider } from "@/context/admin-chat-panel-context";
 import { AdminSidebarProvider } from "@/context/admin-sidebar-context";
+import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./admin.css";
 
@@ -9,8 +11,8 @@ const outfit = Outfit({
   variable: "--font-admin-sans",
 });
 
-export const metadata = {
-  title: "Admin",
+export const metadata: Metadata = {
+  title: { default: "Admin · ZenPanel", template: "%s · ZenPanel" },
   description: "Site administration",
 };
 
@@ -26,9 +28,11 @@ export default function AdminRootLayout({
   return (
     <div className={`${outfit.variable} admin-shell min-h-dvh w-full`}>
       <AdminAuthProvider>
-        <AdminSidebarProvider>
-          <AdminChatPanelProvider>{children}</AdminChatPanelProvider>
-        </AdminSidebarProvider>
+        <AdminToastProvider>
+          <AdminSidebarProvider>
+            <AdminChatPanelProvider>{children}</AdminChatPanelProvider>
+          </AdminSidebarProvider>
+        </AdminToastProvider>
       </AdminAuthProvider>
     </div>
   );
