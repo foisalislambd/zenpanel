@@ -2,24 +2,147 @@
 
 // src/index.ts
 import { Command } from "commander";
-import path6 from "path";
+import path7 from "path";
 import pc3 from "picocolors";
 
 // src/create-app.ts
 import * as p from "@clack/prompts";
-import fs3 from "fs-extra";
-import path4 from "path";
+import fs4 from "fs-extra";
+import path5 from "path";
 import pc from "picocolors";
 
-// src/constants.ts
+// src/agent-files.ts
+import fs from "fs-extra";
 import path from "path";
+var ZENPANEL_AGENT_RULES_START = "<!-- BEGIN:zenpanel-agent-rules -->";
+var ZENPANEL_AGENT_RULES_END = "<!-- END:zenpanel-agent-rules -->";
+var CLAUDE_MD_CONTENT = "@AGENTS.md\n";
+function frameworkGuide(framework) {
+  switch (framework) {
+    case "nextjs":
+      return `- App Router admin lives under \`src/app/admin\` (or \`app/admin\` when the host has no \`src/\`).
+- Branding: \`src/config/admin.config.ts\` (or \`config/admin.config.ts\`). Sidebar: \`src/lib/admin-nav.ts\` (or \`lib/admin-nav.ts\`).
+- Shared UI: \`src/components/admin/\` (or \`components/admin/\`). Auth preview: \`\u2026/components/admin/auth/\`.
+- Keep Next.js's own \`<!-- BEGIN:nextjs-agent-rules -->\` block intact. Read \`node_modules/next/dist/docs/\` before changing Next.js APIs.`;
+    case "react":
+    case "preact":
+      return `- Vite SPA. Admin pages: \`src/pages/admin/\`. Routes: \`src/routes/admin-routes.tsx\` (merge into the host \`<Routes>\` on existing apps).
+- Branding: \`src/config/admin.config.ts\`. Sidebar: \`src/lib/admin-nav.ts\`.
+- Shared UI: \`src/components/admin/\`. Styles: \`src/admin.css\` imported from \`src/index.css\`.`;
+    case "solid":
+      return `- Vite + Solid. Admin pages: \`src/pages/admin/\`. Routes: \`src/routes/admin-routes.tsx\` (merge into the host \`<Router>\`).
+- Branding: \`src/config/admin.config.ts\`. Sidebar: \`src/lib/admin-nav.ts\`.
+- Shared UI: \`src/components/admin/\`. Styles: \`src/admin.css\`.`;
+    case "svelte":
+      return `- Vite + Svelte 5. Admin pages: \`src/pages/admin/\`. UI: \`src/components/admin/\`. Entry: \`src/App.svelte\` + \`src/main.ts\`.
+- Branding: \`src/config/admin.config.ts\`. Sidebar: \`src/lib/admin-nav.ts\`. Styles: \`src/admin.css\`.`;
+    case "vue":
+      return `- Vite + Vue 3. Admin pages: \`src/pages/admin/\`. Router: \`src/router/\`. Entry: \`src/App.vue\` + \`src/main.ts\`.
+- Branding: \`src/config/admin.config.ts\`. Sidebar: \`src/lib/admin-nav.ts\`. Styles: \`src/admin.css\`.`;
+    case "html":
+      return `- Static HTML under \`src/\` (admin pages in \`src/admin/\`). No bundler.
+- Branding: \`src/js/config.js\`. Tailwind CLI builds \`src/css/styles.css\`.`;
+    case "astro":
+      return `- Astro pages: \`src/pages/admin/\`. Layout: \`src/layouts/AdminLayout.astro\`.
+- Branding: \`src/scripts/config.js\`. Styles: \`src/styles/admin.css\`.`;
+    case "angular":
+      return `- Angular app under \`src/app/\`. Admin routes open at \`/admin/login\` (ng serve, port 4200).
+- Branding: \`src/app/core/admin.config.ts\`. Sidebar: \`src/app/core/admin-nav.ts\`. Styles: \`src/admin.css\` imported from \`src/styles.css\`.`;
+    case "remix":
+      return `- Remix template is not available yet. Do not invent a Remix admin from other frameworks.`;
+  }
+}
+function buildZenpanelAgentRulesBlock(framework) {
+  return `${ZENPANEL_AGENT_RULES_START}
+
+# ZenPanel admin
+
+This repo includes a ZenPanel admin shell. When the user asks to change the admin panel, extend these files - do not replace them with a new dashboard.
+
+## Preview auth
+
+- Login is UI-only. Preview credentials: \`admin\` / \`admin\`.
+- Do not add real authentication, env secrets, or a backend unless the user asks.
+
+## Where to edit (${framework})
+
+${frameworkGuide(framework)}
+
+## Conventions
+
+- Reuse existing admin components (layout, tables, charts, chat, forms).
+- Tailwind v4 with brand tokens (\`brand-*\`, \`gray-*\`). Dark mode is class-based (\`.dark\`), not \`prefers-color-scheme\` alone.
+- Keep admin URLs under \`/admin\`.
+- Match the template's file names, import aliases, and component patterns.
+- Content outside these markers is yours; create-zenpanel only rewrites this block.
+
+${ZENPANEL_AGENT_RULES_END}`;
+}
+function detectEol(content) {
+  return /\r\n/.test(content) ? "\r\n" : "\n";
+}
+function normalizeEol(s, eol) {
+  return s.replace(/\r?\n/g, eol);
+}
+function upsertZenpanelAgentRulesBlock(existing, block) {
+  const eol = detectEol(existing.length > 0 ? existing : block);
+  const normalizedBlock = normalizeEol(block, eol);
+  const startIdx = existing.indexOf(ZENPANEL_AGENT_RULES_START);
+  if (startIdx !== -1) {
+    const endIdx = existing.indexOf(ZENPANEL_AGENT_RULES_END, startIdx);
+    if (endIdx !== -1) {
+      const before = existing.slice(0, startIdx);
+      const after = existing.slice(endIdx + ZENPANEL_AGENT_RULES_END.length);
+      return before + normalizedBlock + after;
+    }
+    return existing.slice(0, startIdx) + normalizedBlock + eol;
+  }
+  if (existing.length === 0) {
+    return normalizedBlock + eol;
+  }
+  const separator = /\r?\n$/.test(existing) ? eol : eol + eol;
+  return existing + separator + normalizedBlock + eol;
+}
+async function tryReadFile(filePath) {
+  try {
+    return await fs.readFile(filePath, "utf8");
+  } catch {
+    return null;
+  }
+}
+async function writeZenpanelAgentFiles(projectDir, framework) {
+  const agentsMdPath = path.join(projectDir, "AGENTS.md");
+  const claudeMdPath = path.join(projectDir, "CLAUDE.md");
+  const block = buildZenpanelAgentRulesBlock(framework);
+  const existingAgents = await tryReadFile(agentsMdPath);
+  const nextAgents = upsertZenpanelAgentRulesBlock(existingAgents ?? "", block);
+  let agentsMd;
+  if (existingAgents === null) {
+    await fs.writeFile(agentsMdPath, nextAgents, "utf8");
+    agentsMd = "created";
+  } else if (nextAgents === existingAgents) {
+    agentsMd = "unchanged";
+  } else {
+    await fs.writeFile(agentsMdPath, nextAgents, "utf8");
+    agentsMd = "updated";
+  }
+  const claudeExists = await fs.pathExists(claudeMdPath);
+  if (!claudeExists) {
+    await fs.writeFile(claudeMdPath, CLAUDE_MD_CONTENT, "utf8");
+    return { agentsMd, claudeMd: "created" };
+  }
+  return { agentsMd, claudeMd: "skipped" };
+}
+
+// src/constants.ts
+import path2 from "path";
 import { fileURLToPath } from "url";
-var __dirname = path.dirname(fileURLToPath(import.meta.url));
+var __dirname = path2.dirname(fileURLToPath(import.meta.url));
 function getPackageRoot() {
-  return path.resolve(__dirname, "..");
+  return path2.resolve(__dirname, "..");
 }
 function getTemplatesDir() {
-  return path.join(getPackageRoot(), "templates");
+  return path2.join(getPackageRoot(), "templates");
 }
 var ADMIN_PEER_DEPS = [
   "clsx",
@@ -36,8 +159,8 @@ function normalizeFrameworkId(id) {
 }
 
 // src/helpers.ts
-import fs from "fs-extra";
-import path2 from "path";
+import fs2 from "fs-extra";
+import path3 from "path";
 import spawn from "cross-spawn";
 function isValidProjectName(name) {
   return /^(?:@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/i.test(
@@ -49,7 +172,7 @@ function toValidPackageName(name) {
 }
 async function pathExists(target) {
   try {
-    await fs.access(target);
+    await fs2.access(target);
     return true;
   } catch {
     return false;
@@ -57,13 +180,13 @@ async function pathExists(target) {
 }
 async function isDirectoryEmpty(dir) {
   if (!await pathExists(dir)) return true;
-  const entries = await fs.readdir(dir);
+  const entries = await fs2.readdir(dir);
   return entries.filter((e) => e !== ".git" && e !== ".DS_Store").length === 0;
 }
 async function readPackageJson(dir) {
-  const pkgPath = path2.join(dir, "package.json");
+  const pkgPath = path3.join(dir, "package.json");
   if (!await pathExists(pkgPath)) return null;
-  return fs.readJson(pkgPath);
+  return fs2.readJson(pkgPath);
 }
 function detectFrameworkFromPackage(pkg2) {
   const deps = {
@@ -130,15 +253,15 @@ function getAddArgs(pm, packages) {
   }
 }
 async function updatePackageName(projectDir, name) {
-  const pkgPath = path2.join(projectDir, "package.json");
-  const pkg2 = await fs.readJson(pkgPath);
+  const pkgPath = path3.join(projectDir, "package.json");
+  const pkg2 = await fs2.readJson(pkgPath);
   pkg2.name = name;
-  await fs.writeJson(pkgPath, pkg2, { spaces: 2 });
+  await fs2.writeJson(pkgPath, pkg2, { spaces: 2 });
 }
 
 // src/package-manager.ts
-import fs2 from "fs-extra";
-import path3 from "path";
+import fs3 from "fs-extra";
+import path4 from "path";
 function getPackageManager() {
   const ua = process.env.npm_config_user_agent ?? "";
   if (ua.startsWith("pnpm")) return "pnpm";
@@ -171,7 +294,7 @@ async function createApp(options = {}) {
       placeholder: "my-admin",
       defaultValue: "my-admin",
       validate(value) {
-        const name = value.trim() || "my-admin";
+        const name = (value ?? "").trim() || "my-admin";
         if (!isValidProjectName(toValidPackageName(name))) {
           return "Invalid project name";
         }
@@ -183,13 +306,13 @@ async function createApp(options = {}) {
     }
     projectName = result.trim() || "my-admin";
   }
-  const packageName = toValidPackageName(path4.basename(projectName));
-  const targetDir = path4.resolve(cwd, projectName);
+  const packageName = toValidPackageName(path5.basename(projectName));
+  const targetDir = path5.resolve(cwd, projectName);
   if (await pathExists(targetDir)) {
     const empty = await isDirectoryEmpty(targetDir);
     if (!empty) {
       p.log.error(
-        `Target directory ${pc.cyan(path4.basename(targetDir))} is not empty. Choose another name or remove the folder.`
+        `Target directory ${pc.cyan(path5.basename(targetDir))} is not empty. Choose another name or remove the folder.`
       );
       process.exit(1);
     }
@@ -263,24 +386,25 @@ async function createApp(options = {}) {
     );
     process.exit(1);
   }
-  const templateDir = path4.join(getTemplatesDir(), framework);
+  const templateDir = path5.join(getTemplatesDir(), framework);
   if (!await pathExists(templateDir)) {
     p.log.error(`Template not found: ${framework}`);
     process.exit(1);
   }
   const spinner3 = p.spinner();
   spinner3.start(
-    `Creating ${pc.cyan(path4.basename(targetDir))} (${framework})\u2026`
+    `Creating ${pc.cyan(path5.basename(targetDir))} (${framework})\u2026`
   );
   try {
-    await fs3.copy(templateDir, targetDir, {
+    await fs4.copy(templateDir, targetDir, {
       filter: (src) => {
-        const base = path4.basename(src);
+        const base = path5.basename(src);
         return base !== "node_modules" && base !== "dist" && base !== ".next" && base !== ".astro" && base !== ".angular";
       }
     });
     await updatePackageName(targetDir, packageName);
-    spinner3.stop(`Project ${pc.cyan(path4.basename(targetDir))} created.`);
+    await writeZenpanelAgentFiles(targetDir, framework);
+    spinner3.stop(`Project ${pc.cyan(path5.basename(targetDir))} created.`);
   } catch (error) {
     spinner3.stop("Failed to create project.");
     throw error;
@@ -299,7 +423,7 @@ async function createApp(options = {}) {
       console.error(error);
     }
   }
-  const relative = path4.relative(cwd, targetDir) || ".";
+  const relative = path5.relative(cwd, targetDir) || ".";
   const cd = relative === "." ? "" : `  cd ${relative.includes(" ") ? `"${relative}"` : relative}
 `;
   const loginUrl = framework === "html" || framework === "react" || framework === "preact" || framework === "solid" || framework === "svelte" || framework === "vue" ? "http://localhost:5173/admin/login" : framework === "astro" ? "http://localhost:4321/admin/login" : framework === "angular" ? "http://localhost:4200/admin/login" : "http://localhost:3000/admin/login";
@@ -315,8 +439,8 @@ async function createApp(options = {}) {
 
 // src/install.ts
 import * as p2 from "@clack/prompts";
-import fs4 from "fs-extra";
-import path5 from "path";
+import fs5 from "fs-extra";
+import path6 from "path";
 import pc2 from "picocolors";
 var NEXT_RELATIVE_PATHS = [
   "app/admin",
@@ -328,10 +452,13 @@ var NEXT_RELATIVE_PATHS = [
   "lib/admin-api",
   "lib/admin-data",
   "lib/admin-nav.ts",
+  "lib/admin-ui.ts",
   "lib/brand-theme.ts",
   "lib/cn.ts",
   "lib/delay.ts",
-  "lib/format.ts"
+  "lib/format.ts",
+  "lib/pagination.ts",
+  "lib/sort.ts"
 ];
 var REACT_COPY_PATHS = [
   "src/layouts",
@@ -344,17 +471,28 @@ var REACT_COPY_PATHS = [
   "src/hooks",
   "src/lib/admin-api",
   "src/lib/admin-data",
+  // Framework-agnostic helpers used by the Solid template (skipped when absent).
+  "src/lib/admin-forms.ts",
+  "src/lib/admin-resources.ts",
+  "src/lib/admin-toast.ts",
+  "src/lib/command-palette.ts",
+  "src/lib/dialog.ts",
+  "src/lib/preferences.ts",
   "src/lib/admin-nav.ts",
+  "src/lib/admin-ui.ts",
   "src/lib/brand-theme.ts",
   "src/lib/cn.ts",
   "src/lib/delay.ts",
   "src/lib/format.ts",
+  "src/lib/pagination.ts",
+  "src/lib/sort.ts",
   "src/admin.css",
   "src/zenpanel-admin-routes.example.tsx"
 ];
 var ASTRO_COPY_PATHS = [
   "src/layouts/AdminLayout.astro",
   "src/pages/admin",
+  "src/pages/404.astro",
   "src/scripts",
   "src/styles/admin.css",
   "src/zenpanel-admin.example.ts"
@@ -468,7 +606,7 @@ async function installIntoExisting(options = {}) {
   const cwd = process.cwd();
   const packageManager = options.packageManager ?? getPackageManager();
   p2.intro(pc2.bgCyan(pc2.black(" create-zenpanel ")));
-  p2.log.info("Detected an existing project \u2014 installing ZenPanel admin shell.");
+  p2.log.info("Detected an existing project - installing ZenPanel admin shell.");
   const pkg2 = await readPackageJson(cwd);
   if (!pkg2) {
     p2.log.error("No package.json found in the current directory.");
@@ -498,30 +636,30 @@ async function installIntoExisting(options = {}) {
   } else {
     p2.log.step(`Detected framework: ${pc2.cyan(framework)}`);
   }
-  const templateDir = path5.join(getTemplatesDir(), framework);
+  const templateDir = path6.join(getTemplatesDir(), framework);
   const copyJobs = framework === "nextjs" ? await buildNextCopyJobs(cwd, templateDir) : framework === "react" || framework === "preact" || framework === "solid" ? REACT_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   })) : framework === "svelte" ? SVELTE_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   })) : framework === "vue" ? VUE_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   })) : framework === "astro" ? ASTRO_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   })) : framework === "angular" ? ANGULAR_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   })) : HTML_COPY_PATHS.map((rel) => ({
-    src: path5.join(templateDir, rel),
-    dest: path5.join(cwd, rel),
+    src: path6.join(templateDir, rel),
+    dest: path6.join(cwd, rel),
     label: rel
   }));
   const conflicts = [];
@@ -536,7 +674,7 @@ async function installIntoExisting(options = {}) {
       initialValue: false
     });
     if (p2.isCancel(confirmed) || !confirmed) {
-      p2.cancel("Cancelled \u2014 existing files left untouched.");
+      p2.cancel("Cancelled - existing files left untouched.");
       process.exit(0);
     }
   }
@@ -545,8 +683,8 @@ async function installIntoExisting(options = {}) {
   try {
     for (const job of copyJobs) {
       if (!await pathExists(job.src)) continue;
-      await fs4.ensureDir(path5.dirname(job.dest));
-      await fs4.copy(job.src, job.dest, { overwrite: true });
+      await fs5.ensureDir(path6.dirname(job.dest));
+      await fs5.copy(job.src, job.dest, { overwrite: true });
     }
     if (framework === "nextjs") {
       await mergeNextStyles(cwd, templateDir);
@@ -565,6 +703,7 @@ async function installIntoExisting(options = {}) {
     } else if (framework === "html") {
       await ensureHtmlServeScripts(cwd);
     }
+    await writeZenpanelAgentFiles(cwd, framework);
     spinner3.stop("Admin files copied.");
   } catch (error) {
     spinner3.stop("Failed to copy admin files.");
@@ -654,17 +793,17 @@ async function installIntoExisting(options = {}) {
     "Customize branding in src/lib/config.ts.",
     "Preview credentials: admin / admin."
   ] : framework === "astro" ? [
-    "Admin pages were copied to src/pages/admin \u2014 open /admin/login after `npm run dev`.",
+    "Admin pages were copied to src/pages/admin - open /admin/login after `npm run dev`.",
     "Customize branding in src/scripts/config.js.",
     "Preview credentials: admin / admin."
   ] : framework === "angular" ? [
-    "Open /admin/login after `npm run dev` (ng serve \u2014 port 4200).",
+    "Open /admin/login after `npm run dev` (ng serve - port 4200).",
     "Customize branding in src/app/core/admin.config.ts.",
     "Ensure Tailwind + @tailwindcss/postcss are configured (see templates/angular).",
     "Preview credentials: admin / admin."
   ] : [
-    "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI \u2014 port 5173).",
-    "Open /admin/login \u2014 preview credentials: admin / admin.",
+    "Run `npm run build` then `npm run dev` (static HTML + Tailwind CLI - port 5173).",
+    "Open /admin/login - preview credentials: admin / admin.",
     "Customize branding in src/js/config.js."
   ];
   p2.note(tips.map((t) => `\u2022 ${t}`).join("\n"), "Next steps");
@@ -677,38 +816,38 @@ async function buildNextCopyJobs(projectDir, templateDir) {
     const templateRel = `src/${rel}`;
     const destRel = `${prefix}${rel}`;
     return {
-      src: path5.join(templateDir, templateRel),
-      dest: path5.join(projectDir, destRel),
+      src: path6.join(templateDir, templateRel),
+      dest: path6.join(projectDir, destRel),
       label: destRel
     };
   });
 }
 async function detectNextSrcRoot(projectDir) {
-  if (await pathExists(path5.join(projectDir, "src", "app"))) return "src";
-  if (await pathExists(path5.join(projectDir, "app"))) return "";
-  if (await pathExists(path5.join(projectDir, "src"))) return "src";
+  if (await pathExists(path6.join(projectDir, "src", "app"))) return "src";
+  if (await pathExists(path6.join(projectDir, "app"))) return "";
+  if (await pathExists(path6.join(projectDir, "src"))) return "src";
   return "src";
 }
 async function mergeNextStyles(projectDir, templateDir) {
   const srcRoot = await detectNextSrcRoot(projectDir);
   const adminCssRel = srcRoot ? "src/app/admin/admin.css" : "app/admin/admin.css";
-  const adminCssSrc = path5.join(templateDir, "src/app/admin/admin.css");
-  const adminCssDest = path5.join(projectDir, adminCssRel);
+  const adminCssSrc = path6.join(templateDir, "src/app/admin/admin.css");
+  const adminCssDest = path6.join(projectDir, adminCssRel);
   if (await pathExists(adminCssSrc)) {
-    await fs4.ensureDir(path5.dirname(adminCssDest));
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.ensureDir(path6.dirname(adminCssDest));
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
   const globalsCandidates = [
-    path5.join(projectDir, "src/app/globals.css"),
-    path5.join(projectDir, "app/globals.css"),
-    path5.join(projectDir, "src/index.css")
+    path6.join(projectDir, "src/app/globals.css"),
+    path6.join(projectDir, "app/globals.css"),
+    path6.join(projectDir, "src/index.css")
   ];
   for (const globals of globalsCandidates) {
     if (!await pathExists(globals)) continue;
-    const content = await fs4.readFile(globals, "utf8");
+    const content = await fs5.readFile(globals, "utf8");
     const merged = mergeZenpanelThemeCss(content);
     if (merged.changed) {
-      await fs4.writeFile(globals, merged.content);
+      await fs5.writeFile(globals, merged.content);
     }
     return;
   }
@@ -734,40 +873,40 @@ function isThemeProviderWrapped(content) {
 async function ensureNextThemeProvider(projectDir) {
   const srcRoot = await detectNextSrcRoot(projectDir);
   const rootCandidates = [
-    path5.join(projectDir, srcRoot ? "src/app/layout.tsx" : "app/layout.tsx"),
-    path5.join(projectDir, srcRoot ? "src/app/layout.jsx" : "app/layout.jsx")
+    path6.join(projectDir, srcRoot ? "src/app/layout.tsx" : "app/layout.tsx"),
+    path6.join(projectDir, srcRoot ? "src/app/layout.jsx" : "app/layout.jsx")
   ];
   for (const layoutPath of rootCandidates) {
     if (!await pathExists(layoutPath)) continue;
-    const content = await fs4.readFile(layoutPath, "utf8");
+    const content = await fs5.readFile(layoutPath, "utf8");
     if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
       return;
     }
     const patched = patchNextRootLayout(content);
     if (patched !== content && isThemeProviderWrapped(patched)) {
-      await fs4.writeFile(layoutPath, patched);
+      await fs5.writeFile(layoutPath, patched);
       return;
     }
   }
   const adminCandidates = [
-    path5.join(
+    path6.join(
       projectDir,
       srcRoot ? "src/app/admin/layout.tsx" : "app/admin/layout.tsx"
     ),
-    path5.join(
+    path6.join(
       projectDir,
       srcRoot ? "src/app/admin/layout.jsx" : "app/admin/layout.jsx"
     )
   ];
   for (const layoutPath of adminCandidates) {
     if (!await pathExists(layoutPath)) continue;
-    const content = await fs4.readFile(layoutPath, "utf8");
+    const content = await fs5.readFile(layoutPath, "utf8");
     if (hasZenpanelThemeProvider(content) && isThemeProviderWrapped(content)) {
       return;
     }
     const patched = patchAdminLayoutWithThemeProvider(content);
     if (patched !== content && isThemeProviderWrapped(patched)) {
-      await fs4.writeFile(layoutPath, patched);
+      await fs5.writeFile(layoutPath, patched);
       return;
     }
   }
@@ -802,14 +941,14 @@ function patchAdminLayoutWithThemeProvider(content) {
   return next;
 }
 async function mergeReactStyles(projectDir, templateDir) {
-  const adminCssSrc = path5.join(templateDir, "src/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  const adminCssSrc = path6.join(templateDir, "src/admin.css");
+  const adminCssDest = path6.join(projectDir, "src/admin.css");
   if (await pathExists(adminCssSrc)) {
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
-  const indexCss = path5.join(projectDir, "src/index.css");
+  const indexCss = path6.join(projectDir, "src/index.css");
   if (!await pathExists(indexCss)) return;
-  let content = await fs4.readFile(indexCss, "utf8");
+  let content = await fs5.readFile(indexCss, "utf8");
   let changed = false;
   if (!content.includes("admin.css")) {
     content = injectAfterImports(content, '@import "./admin.css";');
@@ -819,23 +958,23 @@ async function mergeReactStyles(projectDir, templateDir) {
   content = merged.content;
   changed = changed || merged.changed;
   if (changed) {
-    await fs4.writeFile(indexCss, content);
+    await fs5.writeFile(indexCss, content);
   }
 }
 async function ensureViteThemeProvider(projectDir) {
   const appCandidates = [
-    path5.join(projectDir, "src/App.tsx"),
-    path5.join(projectDir, "src/App.jsx")
+    path6.join(projectDir, "src/App.tsx"),
+    path6.join(projectDir, "src/App.jsx")
   ];
   for (const appPath of appCandidates) {
     if (!await pathExists(appPath)) continue;
-    const content = await fs4.readFile(appPath, "utf8");
+    const content = await fs5.readFile(appPath, "utf8");
     if (hasZenpanelThemeProvider(content) && content.includes("<ThemeProvider")) {
       return;
     }
     const patched = patchViteAppWithThemeProvider(content);
     if (patched !== content && patched.includes("<ThemeProvider>") && patched.includes("</ThemeProvider>")) {
-      await fs4.writeFile(appPath, patched);
+      await fs5.writeFile(appPath, patched);
     }
     return;
   }
@@ -859,37 +998,37 @@ ${closeIndent});`;
   return next;
 }
 async function mergeVueFiles(projectDir, templateDir) {
-  const adminCssSrc = path5.join(templateDir, "src/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  const adminCssSrc = path6.join(templateDir, "src/admin.css");
+  const adminCssDest = path6.join(projectDir, "src/admin.css");
   if (await pathExists(adminCssSrc)) {
-    await fs4.ensureDir(path5.dirname(adminCssDest));
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.ensureDir(path6.dirname(adminCssDest));
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
-  const mainSrc = path5.join(templateDir, "src/main.ts");
-  const mainDest = path5.join(projectDir, "src/main.ts");
+  const mainSrc = path6.join(templateDir, "src/main.ts");
+  const mainDest = path6.join(projectDir, "src/main.ts");
   if (await pathExists(mainSrc) && !await pathExists(mainDest)) {
-    await fs4.copy(mainSrc, mainDest);
+    await fs5.copy(mainSrc, mainDest);
   }
   await mergeHostIndexCss(projectDir);
 }
 async function mergeSvelteFiles(projectDir, templateDir) {
-  const adminCssSrc = path5.join(templateDir, "src/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  const adminCssSrc = path6.join(templateDir, "src/admin.css");
+  const adminCssDest = path6.join(projectDir, "src/admin.css");
   if (await pathExists(adminCssSrc)) {
-    await fs4.ensureDir(path5.dirname(adminCssDest));
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.ensureDir(path6.dirname(adminCssDest));
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
-  const mainSrc = path5.join(templateDir, "src/main.ts");
-  const mainDest = path5.join(projectDir, "src/main.ts");
+  const mainSrc = path6.join(templateDir, "src/main.ts");
+  const mainDest = path6.join(projectDir, "src/main.ts");
   if (await pathExists(mainSrc) && !await pathExists(mainDest)) {
-    await fs4.copy(mainSrc, mainDest);
+    await fs5.copy(mainSrc, mainDest);
   }
   await mergeHostIndexCss(projectDir);
 }
 async function mergeHostIndexCss(projectDir) {
-  const indexCss = path5.join(projectDir, "src/index.css");
+  const indexCss = path6.join(projectDir, "src/index.css");
   if (!await pathExists(indexCss)) return;
-  let content = await fs4.readFile(indexCss, "utf8");
+  let content = await fs5.readFile(indexCss, "utf8");
   let changed = false;
   if (!content.includes("admin.css")) {
     content = injectAfterImports(content, '@import "./admin.css";');
@@ -899,48 +1038,48 @@ async function mergeHostIndexCss(projectDir) {
   content = merged.content;
   changed = changed || merged.changed;
   if (changed) {
-    await fs4.writeFile(indexCss, content);
+    await fs5.writeFile(indexCss, content);
   }
 }
 async function mergeAstroStyles(projectDir, templateDir) {
-  const adminCssSrc = path5.join(templateDir, "src/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  const adminCssSrc = path6.join(templateDir, "src/admin.css");
+  const adminCssDest = path6.join(projectDir, "src/admin.css");
   if (await pathExists(adminCssSrc)) {
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
-  const globalCssSrc = path5.join(templateDir, "src/styles/global.css");
-  const globalCssDest = path5.join(projectDir, "src/styles/global.css");
+  const globalCssSrc = path6.join(templateDir, "src/styles/global.css");
+  const globalCssDest = path6.join(projectDir, "src/styles/global.css");
   if (await pathExists(globalCssSrc) && !await pathExists(globalCssDest)) {
-    await fs4.ensureDir(path5.dirname(globalCssDest));
-    await fs4.copy(globalCssSrc, globalCssDest);
+    await fs5.ensureDir(path6.dirname(globalCssDest));
+    await fs5.copy(globalCssSrc, globalCssDest);
   } else if (await pathExists(globalCssDest)) {
-    const content = await fs4.readFile(globalCssDest, "utf8");
+    const content = await fs5.readFile(globalCssDest, "utf8");
     const merged = mergeZenpanelThemeCss(content);
     if (merged.changed) {
-      await fs4.writeFile(globalCssDest, merged.content);
+      await fs5.writeFile(globalCssDest, merged.content);
     }
   }
-  const adminStyleSrc = path5.join(templateDir, "src/styles/admin.css");
-  const adminStyleDest = path5.join(projectDir, "src/styles/admin.css");
+  const adminStyleSrc = path6.join(templateDir, "src/styles/admin.css");
+  const adminStyleDest = path6.join(projectDir, "src/styles/admin.css");
   if (await pathExists(adminStyleSrc)) {
-    await fs4.ensureDir(path5.dirname(adminStyleDest));
-    await fs4.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
+    await fs5.ensureDir(path6.dirname(adminStyleDest));
+    await fs5.copy(adminStyleSrc, adminStyleDest, { overwrite: true });
   }
 }
 async function mergeAngularStyles(projectDir, templateDir) {
-  const adminCssSrc = path5.join(templateDir, "src/admin.css");
-  const adminCssDest = path5.join(projectDir, "src/admin.css");
+  const adminCssSrc = path6.join(templateDir, "src/admin.css");
+  const adminCssDest = path6.join(projectDir, "src/admin.css");
   if (await pathExists(adminCssSrc)) {
-    await fs4.copy(adminCssSrc, adminCssDest, { overwrite: true });
+    await fs5.copy(adminCssSrc, adminCssDest, { overwrite: true });
   }
-  const stylesSrc = path5.join(templateDir, "src/styles.css");
-  const stylesDest = path5.join(projectDir, "src/styles.css");
+  const stylesSrc = path6.join(templateDir, "src/styles.css");
+  const stylesDest = path6.join(projectDir, "src/styles.css");
   if (await pathExists(stylesSrc) && !await pathExists(stylesDest)) {
-    await fs4.copy(stylesSrc, stylesDest);
+    await fs5.copy(stylesSrc, stylesDest);
     return;
   }
   if (!await pathExists(stylesDest)) return;
-  let content = await fs4.readFile(stylesDest, "utf8");
+  let content = await fs5.readFile(stylesDest, "utf8");
   let changed = false;
   if (!content.includes("admin.css")) {
     content = injectAfterImports(content, '@import "./admin.css";');
@@ -950,13 +1089,13 @@ async function mergeAngularStyles(projectDir, templateDir) {
   content = merged.content;
   changed = changed || merged.changed;
   if (changed) {
-    await fs4.writeFile(stylesDest, content);
+    await fs5.writeFile(stylesDest, content);
   }
 }
 async function ensureHtmlServeScripts(projectDir) {
-  const pkgPath = path5.join(projectDir, "package.json");
+  const pkgPath = path6.join(projectDir, "package.json");
   if (!await pathExists(pkgPath)) return;
-  const pkg2 = await fs4.readJson(pkgPath);
+  const pkg2 = await fs5.readJson(pkgPath);
   pkg2.scripts ??= {};
   const defaults = {
     "css:build": "tailwindcss -i ./src/css/input.css -o ./src/css/styles.css --minify",
@@ -975,7 +1114,7 @@ async function ensureHtmlServeScripts(projectDir) {
     }
   }
   if (changed) {
-    await fs4.writeJson(pkgPath, pkg2, { spaces: 2 });
+    await fs5.writeJson(pkgPath, pkg2, { spaces: 2 });
   }
 }
 
@@ -1024,7 +1163,7 @@ async function main() {
       });
       return;
     }
-    if (projectDirectory && (projectDirectory === "." || path6.resolve(projectDirectory) === cwd) && hasPkg) {
+    if (projectDirectory && (projectDirectory === "." || path7.resolve(projectDirectory) === cwd) && hasPkg) {
       await installIntoExisting({
         packageManager,
         skipInstall: Boolean(opts.skipInstall),
