@@ -12,7 +12,8 @@ import {
   type PortalUserRow,
   type RecentOrder,
 } from '@/app/lib/admin-api';
-import { AdminLoadingComponent } from '@/app/admin/ui/admin-loading.component';
+import { AdminErrorStateComponent } from '@/app/admin/ui/admin-error-state.component';
+import { AdminDashboardSkeletonComponent } from '@/app/admin/ui/admin-skeletons.component';
 import { DashboardWelcomeComponent } from '@/app/admin/dashboard/dashboard-welcome.component';
 import { StatsCardsComponent } from '@/app/admin/dashboard/stats-cards.component';
 import { RevenueChartComponent } from '@/app/admin/dashboard/revenue-chart.component';
@@ -41,7 +42,8 @@ const DASHBOARD_PAGE_ID = 'dashboard';
   selector: 'app-dashboard-page',
   host: { class: 'block w-full' },
   imports: [
-    AdminLoadingComponent,
+    AdminErrorStateComponent,
+    AdminDashboardSkeletonComponent,
     DashboardWelcomeComponent,
     StatsCardsComponent,
     RevenueChartComponent,
@@ -52,9 +54,11 @@ const DASHBOARD_PAGE_ID = 'dashboard';
   ],
   template: `
     @if (loading()) {
-      <app-admin-loading message="Loading dashboard…" />
+      <app-admin-dashboard-skeleton />
     } @else if (error()) {
-      <div class="admin-card admin-card-body text-sm text-error-500">{{ error() }}</div>
+      <div class="admin-content">
+        <app-admin-error-state title="Couldn't load dashboard" [message]="error()!" (retry)="load()" />
+      </div>
     } @else {
       <!-- Use flex+gap (not space-y): Angular host elements are otherwise too tight. -->
       <div class="admin-content flex flex-col gap-5">
@@ -100,7 +104,12 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.registerPageContext();
+    this.load();
+  }
 
+  load(): void {
+    this.loading.set(true);
+    this.error.set(null);
     Promise.all([
       previewFetchStats(),
       previewFetchUsers(),

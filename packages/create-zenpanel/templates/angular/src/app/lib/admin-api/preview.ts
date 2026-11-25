@@ -1,4 +1,6 @@
 import { delay } from "@/app/lib/delay";
+import { adminBlogPosts, adminNewsletter, adminProjects } from "@/app/lib/admin-data/resources";
+import { adminConversations } from "@/app/lib/admin-data/messages";
 import type {
   ActivityItem,
   ChartDataPoint,
@@ -19,7 +21,8 @@ function daysAgo(days: number, hour = 12) {
 
 /**
  * Dashboard preview sample data.
- * Counts that belong to empty resource pages (messages, projects, newsletter, blog) stay at 0.
+ * Content counts are derived from the same sample lists the resource pages use,
+ * so the dashboard never disagrees with the page you click through to.
  */
 const demoStats: DashboardStats = {
   totalUsers: 2847,
@@ -30,10 +33,10 @@ const demoStats: DashboardStats = {
   revenueChangePercent: 12.4,
   newOrdersLast7Days: 42,
   ordersChangePercent: 8.2,
-  unreadMessages: 0,
-  totalProjects: 0,
-  newsletterSubscribers: 0,
-  publishedPosts: 0,
+  unreadMessages: adminConversations.filter((c) => c.unread > 0).length,
+  totalProjects: adminProjects.length,
+  newsletterSubscribers: adminNewsletter.filter((s) => s.status === "published").length,
+  publishedPosts: adminBlogPosts.filter((p) => p.status === "published").length,
 };
 
 const demoUsers: PortalUserRow[] = [

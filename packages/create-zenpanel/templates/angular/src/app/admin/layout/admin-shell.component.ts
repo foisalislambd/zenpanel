@@ -27,6 +27,7 @@ import { AdminSidebarComponent } from './admin-sidebar.component';
   ],
   template: `
     <app-admin-chat-route-bridge />
+    <a href="#admin-main" class="admin-skip-link" (click)="skipToMain($event)">Skip to content</a>
     <div class="admin-shell admin-main flex h-dvh w-full overflow-hidden">
       <div
         class="hidden shrink-0 transition-[width] duration-300 ease-in-out lg:block"
@@ -41,7 +42,9 @@ import { AdminSidebarComponent } from './admin-sidebar.component';
         <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <app-admin-header />
           <main
-            class="admin-scrollbar min-h-0 flex-1"
+            id="admin-main"
+            tabindex="-1"
+            class="admin-scrollbar min-h-0 flex-1 focus:outline-none"
             [class.overflow-hidden]="isFullBleedPage()"
             [class.overflow-y-auto]="!isFullBleedPage()"
             [class.overflow-x-hidden]="!isFullBleedPage()"
@@ -100,6 +103,12 @@ export class AdminShellComponent {
   readonly chatOverlay = computed(
     () => this.chat.isOpen() && (this.isFullBleedPage() || !this.chat.isDesktop()),
   );
+
+  /** Hash links would trigger a router navigation; focus the landmark directly. */
+  skipToMain(e: Event): void {
+    e.preventDefault();
+    document.getElementById('admin-main')?.focus();
+  }
 
   constructor() {
     this.router.events

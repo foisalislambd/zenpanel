@@ -1,21 +1,37 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 
 const THEME_KEY = 'zenpanel-theme';
 
 export type ThemeMode = 'light' | 'dark';
+export type ThemePreference = ThemeMode | 'system';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  readonly theme = signal<ThemeMode>(this.readInitial());
+  /** What the user picked (light / dark / follow the OS). */
+  readonly preference = signal<ThemePreference>(this.readInitial());
+  private readonly systemDark = signal(
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches,
+  );
+  /** The theme actually applied. */
+  readonly theme = computed<ThemeMode>(() => {
+    const pref = this.preference();
+    return pref === 'system' ? (this.systemDark() ? 'dark' : 'light') : pref;
+  });
 
   constructor() {
-    this.apply(this.theme());
+    if (typeof window !== 'undefined') {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      mq.addEventListener('change', (e) => {
+        this.systemDark.set(e.matches);
+        this.apply();
+      });
+    }
+    this.apply();
   }
 
-  toggle(): void {
-    const next: ThemeMode = this.theme() === 'dark' ? 'light' : 'dark';
-    this.theme.set(next);
-    this.apply(next);
+  setTheme(next: ThemePreference): void {
+    this.preference.set(next);
+    this.apply();
     try {
       localStorage.setItem(THEME_KEY, next);
     } catch {
@@ -23,20 +39,21 @@ export class ThemeService {
     }
   }
 
-  private readInitial(): ThemeMode {
+  toggle(): void {
+    this.setTheme(this.theme() === 'dark' ? 'light' : 'dark');
+  }
+
+  private readInitial(): ThemePreference {
     try {
       const stored = localStorage.getItem(THEME_KEY);
-      if (stored === 'dark' || stored === 'light') return stored;
+      if (stored === 'dark' || stored === 'light' || stored === 'system') return stored;
     } catch {
       // ignore
     }
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
+    return 'system';
   }
 
-  private apply(mode: ThemeMode): void {
-    document.documentElement.classList.toggle('dark', mode === 'dark');
+  private apply(): void {
+    document.documentElement.classList.toggle('dark', this.theme() === 'dark');
   }
 }

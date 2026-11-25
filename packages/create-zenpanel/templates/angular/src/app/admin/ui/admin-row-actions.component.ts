@@ -12,7 +12,7 @@ const pendingTitle = 'Available after you connect your API';
         type="button"
         (click)="enabled(onView) && onView?.()"
         [disabled]="!enabled(onView)"
-        [title]="enabled(onView) ? 'View ' + itemLabel : pendingTitle"
+        [attr.title]="enabled(onView) ? null : pendingTitle"
         [attr.aria-label]="'View ' + itemLabel"
         [class]="btnClass(onView)"
       >
@@ -22,7 +22,7 @@ const pendingTitle = 'Available after you connect your API';
         type="button"
         (click)="enabled(onEdit) && onEdit?.()"
         [disabled]="!enabled(onEdit)"
-        [title]="enabled(onEdit) ? 'Edit ' + itemLabel : pendingTitle"
+        [attr.title]="enabled(onEdit) ? null : pendingTitle"
         [attr.aria-label]="'Edit ' + itemLabel"
         [class]="btnClass(onEdit)"
       >
@@ -32,9 +32,9 @@ const pendingTitle = 'Available after you connect your API';
         type="button"
         (click)="enabled(onDelete) && onDelete?.()"
         [disabled]="!enabled(onDelete)"
-        [title]="enabled(onDelete) ? 'Delete ' + itemLabel : pendingTitle"
+        [attr.title]="enabled(onDelete) ? null : pendingTitle"
         [attr.aria-label]="'Delete ' + itemLabel"
-        [class]="btnClass(onDelete)"
+        [class]="btnClass(onDelete, true)"
       >
         <app-icon name="trash-2" [size]="iconPx" />
       </button>
@@ -62,11 +62,13 @@ export class AdminRowActionsComponent {
     return Boolean(handler) && !this.pending;
   }
 
-  btnClass(handler?: () => void): string {
+  btnClass(handler?: () => void, danger = false): string {
     const dim = this.size === 'md' ? 'h-9 w-9' : 'h-8 w-8';
-    const state = this.enabled(handler)
-      ? 'hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200'
-      : 'cursor-not-allowed opacity-70';
-    return `flex items-center justify-center rounded-lg text-gray-400 transition-colors ${dim} ${state}`;
+    const state = !this.enabled(handler)
+      ? 'cursor-not-allowed opacity-70'
+      : danger
+        ? 'hover:bg-error-50 hover:text-error-500 dark:hover:bg-error-500/15 dark:hover:text-error-500'
+        : 'hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200';
+    return `flex items-center justify-center rounded-lg text-gray-500 transition-colors dark:text-gray-400 ${dim} ${state}`;
   }
 }

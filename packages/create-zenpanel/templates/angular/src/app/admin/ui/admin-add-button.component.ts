@@ -9,7 +9,7 @@ import { IconComponent } from '@/app/shared/icon.component';
       type="button"
       (click)="enabled && onClick?.()"
       [disabled]="!enabled"
-      [title]="enabled ? label : 'Available after you connect your API'"
+      [attr.title]="enabled ? null : 'Available after you connect your API'"
       [class]="
         'inline-flex h-9 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white ' +
         (enabled

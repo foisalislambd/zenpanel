@@ -115,6 +115,7 @@ import { IconComponent } from '@/app/shared/icon.component';
         } @else {
           <a
             [routerLink]="siteUrl"
+            (click)="sidebar.closeMobileSidebar()"
             class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8"
             [class.justify-center]="!showLabels()"
             [title]="!showLabels() ? 'View site' : undefined"
@@ -133,6 +134,8 @@ import { IconComponent } from '@/app/shared/icon.component';
             class="mt-2 flex w-full items-center gap-3 rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5"
             [class.justify-center]="!showLabels()"
             [attr.aria-label]="sidebar.isExpanded() ? 'Collapse sidebar' : 'Expand sidebar'"
+            [attr.aria-expanded]="sidebar.isExpanded()"
+            [attr.title]="sidebar.isExpanded() ? null : 'Expand sidebar'"
           >
             <app-icon
               [name]="sidebar.isExpanded() ? 'chevron-left' : 'chevron-right'"

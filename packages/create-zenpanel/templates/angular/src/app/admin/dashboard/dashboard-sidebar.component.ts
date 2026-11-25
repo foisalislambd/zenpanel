@@ -7,8 +7,8 @@ const quickLinks = [
   { name: 'Manage projects', href: '/admin/projects', icon: 'folder-kanban' },
   { name: 'Manage services', href: '/admin/services', icon: 'briefcase' },
   { name: 'View messages', href: '/admin/messages', icon: 'message-circle' },
-  { name: 'Write blog post', href: '/admin/blog', icon: 'newspaper' },
-  { name: 'Add product', href: '/admin/products', icon: 'package' },
+  { name: 'Write blog post', href: '/admin/blog', query: { new: '1' }, icon: 'newspaper' },
+  { name: 'Add product', href: '/admin/products', query: { new: '1' }, icon: 'package' },
   { name: 'Manage users', href: '/admin/users', icon: 'users' },
 ];
 
@@ -34,6 +34,7 @@ type ProviderRow = { provider: string; count: number; pct: number };
             <li>
               <a
                 [routerLink]="link.href"
+                [queryParams]="link.query"
                 class="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/[0.02]"
               >
                 <app-icon [name]="link.icon" [size]="16" class="shrink-0 text-gray-400" />

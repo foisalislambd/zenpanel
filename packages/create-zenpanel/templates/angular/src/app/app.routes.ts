@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { adminGuard, guestGuard } from './core/auth.guards';
 import { AdminShellComponent } from './admin/layout/admin-shell.component';
 import { HomePageComponent } from './pages/home-page.component';
+import { NotFoundPageComponent } from './pages/not-found-page.component';
 import { LoginPageComponent } from './pages/admin/login-page.component';
 import { DashboardPageComponent } from './pages/admin/dashboard-page.component';
 import { UsersPageComponent } from './pages/admin/users-page.component';
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: '', component: HomePageComponent },
   {
     path: 'admin/login',
+    title: 'Sign in',
     canActivate: [guestGuard],
     component: LoginPageComponent,
   },
@@ -31,20 +33,21 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     component: AdminShellComponent,
     children: [
-      { path: '', component: DashboardPageComponent },
-      { path: 'projects', component: ProjectsPageComponent },
-      { path: 'services', component: ServicesPageComponent },
-      { path: 'service-orders', component: ServiceOrdersPageComponent },
-      { path: 'transactions', component: TransactionsPageComponent },
-      { path: 'payments', component: PaymentsPageComponent },
-      { path: 'blog', component: BlogPageComponent },
-      { path: 'products', component: ProductsPageComponent },
-      { path: 'categories', component: CategoriesPageComponent },
-      { path: 'messages', component: MessagesPageComponent },
-      { path: 'newsletter', component: NewsletterPageComponent },
-      { path: 'users', component: UsersPageComponent },
-      { path: 'settings', component: SettingsPageComponent },
+      { path: '', title: 'Dashboard', component: DashboardPageComponent },
+      { path: 'projects', title: 'Projects', component: ProjectsPageComponent },
+      { path: 'services', title: 'Services', component: ServicesPageComponent },
+      { path: 'service-orders', title: 'Service orders', component: ServiceOrdersPageComponent },
+      { path: 'transactions', title: 'Transactions', component: TransactionsPageComponent },
+      { path: 'payments', title: 'Payments', component: PaymentsPageComponent },
+      { path: 'blog', title: 'Blog', component: BlogPageComponent },
+      { path: 'products', title: 'Products', component: ProductsPageComponent },
+      { path: 'categories', title: 'Categories', component: CategoriesPageComponent },
+      { path: 'messages', title: 'Messages', component: MessagesPageComponent },
+      { path: 'newsletter', title: 'Newsletter', component: NewsletterPageComponent },
+      { path: 'users', title: 'Users', component: UsersPageComponent },
+      { path: 'settings', title: 'Settings', component: SettingsPageComponent },
+      { path: '**', title: 'Page not found', component: NotFoundPageComponent, data: { variant: 'admin' } },
     ],
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', title: 'Page not found', component: NotFoundPageComponent },
 ];

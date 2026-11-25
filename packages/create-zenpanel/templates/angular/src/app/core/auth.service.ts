@@ -27,6 +27,19 @@ export class AuthService {
     }
   }
 
+  /** Preview: update the signed-in admin's profile fields. */
+  updateProfile(patch: Partial<Pick<PublicAdmin, 'username' | 'email'>>): void {
+    const current = this.admin();
+    if (!current) return;
+    const next = { ...current, ...patch };
+    this.admin.set(next);
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+  }
+
   logout(): void {
     this.admin.set(null);
     try {

@@ -6,6 +6,7 @@ import { AuthService } from '@/app/core/auth.service';
 import { ThemeService } from '@/app/core/theme.service';
 import { isExternalUrl } from '@/app/core/admin-nav';
 import { IconComponent } from '@/app/shared/icon.component';
+import { firstError, validateLogin, type FieldErrors } from '@/app/lib/admin-forms';
 
 // Preview only. Do not prefill username or password in production.
 const DEMO_USERNAME = 'admin';
@@ -15,7 +16,7 @@ const DEMO_PASSWORD = 'admin';
   selector: 'app-login-page',
   imports: [FormsModule, RouterLink, IconComponent],
   template: `
-    <div class="admin-shell relative grid min-h-dvh w-full bg-white lg:grid-cols-2 dark:bg-gray-950">
+    <main class="admin-shell relative grid min-h-dvh w-full bg-white lg:grid-cols-2 dark:bg-gray-950">
       <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
         <button
           type="button"
@@ -60,7 +61,7 @@ const DEMO_PASSWORD = 'admin';
             </h1>
           </div>
 
-          <form class="mt-8 space-y-5" (ngSubmit)="onSubmit()">
+          <form class="mt-8 space-y-5" novalidate (ngSubmit)="onSubmit()">
             <div>
               <label for="admin-username" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Username</label
@@ -76,9 +77,15 @@ const DEMO_PASSWORD = 'admin';
                   autocomplete="username"
                   placeholder="Enter username"
                   [(ngModel)]="username"
+                  [attr.aria-invalid]="!!fieldErrors().username"
+                  [attr.aria-describedby]="fieldErrors().username ? 'admin-username-error' : null"
+                  [class.!border-error-500]="!!fieldErrors().username"
                   class="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                 />
               </div>
+              @if (fieldErrors().username) {
+                <p id="admin-username-error" class="mt-1.5 text-sm text-error-500">{{ fieldErrors().username }}</p>
+              }
             </div>
 
             <div>
@@ -96,21 +103,32 @@ const DEMO_PASSWORD = 'admin';
                   autocomplete="current-password"
                   placeholder="Enter password"
                   [(ngModel)]="password"
+                  [attr.aria-invalid]="!!fieldErrors().password"
+                  [attr.aria-describedby]="fieldErrors().password ? 'admin-password-error' : null"
+                  [class.!border-error-500]="!!fieldErrors().password"
                   class="h-11 w-full rounded-lg border border-gray-200 bg-white py-2 pr-11 pl-10 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                 />
                 <button
                   type="button"
-                  class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-0.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                  class="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
                   [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
                   (click)="showPassword.set(!showPassword())"
                 >
                   <app-icon [name]="showPassword() ? 'eye-off' : 'eye'" [size]="16" />
                 </button>
               </div>
+              @if (fieldErrors().password) {
+                <p id="admin-password-error" class="mt-1.5 text-sm text-error-500">{{ fieldErrors().password }}</p>
+              }
             </div>
 
             @if (error()) {
-              <p class="text-sm text-error-500">{{ error() }}</p>
+              <p
+                class="rounded-lg border border-error-500/30 bg-error-50 px-3 py-2.5 text-sm text-error-500 dark:bg-error-500/10"
+                role="alert"
+              >
+                {{ error() }}
+              </p>
             }
 
             <button
@@ -122,8 +140,11 @@ const DEMO_PASSWORD = 'admin';
             </button>
           </form>
 
-          <p class="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-            UI preview only - no real authentication.
+          <p
+            class="mt-8 rounded-lg border border-dashed border-gray-300 px-3 py-2.5 text-center text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400"
+          >
+            Demo preview - sign in with <strong class="font-semibold text-gray-700 dark:text-gray-200">admin</strong> /
+            <strong class="font-semibold text-gray-700 dark:text-gray-200">admin</strong>. No real authentication.
           </p>
         </div>
       </div>
@@ -152,7 +173,7 @@ const DEMO_PASSWORD = 'admin';
               <li class="flex items-center gap-3">
                 <span
                   class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200"
-                  >✓</span
+                  aria-hidden="true">✓</span
                 >
                 {{ item }}
               </li>
@@ -160,7 +181,7 @@ const DEMO_PASSWORD = 'admin';
           </ul>
         </div>
       </aside>
-    </div>
+    </main>
   `,
 })
 export class LoginPageComponent {
@@ -177,9 +198,17 @@ export class LoginPageComponent {
   readonly showPassword = signal(false);
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
+  readonly fieldErrors = signal<FieldErrors<'username' | 'password'>>({});
 
   async onSubmit(): Promise<void> {
     this.error.set(null);
+    const next = validateLogin(this.username, this.password);
+    this.fieldErrors.set(next);
+    const first = firstError(['username', 'password'] as const, next);
+    if (first) {
+      document.getElementById(`admin-${first}`)?.focus();
+      return;
+    }
     this.submitting.set(true);
     try {
       if (this.password !== DEMO_PASSWORD) {
