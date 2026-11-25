@@ -6,6 +6,12 @@
       // Restore deep links redirected by public/404.html (GitHub Pages SPA).
       (function (l) {
         if (l.search[1] === "/") {
+          // Pin the original directory so relative ./assets keep resolving
+          // after the URL is rewritten to the deep link below.
+          window.__VITE_BASE__ = l.pathname;
+          var base = document.createElement("base");
+          base.href = l.pathname;
+          document.head.appendChild(base);
           var decoded = l.search
             .slice(1)
             .split("&")
