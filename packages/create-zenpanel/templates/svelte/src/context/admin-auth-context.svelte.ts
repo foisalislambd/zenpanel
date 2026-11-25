@@ -40,6 +40,17 @@ export function createAdminAuth() {
     }
   }
 
+  /** Preview: update the signed-in admin's profile fields. */
+  function updateProfile(patch: Partial<Pick<PublicAdmin, "username" | "email">>) {
+    if (!admin) return;
+    admin = { ...admin, ...patch };
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(admin));
+    } catch {
+      // ignore
+    }
+  }
+
   const ctx = {
     get admin() {
       return admin;
@@ -47,6 +58,7 @@ export function createAdminAuth() {
     loading: false,
     login,
     logout,
+    updateProfile,
   };
 
   setContext(ADMIN_AUTH_KEY, ctx);

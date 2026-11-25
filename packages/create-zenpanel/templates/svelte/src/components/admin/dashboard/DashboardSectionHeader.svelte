@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3.5 dark:border-gray-800">
-  <h3 class="text-sm font-semibold text-gray-900 dark:text-white">{title}</h3>
+  <h2 class="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
   {#if trailing}
     {@render trailing()}
   {:else if href}

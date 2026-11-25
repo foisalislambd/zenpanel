@@ -5,16 +5,33 @@ export const SIDEBAR_WIDTH_EXPANDED = 260;
 export const SIDEBAR_WIDTH_COLLAPSED = 80;
 
 export const ADMIN_SIDEBAR_KEY = Symbol("admin-sidebar");
+const SIDEBAR_STORAGE_KEY = "zenpanel-sidebar";
+
+function readExpanded() {
+  try {
+    return localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "collapsed";
+  } catch {
+    return true;
+  }
+}
 
 export type AdminSidebarContext = ReturnType<typeof createAdminSidebar>;
 
 export function createAdminSidebar() {
   const isDesktop = createIsDesktop();
-  let isExpanded = $state(true);
+  let isExpanded = $state(readExpanded());
   let isMobileOpen = $state(false);
 
   const effectiveExpanded = $derived(isDesktop.current ? isExpanded : true);
   const effectiveMobileOpen = $derived(isDesktop.current ? false : isMobileOpen);
+
+  $effect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, isExpanded ? "expanded" : "collapsed");
+    } catch {
+      // ignore private-mode storage errors
+    }
+  });
 
   $effect(() => {
     document.body.style.overflow = effectiveMobileOpen ? "hidden" : "";

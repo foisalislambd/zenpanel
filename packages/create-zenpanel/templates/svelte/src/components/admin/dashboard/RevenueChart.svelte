@@ -128,6 +128,7 @@
       </div>
     {:else}
       <div
+        role="presentation"
         class="relative w-full"
         style:aspect-ratio="{WIDTH} / {HEIGHT}"
         onmouseleave={() => (active = null)}
@@ -201,6 +202,7 @@
               />
             {/if}
             <rect
+              role="presentation"
               x={Math.max(PAD.l, point.x - (series.length <= 1 ? model.innerW : model.innerW / (series.length - 1)) / 2)}
               y={PAD.t}
               width={Math.min(PAD.l + model.innerW, point.x + (series.length <= 1 ? model.innerW : model.innerW / (series.length - 1)) / 2) - Math.max(PAD.l, point.x - (series.length <= 1 ? model.innerW : model.innerW / (series.length - 1)) / 2)}

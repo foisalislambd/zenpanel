@@ -19,7 +19,7 @@
     if (enabled) onClick?.();
   }}
   disabled={!enabled}
-  title={enabled ? label : "Available after you connect your API"}
+  title={enabled ? undefined : "Available after you connect your API"}
   class="inline-flex h-9 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white {enabled
     ? 'bg-brand-500 shadow-sm shadow-brand-500/20 hover:bg-brand-600'
     : 'cursor-not-allowed bg-brand-500/50 text-white/90'}"

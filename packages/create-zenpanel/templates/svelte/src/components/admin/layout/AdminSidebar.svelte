@@ -67,7 +67,7 @@
         class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
         aria-label="Close menu"
       >
-        <X class="h-5 w-5" />
+        <X class="h-5 w-5" aria-hidden={true} />
       </button>
     {/if}
   </div>
@@ -93,6 +93,7 @@
         class="group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 {active ? 'bg-brand-500 text-white shadow-sm shadow-brand-500/20' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/8'} {!showLabels ? 'justify-center px-0' : ''}"
       >
         <Icon
+          aria-hidden={true}
           class="h-[18px] w-[18px] shrink-0 {active ? 'text-white' : 'text-gray-500 group-hover:text-gray-700 dark:text-gray-400'}"
         />
         {#if showLabels}
@@ -113,7 +114,7 @@
         class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 {!showLabels ? 'justify-center' : ''}"
         title={!showLabels ? "View site" : undefined}
       >
-        <ExternalLink class="h-5 w-5 shrink-0" />
+        <ExternalLink class="h-5 w-5 shrink-0" aria-hidden={true} />
         {#if showLabels}
           <span>View site</span>
         {/if}
@@ -121,10 +122,11 @@
     {:else}
       <RouterLink
         href={siteUrl}
+        onclick={() => sidebar.closeMobileSidebar()}
         class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 {!showLabels ? 'justify-center' : ''}"
         title={!showLabels ? "View site" : undefined}
       >
-        <ExternalLink class="h-5 w-5 shrink-0" />
+        <ExternalLink class="h-5 w-5 shrink-0" aria-hidden={true} />
         {#if showLabels}
           <span>View site</span>
         {/if}
@@ -137,12 +139,14 @@
         onclick={() => sidebar.toggleSidebar()}
         class="mt-2 flex w-full items-center gap-3 rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5 {!showLabels ? 'justify-center' : ''}"
         aria-label={sidebar.isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+        aria-expanded={sidebar.isExpanded}
+        title={sidebar.isExpanded ? undefined : "Expand sidebar"}
       >
         {#if sidebar.isExpanded}
-          <ChevronLeft class="h-5 w-5 shrink-0" />
+          <ChevronLeft class="h-5 w-5 shrink-0" aria-hidden={true} />
           <span>Collapse</span>
         {:else}
-          <ChevronRight class="h-5 w-5 shrink-0" />
+          <ChevronRight class="h-5 w-5 shrink-0" aria-hidden={true} />
         {/if}
       </button>
     {/if}

@@ -1,35 +1,37 @@
 <script lang="ts">
-  import { useAdminAuth } from "@/context/admin-auth-context.svelte";
-  import { navigate } from "@/lib/router.svelte";
-  import { ChevronDown, LogOut, Settings } from "lucide-svelte";
+  import { tick } from "svelte";
+  import { ChevronDown, LogOut, Settings, SlidersHorizontal } from "lucide-svelte";
   import RouterLink from "@/components/RouterLink.svelte";
+  import { useAdminAuth } from "@/context/admin-auth-context.svelte";
+  import { activateMenu } from "@/lib/dialog";
+  import { navigate } from "@/lib/router.svelte";
 
   const auth = useAdminAuth();
+  const menuId = $props.id();
   let open = $state(false);
   let containerRef = $state<HTMLDivElement | null>(null);
   let triggerRef = $state<HTMLButtonElement | null>(null);
-  const menuId = `admin-user-menu-${Math.random().toString(36).slice(2)}`;
+  let menuRef = $state<HTMLDivElement | null>(null);
 
   $effect(() => {
     function handleClick(e: MouseEvent) {
-      if (containerRef && !containerRef.contains(e.target as Node)) {
-        open = false;
-      }
+      if (containerRef && !containerRef.contains(e.target as Node)) open = false;
     }
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        open = false;
-        triggerRef?.focus();
-      }
-    }
-
     document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => document.removeEventListener("mousedown", handleClick);
+  });
+
+  $effect(() => {
+    if (!open || !menuRef) return;
+    let release: (() => void) | null = null;
+    const el = menuRef;
+    void tick().then(() => {
+      release = activateMenu(el, (restoreFocus) => {
+        open = false;
+        if (restoreFocus) triggerRef?.focus();
+      });
+    });
+    return () => release?.();
   });
 
   function handleLogout() {
@@ -37,6 +39,9 @@
     auth.logout();
     navigate("/admin/login", { replace: true });
   }
+
+  const itemClass =
+    "flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5";
 </script>
 
 <div class="relative" bind:this={containerRef}>
@@ -44,18 +49,17 @@
     bind:this={triggerRef}
     type="button"
     onclick={() => (open = !open)}
-    class="flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1.5 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
+    class="flex h-9 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
     aria-expanded={open}
     aria-haspopup="menu"
-    aria-controls={menuId}
+    aria-controls={open ? menuId : undefined}
+    aria-label="Account menu for {auth.admin?.username ?? 'admin'}"
   >
     <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white">
       {auth.admin?.username?.charAt(0)?.toUpperCase() ?? "A"}
     </span>
     <span class="hidden min-w-0 text-left md:block">
-      <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">
-        {auth.admin?.username ?? "admin"}
-      </span>
+      <span class="block truncate text-sm font-medium text-gray-900 dark:text-white">{auth.admin?.username ?? "admin"}</span>
     </span>
     <ChevronDown
       class="hidden h-4 w-4 shrink-0 text-gray-500 transition md:block {open ? 'rotate-180' : ''}"
@@ -65,29 +69,30 @@
 
   {#if open}
     <div
+      bind:this={menuRef}
       id={menuId}
       role="menu"
+      aria-label="Account"
       class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
     >
-      <div class="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
-        <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-          {auth.admin?.username}
-        </p>
+      <div class="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+        <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">{auth.admin?.username}</p>
+        <p class="truncate text-xs text-gray-500 dark:text-gray-400">{auth.admin?.email}</p>
       </div>
-      <RouterLink
-        href="/admin/settings"
-        role="menuitem"
-        onclick={() => (open = false)}
-        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
-      >
+      <RouterLink href="/admin/settings" role="menuitem" class={itemClass} onclick={() => (open = false)}>
         <Settings class="h-4 w-4" aria-hidden={true} />
-        Settings
+        Account settings
       </RouterLink>
+      <RouterLink href="/admin/settings?tab=preferences" role="menuitem" class={itemClass} onclick={() => (open = false)}>
+        <SlidersHorizontal class="h-4 w-4" aria-hidden={true} />
+        Preferences
+      </RouterLink>
+      <div class="my-1 h-px bg-gray-100 dark:bg-gray-800" role="separator"></div>
       <button
         type="button"
         role="menuitem"
-        onclick={handleLogout}
         class="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-error-500 hover:bg-error-50 focus-visible:bg-error-50 focus-visible:outline-none dark:hover:bg-error-500/10 dark:focus-visible:bg-error-500/10"
+        onclick={handleLogout}
       >
         <LogOut class="h-4 w-4" aria-hidden={true} />
         Sign out

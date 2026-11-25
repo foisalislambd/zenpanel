@@ -5,9 +5,11 @@
   const pendingTitle = "Available after you connect your API";
 
   const btnBase =
-    "flex items-center justify-center rounded-lg text-gray-400 transition-colors";
+    "flex items-center justify-center rounded-lg text-gray-500 transition-colors dark:text-gray-400";
   const btnEnabled =
     "hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200";
+  const btnDanger =
+    "hover:bg-error-50 hover:text-error-500 dark:hover:bg-error-500/15 dark:hover:text-error-500";
   const btnDisabled = "cursor-not-allowed opacity-70";
 
   type Props = {
@@ -37,12 +39,13 @@
     label: string;
     icon: LucideIcon;
     onClick?: () => void;
+    danger?: boolean;
   };
 
   const actions = $derived<Action[]>([
     { label: `View ${itemLabel}`, icon: Eye, onClick: onView },
     { label: `Edit ${itemLabel}`, icon: Pencil, onClick: onEdit },
-    { label: `Delete ${itemLabel}`, icon: Trash2, onClick: onDelete },
+    { label: `Delete ${itemLabel}`, icon: Trash2, onClick: onDelete, danger: true },
   ]);
 
   function isEnabled(onClick?: () => void) {
@@ -60,9 +63,9 @@
         if (enabled) action.onClick?.();
       }}
       disabled={!enabled}
-      title={enabled ? action.label : pendingTitle}
+      title={enabled ? undefined : pendingTitle}
       aria-label={action.label}
-      class="{btnBase} {dim} {enabled ? btnEnabled : btnDisabled}"
+      class="{btnBase} {dim} {enabled ? (action.danger ? btnDanger : btnEnabled) : btnDisabled}"
     >
       <Icon class={iconSize} aria-hidden={true} />
     </button>

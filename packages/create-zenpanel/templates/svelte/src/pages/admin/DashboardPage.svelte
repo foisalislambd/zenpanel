@@ -6,7 +6,8 @@
   import RecentUsersTable from "@/components/admin/dashboard/RecentUsersTable.svelte";
   import RevenueChart from "@/components/admin/dashboard/RevenueChart.svelte";
   import StatsCards from "@/components/admin/dashboard/StatsCards.svelte";
-  import AdminLoading from "@/components/admin/ui/AdminLoading.svelte";
+  import AdminDashboardSkeleton from "@/components/admin/ui/AdminDashboardSkeleton.svelte";
+  import AdminErrorState from "@/components/admin/ui/AdminErrorState.svelte";
   import { registerAdminChatPageContext } from "@/hooks/use-admin-chat-page-context.svelte";
   import {
     previewFetchActivity,
@@ -67,21 +68,27 @@
 
   let data = $state<DashboardData | null>(null);
   let loading = $state(true);
-  let error = $state<unknown>(null);
+  let error = $state<string | null>(null);
+  let attempt = $state(0);
 
   $effect(() => {
+    void attempt;
+    let cancelled = false;
     loading = true;
     error = null;
     fetchDashboardData()
       .then((result) => {
-        data = result;
+        if (!cancelled) data = result;
       })
       .catch((err) => {
-        error = err;
+        if (!cancelled) error = err instanceof Error ? err.message : "Failed to load dashboard";
       })
       .finally(() => {
-        loading = false;
+        if (!cancelled) loading = false;
       });
+    return () => {
+      cancelled = true;
+    };
   });
 
   registerAdminChatPageContext(() => ({
@@ -109,11 +116,9 @@
 </script>
 
 {#if loading}
-  <AdminLoading message="Loading dashboard…" />
+  <AdminDashboardSkeleton />
 {:else if error}
-  <div class="admin-card admin-card-body text-sm text-error-500">
-    {error instanceof Error ? error.message : "Failed to load dashboard"}
-  </div>
+  <AdminErrorState title="Couldn't load the dashboard" message={error} onRetry={() => attempt++} />
 {:else if data}
   <div class="admin-content space-y-5">
     <DashboardWelcome />

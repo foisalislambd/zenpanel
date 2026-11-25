@@ -25,6 +25,7 @@ export type AdminRouteId =
   | "admin-newsletter"
   | "admin-users"
   | "admin-settings"
+  | "admin-not-found"
   | "not-found";
 
 export type MatchedRoute = {
@@ -53,7 +54,7 @@ export function matchRoute(pathname: string): MatchedRoute {
   const path = normalizePath(pathname);
   if (path === "/") return { id: "home", pathname: path };
   if (path.startsWith("/admin")) {
-    const id = ADMIN_ROUTES[path] ?? "not-found";
+    const id = ADMIN_ROUTES[path] ?? "admin-not-found";
     return { id, pathname: path };
   }
   return { id: "not-found", pathname: path };
@@ -75,29 +76,42 @@ export function isAdminDashboardRoute(pathname: string): boolean {
 let pathname = $state(
   typeof window !== "undefined" ? normalizePath(window.location.pathname) : "/",
 );
+let search = $state(typeof window !== "undefined" ? window.location.search : "");
+
+function syncFromLocation() {
+  pathname = normalizePath(window.location.pathname);
+  search = window.location.search;
+}
 
 export function getPathname() {
   return pathname;
 }
 
+/** Navigate to a path (query string and hash allowed). */
 export function navigate(path: string, options: NavigateOptions = {}) {
-  const next = normalizePath(path);
-  if (normalizePath(window.location.pathname) === next) {
-    pathname = next;
-    return;
+  const url = new URL(path, window.location.href);
+  const next = `${url.pathname}${url.search}${url.hash}`;
+  const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (current !== next) {
+    if (options.replace) window.history.replaceState({}, "", next);
+    else window.history.pushState({}, "", next);
   }
-  if (options.replace) {
-    window.history.replaceState({}, "", path);
-  } else {
-    window.history.pushState({}, "", path);
-  }
-  pathname = next;
+  syncFromLocation();
+}
+
+/** Current query string as URLSearchParams (reactive). */
+export function getSearchParams() {
+  return new URLSearchParams(search);
+}
+
+/** Replace the query string, keeping the current path. */
+export function setSearchParams(params: Record<string, string> | URLSearchParams, options: NavigateOptions = { replace: true }) {
+  const qs = new URLSearchParams(params).toString();
+  navigate(`${window.location.pathname}${qs ? `?${qs}` : ""}`, options);
 }
 
 if (typeof window !== "undefined") {
-  window.addEventListener("popstate", () => {
-    pathname = normalizePath(window.location.pathname);
-  });
+  window.addEventListener("popstate", syncFromLocation);
 }
 
 export function usePathname() {
@@ -107,6 +121,9 @@ export function usePathname() {
     },
     get route() {
       return matchRoute(pathname);
+    },
+    get search() {
+      return search;
     },
   };
 }

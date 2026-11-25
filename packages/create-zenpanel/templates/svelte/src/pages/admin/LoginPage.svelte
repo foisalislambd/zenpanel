@@ -6,9 +6,9 @@
   const { brand } = adminConfig;
 </script>
 
-<div class="relative grid min-h-dvh w-full lg:grid-cols-2">
-  <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
-    <AdminThemeToggle />
+<main class="relative grid min-h-dvh w-full lg:grid-cols-2">
+  <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6 lg:right-auto lg:left-[calc(50%-3.5rem)]">
+    <AdminThemeToggle class="bg-white dark:bg-gray-900" />
   </div>
   <AdminLoginForm />
   <div class="relative hidden min-h-dvh flex-col items-center justify-center overflow-hidden bg-brand-950 px-8 py-12 text-center sm:px-10 lg:flex">
@@ -31,7 +31,7 @@
       <ul class="mx-auto mt-8 w-fit space-y-3 text-left text-sm text-brand-100/85">
         {#each brand.loginFeatures as item}
           <li class="flex items-center gap-3">
-            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200">
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200" aria-hidden="true">
               ✓
             </span>
             {item}
@@ -40,4 +40,4 @@
       </ul>
     </div>
   </div>
-</div>
+</main>

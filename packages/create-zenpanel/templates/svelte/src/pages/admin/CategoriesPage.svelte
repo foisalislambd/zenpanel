@@ -3,4 +3,11 @@
   import { adminCategories } from "@/lib/admin-data/resources";
 </script>
 
-<ResourcePage title="Categories" resourceLabel="category" items={adminCategories} />
+<ResourcePage
+  title="Categories"
+  resourceLabel="category"
+  items={adminCategories}
+  searchPlaceholder="Search title, items..."
+  metaLabel="Items"
+  statusLabels={{ published: "Visible", draft: "Hidden" }}
+/>

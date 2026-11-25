@@ -3,4 +3,9 @@
   import { adminBlogPosts } from "@/lib/admin-data/resources";
 </script>
 
-<ResourcePage title="Blog" resourceLabel="post" items={adminBlogPosts} />
+<ResourcePage
+  title="Blog"
+  resourceLabel="post"
+  items={adminBlogPosts}
+  searchPlaceholder="Search title, topic..."
+/>

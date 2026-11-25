@@ -18,16 +18,24 @@
   import NewsletterPage from "@/pages/admin/NewsletterPage.svelte";
   import UsersPage from "@/pages/admin/UsersPage.svelte";
   import SettingsPage from "@/pages/admin/SettingsPage.svelte";
-  import { navigate, usePathname } from "@/lib/router.svelte";
+  import NotFoundPage from "@/pages/admin/NotFoundPage.svelte";
+  import { matchAdminNavItem } from "@/lib/admin-nav";
+  import { setDocumentTitle } from "@/lib/preferences";
+  import { usePathname } from "@/lib/router.svelte";
 
   const pathname = usePathname();
   const route = $derived(pathname.route);
   const isAdminRoute = $derived(route.id === "admin-login" || route.id.startsWith("admin-"));
 
+  /** "Users · ZenPanel" - from the matching nav item, login or 404. */
   $effect(() => {
-    if (route.id === "not-found") {
-      navigate("/", { replace: true });
-    }
+    const title =
+      route.id === "admin-login"
+        ? "Sign in"
+        : route.id === "not-found" || route.id === "admin-not-found"
+          ? "Page not found"
+          : matchAdminNavItem(route.pathname)?.name;
+    setDocumentTitle(title);
   });
 </script>
 
@@ -71,9 +79,13 @@
             <UsersPage />
           {:else if route.id === "admin-settings"}
             <SettingsPage />
+          {:else}
+            <NotFoundPage variant="admin" />
           {/if}
         </AdminDashboardLayout>
       {/if}
     </AdminRootLayout>
+  {:else}
+    <NotFoundPage />
   {/if}
 </ThemeProvider>

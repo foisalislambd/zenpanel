@@ -1,35 +1,40 @@
 <script lang="ts">
   import AdminUsersPage from "@/components/admin/users/AdminUsersPage.svelte";
-  import AdminLoading from "@/components/admin/ui/AdminLoading.svelte";
+  import AdminErrorState from "@/components/admin/ui/AdminErrorState.svelte";
+  import AdminTableSkeleton from "@/components/admin/ui/AdminTableSkeleton.svelte";
   import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 
   let users = $state<PortalUserRow[]>([]);
   let loading = $state(true);
   let error = $state<string | null>(null);
+  let attempt = $state(0);
 
   $effect(() => {
+    void attempt;
+    let cancelled = false;
     loading = true;
     error = null;
     previewFetchUsers()
       .then((res) => {
-        users = res.users;
+        if (!cancelled) users = res.users;
       })
       .catch((err) => {
-        error = err instanceof Error ? err.message : "Failed to load users";
+        if (!cancelled) error = err instanceof Error ? err.message : "Failed to load users";
       })
       .finally(() => {
-        loading = false;
+        if (!cancelled) loading = false;
       });
+    return () => {
+      cancelled = true;
+    };
   });
 </script>
 
 {#if loading}
-  <AdminLoading message="Loading users…" />
+  <AdminTableSkeleton label="Loading users…" />
 {:else if error}
   <div class="admin-content">
-    <div class="admin-card admin-card-body text-sm text-error-500">
-      {error}
-    </div>
+    <AdminErrorState title="Couldn't load users" message={error} onRetry={() => attempt++} />
   </div>
 {:else}
   <AdminUsersPage {users} />

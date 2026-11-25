@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import AdminToastHost from "@/components/admin/ui/AdminToastHost.svelte";
   import { createAdminAuth } from "@/context/admin-auth-context.svelte";
   import { createAdminChatPanel } from "@/context/admin-chat-panel-context.svelte";
   import { createAdminSidebar } from "@/context/admin-sidebar-context.svelte";
@@ -14,4 +15,5 @@
 
 <div class="admin-shell min-h-dvh w-full">
   {@render children?.()}
+  <AdminToastHost />
 </div>

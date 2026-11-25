@@ -3,4 +3,11 @@
   import { adminProducts } from "@/lib/admin-data/resources";
 </script>
 
-<ResourcePage title="Products" resourceLabel="product" items={adminProducts} />
+<ResourcePage
+  title="Products"
+  resourceLabel="product"
+  items={adminProducts}
+  searchPlaceholder="Search title, price..."
+  metaLabel="Price"
+  statusLabels={{ published: "Active" }}
+/>
