@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#465fff" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Categories — ZenPanel</title>
+    <title>Categories Â· ZenPanel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,6 +17,7 @@
     <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
   </head>
   <body class="admin-shell">
+    <noscript>ZenPanel needs JavaScript enabled to run.</noscript>
     <div id="layout-root"></div>
     <div id="page-content" hidden></div>
     <script type="module">
@@ -26,6 +29,12 @@
       renderResourcePage(document.getElementById("page-content"), {
         title: "Categories",
         resourceLabel: "category",
+        searchPlaceholder: "Search title, items...",
+        metaLabel: "Items",
+        statusLabels: {
+          published: "Visible",
+          draft: "Hidden"
+        },
         items: adminCategories,
       });
     </script>

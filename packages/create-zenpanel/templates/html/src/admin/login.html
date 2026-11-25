@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#465fff" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign in - ZenPanel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +17,8 @@
     <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
   </head>
   <body class="admin-shell bg-white dark:bg-gray-950">
-    <div class="relative grid min-h-dvh w-full lg:grid-cols-2">
+    <noscript>ZenPanel needs JavaScript enabled to run.</noscript>
+    <main class="relative grid min-h-dvh w-full lg:grid-cols-2">
       <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
         <button
           type="button"
@@ -23,7 +26,7 @@
           class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5"
           aria-label="Switch to dark mode"
         >
-          <i data-lucide="moon" class="h-5 w-5"></i>
+          <i aria-hidden="true" data-lucide="moon" class="h-5 w-5"></i>
         </button>
       </div>
 
@@ -33,7 +36,7 @@
             href="/"
             class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            <i aria-hidden="true" data-lucide="arrow-left" class="h-4 w-4"></i>
             Back to site
           </a>
 
@@ -49,7 +52,7 @@
             </h1>
           </div>
 
-          <form id="login-form" class="mt-8 space-y-5">
+          <form id="login-form" novalidate class="mt-8 space-y-5">
             <div>
               <label
                 for="admin-username"
@@ -102,12 +105,12 @@
                   class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-300"
                   aria-label="Show password"
                 >
-                  <i data-lucide="eye" class="h-4 w-4"></i>
+                  <i aria-hidden="true" data-lucide="eye" class="h-4 w-4"></i>
                 </button>
               </div>
             </div>
 
-            <p id="login-error" class="text-sm text-error-500" hidden></p>
+            <p id="login-error" role="alert" class="rounded-lg border border-error-500/30 bg-error-50 px-3 py-2.5 text-sm text-error-500 dark:bg-error-500/10" hidden></p>
 
             <button
               type="submit"
@@ -118,9 +121,10 @@
             </button>
           </form>
 
-          <p class="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
-            UI preview only - no real authentication.
-          </p>
+          <p class="mt-8 rounded-lg border border-dashed border-gray-300 px-3 py-2.5 text-center text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+          Demo preview - sign in with <strong class="font-semibold text-gray-700 dark:text-gray-200">admin</strong> /
+          <strong class="font-semibold text-gray-700 dark:text-gray-200">admin</strong>. No real authentication.
+        </p>
         </div>
       </div>
 
@@ -158,7 +162,7 @@
           ></ul>
         </div>
       </div>
-    </div>
+    </main>
     <script type="module" src="/js/login.js"></script>
   </body>
 </html>

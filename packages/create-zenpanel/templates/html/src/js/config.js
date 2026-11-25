@@ -62,3 +62,7 @@ export const adminNavItems = [
 
 export const DEMO_USERNAME = "admin";
 export const DEMO_PASSWORD = "admin";
+
+/** Shown on Settings → Branding. */
+export const CONFIG_FILE = "src/js/config.js";
+export const STYLES_FILE = "src/css/input.css";

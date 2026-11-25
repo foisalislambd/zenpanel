@@ -28,6 +28,19 @@ export function login(username = "admin") {
   return admin;
 }
 
+/** Preview: update the signed-in admin's profile fields. */
+export function updateProfile(patch) {
+  const current = getAdmin();
+  if (!current) return null;
+  const next = { ...current, ...patch };
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // ignore
+  }
+  return next;
+}
+
 export function logout() {
   try {
     sessionStorage.removeItem(STORAGE_KEY);
