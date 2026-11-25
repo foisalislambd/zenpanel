@@ -11,6 +11,6 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   import { mountAdminLayout } from "../../scripts/layout.js";
   import { renderSettingsPage } from "../../scripts/resource.js";
 
-  mountAdminLayout({ title: "Settings" });
-  renderSettingsPage(document.getElementById("page-content"));
+  const layout = mountAdminLayout({ title: "Settings" });
+  renderSettingsPage(document.getElementById("page-content"), { onThemeChange: () => layout?.refresh() });
 </script>

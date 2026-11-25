@@ -2,8 +2,11 @@ import { DEMO_PASSWORD, DEMO_USERNAME, adminConfig } from "./config.js";
 import { login, requireGuest } from "./auth.js";
 import { initTheme, toggleTheme, getTheme } from "./theme.js";
 import { escapeHtml, refreshIcons } from "./utils.js";
+import { firstError, validateLogin } from "./lib/admin-forms.js";
+import { setDocumentTitle } from "./lib/preferences.js";
 
 initTheme();
+setDocumentTitle("Sign in");
 
 if (!requireGuest()) {
   // Already signed in - redirect in progress.
@@ -32,7 +35,7 @@ if (!requireGuest()) {
       .map(
         (f) => `
         <li class="flex items-center gap-3">
-          <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200">✓</span>
+          <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200" aria-hidden="true">✓</span>
           ${escapeHtml(f)}
         </li>
       `,
@@ -45,6 +48,28 @@ if (!requireGuest()) {
   if (passwordInput) passwordInput.value = DEMO_PASSWORD;
 
   let showPassword = false;
+
+  const errorInputClass = ["border-error-500", "focus:border-error-500", "focus:ring-error-500/20", "dark:border-error-500"];
+  form?.setAttribute("novalidate", "");
+
+  /** Inline field errors (`#admin-username-error`, `#admin-password-error`). */
+  function setFieldError(input, message) {
+    if (!input) return;
+    const id = `${input.id}-error`;
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("p");
+      el.id = id;
+      el.className = "mt-1.5 text-sm text-error-500";
+      input.closest(".relative")?.after(el);
+    }
+    el.textContent = message ?? "";
+    el.hidden = !message;
+    input.setAttribute("aria-invalid", message ? "true" : "false");
+    if (message) input.setAttribute("aria-describedby", id);
+    else input.removeAttribute("aria-describedby");
+    errorInputClass.forEach((c) => input.classList.toggle(c, Boolean(message)));
+  }
 
   function syncThemeButton() {
     if (!themeBtn) return;
@@ -82,8 +107,16 @@ if (!requireGuest()) {
     e.preventDefault();
     if (errorEl) errorEl.hidden = true;
 
-    const username = usernameInput?.value.trim() || DEMO_USERNAME;
+    const username = usernameInput?.value.trim() ?? "";
     const password = passwordInput?.value ?? "";
+    const errors = validateLogin(username, password);
+    setFieldError(usernameInput, errors.username);
+    setFieldError(passwordInput, errors.password);
+    const first = firstError(["username", "password"], errors);
+    if (first) {
+      document.getElementById(`admin-${first}`)?.focus();
+      return;
+    }
 
     if (password !== DEMO_PASSWORD) {
       if (errorEl) {

@@ -1,3 +1,5 @@
+import { adminNavItems } from "./config.js";
+
 export function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -49,7 +51,7 @@ export function formatToday() {
 }
 
 export function icon(name, className = "h-[22px] w-[22px] shrink-0") {
-  return `<i data-lucide="${escapeHtml(name)}" class="${escapeHtml(className)}"></i>`;
+  return `<i data-lucide="${escapeHtml(name)}" class="${escapeHtml(className)}" aria-hidden="true"></i>`;
 }
 
 export function refreshIcons() {
@@ -62,7 +64,7 @@ export function emptyState({ iconName, title, description }) {
       <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
         ${icon(iconName, "h-7 w-7 text-gray-400 dark:text-gray-500")}
       </div>
-      <h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">${escapeHtml(title)}</h3>
+      <h2 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">${escapeHtml(title)}</h2>
       <p class="mt-2 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
         ${escapeHtml(description)}
       </p>
@@ -71,15 +73,25 @@ export function emptyState({ iconName, title, description }) {
 }
 
 
-export function pageHeader(title, actions = "") {
+/** Page title with breadcrumbs (Dashboard › Section › Page) and optional action buttons. */
+export function pageHeader(title, actions = "", section = "") {
+  const crumb = (label) => `${icon("chevron-right", "h-3.5 w-3.5 opacity-60")}<li>${escapeHtml(label)}</li>`;
   return `
-    <div class="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
+    <div class="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="min-w-0 flex-1">
+        <nav aria-label="Breadcrumb" class="mb-1.5">
+          <ol class="flex flex-wrap items-center gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+            <li><a href="/admin" class="rounded hover:text-gray-900 dark:hover:text-white">Dashboard</a></li>
+            ${section && section !== "Overview" ? crumb(section) : ""}
+            ${icon("chevron-right", "h-3.5 w-3.5 opacity-60")}
+            <li aria-current="page" class="text-gray-700 dark:text-gray-200">${escapeHtml(title)}</li>
+          </ol>
+        </nav>
         <h1 class="truncate text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           ${escapeHtml(title)}
         </h1>
       </div>
-      ${actions}
+      ${actions ? `<div class="flex shrink-0 flex-wrap items-center gap-2">${actions}</div>` : ""}
     </div>
   `;
 }
@@ -88,7 +100,7 @@ export function sectionHeader({ title, href, linkLabel = "View all", trailing = 
   const hasTrailing = Boolean(trailing);
   return `
     <div class="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-3.5 dark:border-gray-800">
-      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">${escapeHtml(title)}</h3>
+      <h2 class="text-sm font-semibold text-gray-900 dark:text-white">${escapeHtml(title)}</h2>
       ${hasTrailing ? trailing : ""}
       ${
         href && !hasTrailing
@@ -97,4 +109,9 @@ export function sectionHeader({ title, href, linkLabel = "View all", trailing = 
       }
     </div>
   `;
+}
+
+/** Nav section ("Work", "Finance"…) for a page title, used by breadcrumbs. */
+export function navSectionFor(title) {
+  return adminNavItems.find((item) => item.name === title)?.section ?? "";
 }

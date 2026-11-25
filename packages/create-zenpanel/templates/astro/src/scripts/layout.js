@@ -2,8 +2,12 @@ import { adminConfig, adminNavItems } from "./config.js";
 import { requireAuth, logout, getAdmin } from "./auth.js";
 import { initTheme, toggleTheme, getTheme } from "./theme.js";
 import { escapeHtml, icon, refreshIcons } from "./utils.js";
+import { activateMenu } from "./lib/dialog.js";
+import { isMacPlatform } from "./lib/command-palette.js";
+import { setDocumentTitle } from "./lib/preferences.js";
+import { toggleCommandPalette } from "./palette.js";
 
-const SIDEBAR_KEY = "zenpanel-sidebar-expanded";
+const SIDEBAR_KEY = "zenpanel-sidebar";
 const CHAT_KEY = "zenpanel-chat-open";
 
 function isDesktop() {
@@ -39,6 +43,7 @@ function groupNavItems(items) {
 export function mountAdminLayout(options = {}) {
   const { title = "Admin", fullBleed = false } = options;
   initTheme();
+  setDocumentTitle(title);
   const admin = requireAuth();
   if (!admin) return null;
 
@@ -67,7 +72,11 @@ export function mountAdminLayout(options = {}) {
     return expanded ? 260 : 80;
   }
 
-  function closeUserMenu() {
+  let releaseMenu = null;
+
+  function closeUserMenu(restoreFocus = false) {
+    releaseMenu?.();
+    releaseMenu = null;
     userMenuOpen = false;
     const menu = layoutRoot.querySelector("[data-user-menu]");
     if (menu) menu.hidden = true;
@@ -75,6 +84,7 @@ export function mountAdminLayout(options = {}) {
     if (trigger) trigger.setAttribute("aria-expanded", "false");
     const chevron = layoutRoot.querySelector("[data-user-chevron]");
     if (chevron) chevron.classList.remove("rotate-180");
+    if (restoreFocus) trigger?.focus();
   }
 
   function onAction(action) {
@@ -113,14 +123,27 @@ export function mountAdminLayout(options = {}) {
       paintChrome();
       return;
     }
+    if (action === "open-palette") {
+      toggleCommandPalette({ onThemeChange: paintChrome });
+      return;
+    }
+    if (action === "skip-to-main") {
+      layoutRoot.querySelector("#admin-main")?.focus();
+      return;
+    }
     if (action === "toggle-user-menu") {
-      userMenuOpen = !userMenuOpen;
+      if (userMenuOpen) {
+        closeUserMenu(true);
+        return;
+      }
+      userMenuOpen = true;
       const menu = layoutRoot.querySelector("[data-user-menu]");
       if (menu) menu.hidden = !userMenuOpen;
       const trigger = layoutRoot.querySelector("[data-action='toggle-user-menu']");
       if (trigger) trigger.setAttribute("aria-expanded", String(userMenuOpen));
       const chevron = layoutRoot.querySelector("[data-user-chevron]");
       if (chevron) chevron.classList.toggle("rotate-180", userMenuOpen);
+      if (menu) releaseMenu = activateMenu(menu, (restore) => closeUserMenu(restore));
       return;
     }
     if (action === "logout") {
@@ -130,11 +153,17 @@ export function mountAdminLayout(options = {}) {
   }
 
   function bindActions(scope) {
+    scope.querySelectorAll("[data-close-mobile]").forEach((el) => {
+      el.addEventListener("click", () => {
+        if (mobileOpen) onAction("close-mobile");
+      });
+    });
     scope.querySelectorAll("[data-action]").forEach((el) => {
       if (el.dataset.bound === "1") return;
       el.dataset.bound = "1";
       el.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (el.tagName === "A") e.preventDefault();
         onAction(el.getAttribute("data-action"));
       });
     });
@@ -227,6 +256,7 @@ export function mountAdminLayout(options = {}) {
           href="${escapeHtml(brand.siteUrl)}"
           target="_blank"
           rel="noreferrer"
+          data-close-mobile
           class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels ? "justify-center" : ""}"
           title="${!showLabels ? "View site" : ""}"
         >
@@ -240,6 +270,8 @@ export function mountAdminLayout(options = {}) {
                 data-action="toggle-sidebar"
                 class="mt-2 flex w-full items-center gap-3 rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5 ${!showLabels ? "justify-center" : ""}"
                 aria-label="${expanded ? "Collapse sidebar" : "Expand sidebar"}"
+                aria-expanded="${expanded}"
+                title="${expanded ? "" : "Expand sidebar"}"
               >
                 ${
                   expanded
@@ -283,23 +315,28 @@ export function mountAdminLayout(options = {}) {
         </a>
 
         <div class="hidden flex-1 lg:block lg:max-w-lg">
-          <label class="relative block">
-            ${icon("search", "pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400")}
-            <input
-              type="search"
-              disabled
-              placeholder="Search"
-              class="h-10 w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 py-2 pr-4 pl-10 text-sm text-gray-500 placeholder:text-gray-400 dark:border-gray-800 dark:bg-white/5 dark:text-gray-500"
-              aria-label="Search"
-              aria-describedby="admin-search-hint"
-            />
-            <span id="admin-search-hint" class="sr-only">
-              Global search will be available after you connect your backend API.
-            </span>
-          </label>
+          <button
+            type="button"
+            data-action="open-palette"
+            class="flex h-10 w-full items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 pr-2 pl-3 text-left text-sm text-gray-500 transition hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
+            aria-label="Search pages and actions"
+            aria-keyshortcuts="${isMacPlatform ? "Meta+K" : "Control+K"}"
+          >
+            ${icon("search", "h-4 w-4 shrink-0 text-gray-400")}
+            <span class="flex-1 truncate">Search pages and actions…</span>
+            <kbd class="rounded-md border border-gray-200 bg-white px-1.5 py-0.5 font-mono text-[11px] font-medium text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">${isMacPlatform ? "⌘" : "Ctrl"} K</kbd>
+          </button>
         </div>
 
         <div class="ml-auto flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            data-action="open-palette"
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 lg:hidden"
+            aria-label="Search pages and actions"
+          >
+            ${icon("search", "h-5 w-5")}
+          </button>
           <button
             type="button"
             data-action="toggle-chat"
@@ -311,7 +348,7 @@ export function mountAdminLayout(options = {}) {
             aria-label="Toggle AI assistant"
             aria-expanded="${chatOpen}"
           >
-            ${icon("panel-right-open", "h-4 w-4")}
+            ${icon("sparkles", "h-4 w-4")}
             <span class="hidden sm:inline">AI</span>
           </button>
 
@@ -331,7 +368,8 @@ export function mountAdminLayout(options = {}) {
               class="flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1.5 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
               aria-expanded="${userMenuOpen}"
               aria-haspopup="menu"
-              aria-controls="admin-user-menu"
+              aria-controls="zp-account-menu"
+              aria-label="Account menu for ${escapeHtml(admin.username ?? "admin")}"
             >
               <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white">
                 ${escapeHtml(initial)}
@@ -345,7 +383,8 @@ export function mountAdminLayout(options = {}) {
             </button>
 
             <div
-              id="admin-user-menu"
+              id="zp-account-menu"
+              aria-label="Account"
               data-user-menu
               role="menu"
               class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
@@ -357,14 +396,26 @@ export function mountAdminLayout(options = {}) {
               <a
                 href="/admin/settings"
                 role="menuitem"
+                tabindex="-1"
                 class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5"
               >
                 ${icon("settings", "h-4 w-4")}
-                Settings
+                Account settings
               </a>
+              <a
+                href="/admin/settings?tab=preferences"
+                role="menuitem"
+                tabindex="-1"
+                class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5"
+              >
+                ${icon("sliders-horizontal", "h-4 w-4")}
+                Preferences
+              </a>
+              <div class="my-1 h-px bg-gray-100 dark:bg-gray-800" role="separator"></div>
               <button
                 type="button"
                 role="menuitem"
+                tabindex="-1"
                 data-action="logout"
                 class="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-error-500 hover:bg-error-50 focus-visible:bg-error-50 focus-visible:outline-none dark:hover:bg-error-500/10"
               >
@@ -476,6 +527,7 @@ export function mountAdminLayout(options = {}) {
 
   if (!mounted) {
     layoutRoot.innerHTML = `
+      <a href="#admin-main" data-action="skip-to-main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[80] focus:rounded-lg focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">Skip to main content</a>
       <div class="admin-shell admin-main flex h-dvh w-full overflow-hidden">
         <div class="hidden shrink-0 transition-[width] duration-300 ease-in-out lg:block" data-spacer aria-hidden="true"></div>
 
@@ -500,8 +552,10 @@ export function mountAdminLayout(options = {}) {
               class="admin-topbar sticky top-0 z-30 w-full bg-white dark:bg-gray-900"
             ></header>
             <main
+              id="admin-main"
+              tabindex="-1"
               data-main
-              class="admin-scrollbar min-h-0 flex-1 ${fullBleed ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden"}"
+              class="admin-scrollbar min-h-0 flex-1 focus:outline-none ${fullBleed ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden"}"
             >
               <div class="${fullBleed ? "flex h-full min-h-0 flex-col px-0" : "w-full px-3 py-4 sm:px-4 sm:py-5"}">
                 <div class="${fullBleed ? "min-h-0 flex-1 w-full" : "w-full"}" data-main-slot></div>
@@ -535,8 +589,12 @@ export function mountAdminLayout(options = {}) {
     });
 
     document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        toggleCommandPalette({ onThemeChange: paintChrome });
+        return;
+      }
       if (e.key === "Escape") {
-        if (userMenuOpen) closeUserMenu();
         if (mobileOpen && !isDesktop()) {
           mobileOpen = false;
           paintChrome();

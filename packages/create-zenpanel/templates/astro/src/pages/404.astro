@@ -1,0 +1,15 @@
+---
+import AdminLayout from "../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Page not found">
+  <div id="layout-root"></div>
+  <div id="page-content" hidden></div>
+</AdminLayout>
+
+<script>
+  import { mountAdminLayout } from "../scripts/layout.js";
+  import { renderNotFound } from "../scripts/not-found.js";
+
+  renderNotFound({ mountAdminLayout });
+</script>

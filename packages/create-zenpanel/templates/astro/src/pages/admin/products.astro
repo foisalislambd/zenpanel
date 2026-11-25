@@ -16,6 +16,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   renderResourcePage(document.getElementById("page-content"), {
     title: "Products",
     resourceLabel: "product",
+    searchPlaceholder: "Search title, price...",
+    metaLabel: "Price",
+    statusLabels: {
+      published: "Active"
+    },
     items: adminProducts,
   });
 </script>

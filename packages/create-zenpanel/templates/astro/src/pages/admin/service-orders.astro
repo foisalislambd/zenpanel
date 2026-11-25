@@ -16,6 +16,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   renderResourcePage(document.getElementById("page-content"), {
     title: "Service orders",
     resourceLabel: "order",
+    searchPlaceholder: "Search customer, service, order ID...",
+    titleLabel: "Order",
+    metaLabel: "Amount",
+    statusLabels: {
+      published: "Completed",
+      draft: "Pending",
+      archived: "Refunded"
+    },
     items: adminServiceOrders,
   });
 </script>

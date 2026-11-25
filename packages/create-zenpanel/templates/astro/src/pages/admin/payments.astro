@@ -16,6 +16,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   renderResourcePage(document.getElementById("page-content"), {
     title: "Payments",
     resourceLabel: "payment",
+    searchPlaceholder: "Search title, provider, amount...",
+    metaLabel: "Amount",
+    statusLabels: {
+      published: "Completed",
+      draft: "Pending",
+      archived: "Closed"
+    },
     items: adminPayments,
   });
 </script>

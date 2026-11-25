@@ -16,6 +16,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   renderResourcePage(document.getElementById("page-content"), {
     title: "Categories",
     resourceLabel: "category",
+    searchPlaceholder: "Search title, items...",
+    metaLabel: "Items",
+    statusLabels: {
+      published: "Visible",
+      draft: "Hidden"
+    },
     items: adminCategories,
   });
 </script>

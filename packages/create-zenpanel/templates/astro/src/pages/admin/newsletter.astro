@@ -16,6 +16,15 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   renderResourcePage(document.getElementById("page-content"), {
     title: "Newsletter",
     resourceLabel: "subscriber",
+    searchPlaceholder: "Search email, source...",
+    titleLabel: "Email",
+    metaLabel: "Preferences",
+    titleIsEmail: true,
+    statusLabels: {
+      published: "Subscribed",
+      draft: "Pending",
+      archived: "Unsubscribed"
+    },
     items: adminNewsletter,
   });
 </script>

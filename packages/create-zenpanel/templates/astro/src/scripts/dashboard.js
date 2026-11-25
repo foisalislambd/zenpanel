@@ -1,12 +1,13 @@
 import { adminConfig } from "./config.js";
 import { getAdmin } from "./auth.js";
 import {
-  demoActivity,
-  demoChart,
-  demoOrders,
-  demoStats,
-  demoUsers,
-} from "./data.js";
+  previewFetchActivity,
+  previewFetchChartData,
+  previewFetchRecentOrders,
+  previewFetchStats,
+  previewFetchUsers,
+} from "./lib/admin-api/preview.js";
+import { dashboardSkeleton, errorState } from "./ui.js";
 import {
   escapeHtml,
   formatCurrency,
@@ -89,8 +90,8 @@ const quickLinks = [
   { name: "Manage projects", href: "/admin/projects", icon: "folder-kanban" },
   { name: "Manage services", href: "/admin/services", icon: "briefcase" },
   { name: "View messages", href: "/admin/messages", icon: "message-circle" },
-  { name: "Write blog post", href: "/admin/blog", icon: "newspaper" },
-  { name: "Add product", href: "/admin/products", icon: "package" },
+  { name: "Write blog post", href: "/admin/blog?new=1", icon: "newspaper" },
+  { name: "Add product", href: "/admin/products?new=1", icon: "package" },
   { name: "Manage users", href: "/admin/users", icon: "users" },
 ];
 
@@ -135,13 +136,27 @@ function renderWelcome(username) {
   `;
 }
 
-function renderStatCard({ label, value, iconName, iconColor, iconBg }) {
+function renderStatCard({ label, value, iconName, iconColor, iconBg, trend, hint }) {
+  const hasTrend = typeof trend === "number";
+  const up = (trend ?? 0) >= 0;
+  const meta =
+    hasTrend || hint
+      ? `<p class="mt-1 flex items-center gap-1 truncate text-xs text-gray-500 dark:text-gray-400">
+          ${
+            hasTrend
+              ? `<span class="inline-flex items-center gap-0.5 font-semibold ${up ? "text-success-600 dark:text-success-500" : "text-error-500"}">${icon(up ? "trending-up" : "trending-down", "h-3.5 w-3.5")}${up ? "+" : ""}${trend}%</span>`
+              : ""
+          }
+          ${escapeHtml(hint ?? "")}
+        </p>`
+      : "";
   return `
     <div class="admin-card overflow-hidden">
       <div class="flex items-center justify-between gap-3 p-4">
         <div class="min-w-0">
           <p class="truncate text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">${escapeHtml(label)}</p>
           <p class="mt-1 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">${escapeHtml(String(value))}</p>
+          ${meta}
         </div>
         <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconBg}">
           ${icon(iconName, `h-5 w-5 ${iconColor}`)}
@@ -157,6 +172,8 @@ function renderStatsCards(stats) {
       ${renderStatCard({
         label: "Revenue",
         value: formatCurrency(stats.totalRevenue),
+        trend: stats.revenueChangePercent,
+        hint: "vs last month",
         iconName: "dollar-sign",
         iconColor: "text-brand-600 dark:text-brand-400",
         iconBg: "bg-brand-50 dark:bg-brand-500/15",
@@ -164,13 +181,16 @@ function renderStatsCards(stats) {
       ${renderStatCard({
         label: "Users",
         value: stats.totalUsers.toLocaleString(),
+        hint: `+${stats.newUsersLast7Days.toLocaleString()} this week`,
         iconName: "users",
         iconColor: "text-blue-600 dark:text-blue-400",
         iconBg: "bg-blue-50 dark:bg-blue-500/15",
       })}
       ${renderStatCard({
-        label: "Orders",
+        label: "Orders (7d)",
         value: stats.newOrdersLast7Days.toLocaleString(),
+        trend: stats.ordersChangePercent,
+        hint: "vs prior week",
         iconName: "shopping-cart",
         iconColor: "text-violet-600 dark:text-violet-400",
         iconBg: "bg-violet-50 dark:bg-violet-500/15",
@@ -178,6 +198,7 @@ function renderStatsCards(stats) {
       ${renderStatCard({
         label: "Messages",
         value: stats.unreadMessages.toLocaleString(),
+        hint: "unread",
         iconName: "message-circle",
         iconColor: "text-amber-600 dark:text-amber-400",
         iconBg: "bg-amber-50 dark:bg-amber-500/15",
@@ -487,7 +508,7 @@ export function renderOrdersTable(orders, { showHeaderLink = true } = {}) {
                 )
                 .join("")}
             </ul>
-            <div class="admin-scrollbar hidden overflow-x-auto md:block">
+            <div class="admin-scrollbar hidden overflow-x-auto md:block" tabindex="0" role="region" aria-label="Recent orders table">
               <table class="w-full min-w-[600px] text-left text-sm">
                 <thead>
                   <tr class="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02]">
@@ -554,7 +575,7 @@ export function renderUsersTable(users, { showHeaderLink = true } = {}) {
                 )
                 .join("")}
             </ul>
-            <div class="admin-scrollbar hidden overflow-x-auto md:block">
+            <div class="admin-scrollbar hidden overflow-x-auto md:block" tabindex="0" role="region" aria-label="Recent users table">
               <table class="w-full min-w-[600px] text-left text-sm">
                 <thead>
                   <tr class="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02]">
@@ -593,20 +614,49 @@ export function renderUsersTable(users, { showHeaderLink = true } = {}) {
 export function renderDashboard(root) {
   const el = root || document.getElementById("dashboard-root");
   if (!el) return;
+  load(el);
+}
 
+let lastData = null;
+
+async function load(el) {
+  el.innerHTML = dashboardSkeleton();
+  try {
+    const [stats, users, chart, activity, orders] = await Promise.all([
+      previewFetchStats(),
+      previewFetchUsers(),
+      previewFetchChartData(),
+      previewFetchActivity(),
+      previewFetchRecentOrders(),
+    ]);
+    lastData = {
+      stats: stats.stats,
+      users: users.users,
+      chart: chart.chart,
+      activity: activity.activity,
+      orders: orders.orders,
+    };
+    paint(el);
+  } catch (err) {
+    el.innerHTML = `<div class="admin-content">${errorState({
+      title: "Couldn't load dashboard",
+      message: err instanceof Error ? err.message : "Failed to load dashboard",
+    })}</div>`;
+    refreshIcons();
+    el.querySelector('[data-act="retry"]')?.addEventListener("click", () => load(el), { once: true });
+  }
+}
+
+function paint(el) {
   const admin = getAdmin();
-  const stats = demoStats;
-  const chart = demoChart;
-  const activity = demoActivity;
-  const orders = demoOrders;
-  const users = demoUsers;
+  const { stats, chart, activity, orders, users } = lastData;
 
   el.innerHTML = `
-    <div class="admin-content space-y-5">
+    <div class="admin-content flex flex-col gap-5">
       ${renderWelcome(admin?.username)}
       ${renderStatsCards(stats)}
       <div class="grid items-start gap-5 xl:grid-cols-3">
-        <div class="space-y-5 xl:col-span-2">
+        <div class="flex flex-col gap-5 xl:col-span-2">
           ${chart.length > 0 ? renderRevenueChart(chart) : ""}
           ${renderActivityFeed(activity)}
         </div>
@@ -623,7 +673,8 @@ export function renderDashboard(root) {
   el.querySelectorAll("[data-chart-days]").forEach((button) => {
     button.addEventListener("click", () => {
       chartDays = Number(button.getAttribute("data-chart-days")) || 7;
-      renderDashboard(el);
+      paint(el);
+      el.querySelector(`[data-chart-days="${chartDays}"]`)?.focus();
     });
   });
 }

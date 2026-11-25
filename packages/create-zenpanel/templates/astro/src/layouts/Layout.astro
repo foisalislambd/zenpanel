@@ -12,7 +12,9 @@ const { title = "ZenPanel" } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#465fff" />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,6 +27,7 @@ const { title = "ZenPanel" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    <noscript>ZenPanel needs JavaScript enabled to run.</noscript>
     <slot />
     <script>
       import { initTheme } from "../scripts/theme.js";
