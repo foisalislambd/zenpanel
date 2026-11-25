@@ -73,6 +73,7 @@ const REACT_COPY_PATHS = [
 const ASTRO_COPY_PATHS = [
   "src/layouts/AdminLayout.astro",
   "src/pages/admin",
+  "src/pages/404.astro",
   "src/scripts",
   "src/styles/admin.css",
   "src/zenpanel-admin.example.ts",
