@@ -65,7 +65,7 @@ export function RecentOrdersTable(props: { orders: RecentOrder[] }) {
           </For>
         </ul>
 
-        <div class="admin-scrollbar hidden overflow-x-auto md:block">
+        <div class="admin-scrollbar hidden overflow-x-auto md:block" tabindex="0" role="region" aria-label="Recent orders table">
           <table class="w-full min-w-[600px] text-left text-sm">
             <thead>
               <tr class="border-b border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02]">

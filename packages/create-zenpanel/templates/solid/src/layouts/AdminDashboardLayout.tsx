@@ -34,6 +34,9 @@ export function AdminDashboardLayout(props: RouteSectionProps) {
   return (
     <AdminGuard>
       <AdminChatRouteBridge />
+      <a href="#admin-main" class="admin-skip-link">
+        Skip to content
+      </a>
       <div class="admin-shell admin-main flex h-dvh w-full overflow-hidden">
         <div
           class="hidden shrink-0 transition-[width] duration-300 ease-in-out lg:block"
@@ -48,8 +51,10 @@ export function AdminDashboardLayout(props: RouteSectionProps) {
           <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             <AdminHeader />
             <main
+              id="admin-main"
+              tabindex="-1"
               class={cn(
-                "admin-scrollbar min-h-0 flex-1",
+                "admin-scrollbar min-h-0 flex-1 focus:outline-none",
                 isFullBleedPage() ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden",
               )}
             >

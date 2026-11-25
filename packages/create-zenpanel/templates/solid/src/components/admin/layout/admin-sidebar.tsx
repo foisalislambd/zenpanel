@@ -73,7 +73,7 @@ export function AdminSidebar() {
             class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
             aria-label="Close menu"
           >
-            <X class="h-5 w-5" />
+            <X class="h-5 w-5" aria-hidden />
           </button>
         </Show>
       </div>
@@ -110,6 +110,7 @@ export function AdminSidebar() {
                       } ${!showLabels() ? "justify-center px-0" : ""}`}
                     >
                       <Icon
+                        aria-hidden
                         class={`h-[18px] w-[18px] shrink-0 ${
                           active()
                             ? "text-white"
@@ -134,10 +135,11 @@ export function AdminSidebar() {
           fallback={
             <A
               href={siteUrl}
+              onClick={closeMobileSidebar}
               class={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels() ? "justify-center" : ""}`}
               title={!showLabels() ? "View site" : undefined}
             >
-              <ExternalLink class="h-5 w-5 shrink-0" />
+              <ExternalLink class="h-5 w-5 shrink-0" aria-hidden />
               <Show when={showLabels()}>
                 <span>View site</span>
               </Show>
@@ -151,7 +153,7 @@ export function AdminSidebar() {
             class={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8 ${!showLabels() ? "justify-center" : ""}`}
             title={!showLabels() ? "View site" : undefined}
           >
-            <ExternalLink class="h-5 w-5 shrink-0" />
+            <ExternalLink class="h-5 w-5 shrink-0" aria-hidden />
             <Show when={showLabels()}>
               <span>View site</span>
             </Show>
@@ -164,9 +166,11 @@ export function AdminSidebar() {
             onClick={toggleSidebar}
             class={`mt-2 flex w-full items-center gap-3 rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5 ${!showLabels() ? "justify-center" : ""}`}
             aria-label={isExpanded() ? "Collapse sidebar" : "Expand sidebar"}
+            aria-expanded={isExpanded()}
+            title={isExpanded() ? undefined : "Expand sidebar"}
           >
-            <Show when={isExpanded()} fallback={<ChevronRight class="h-5 w-5 shrink-0" />}>
-              <ChevronLeft class="h-5 w-5 shrink-0" />
+            <Show when={isExpanded()} fallback={<ChevronRight class="h-5 w-5 shrink-0" aria-hidden />}>
+              <ChevronLeft class="h-5 w-5 shrink-0" aria-hidden />
               <span>Collapse</span>
             </Show>
           </button>

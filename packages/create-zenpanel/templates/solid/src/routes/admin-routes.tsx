@@ -6,6 +6,7 @@ import CategoriesPage from "@/pages/admin/CategoriesPage";
 import DashboardPage from "@/pages/admin/DashboardPage";
 import LoginPage from "@/pages/admin/LoginPage";
 import MessagesPage from "@/pages/admin/MessagesPage";
+import NotFoundPage from "@/pages/admin/NotFoundPage";
 import NewsletterPage from "@/pages/admin/NewsletterPage";
 import PaymentsPage from "@/pages/admin/PaymentsPage";
 import ProductsPage from "@/pages/admin/ProductsPage";
@@ -23,6 +24,10 @@ function MessagesRoute() {
       <MessagesPage />
     </div>
   );
+}
+
+function AdminNotFoundRoute() {
+  return <NotFoundPage variant="admin" />;
 }
 
 /** Shared admin route tree - used by App and install-mode example. */
@@ -47,6 +52,7 @@ export function ZenPanelAdminRoutes() {
         <Route path="/newsletter" component={NewsletterPage} />
         <Route path="/users" component={UsersPage} />
         <Route path="/settings" component={SettingsPage} />
+        <Route path="*404" component={AdminNotFoundRoute} />
       </Route>
     </Route>
   );

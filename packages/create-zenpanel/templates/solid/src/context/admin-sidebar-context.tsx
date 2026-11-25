@@ -24,14 +24,31 @@ type SidebarContextValue = {
 };
 
 const SidebarContext = createContext<SidebarContextValue>();
+const SIDEBAR_STORAGE_KEY = "zenpanel-sidebar";
+
+function readExpanded() {
+  try {
+    return localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "collapsed";
+  } catch {
+    return true;
+  }
+}
 
 export function AdminSidebarProvider(props: { children: JSX.Element }) {
   const isDesktop = useIsDesktop();
-  const [isExpanded, setIsExpanded] = createSignal(true);
+  const [isExpanded, setIsExpanded] = createSignal(readExpanded());
   const [isMobileOpen, setIsMobileOpen] = createSignal(false);
 
   const effectiveExpanded = createMemo(() => (isDesktop() ? isExpanded() : true));
   const effectiveMobileOpen = createMemo(() => (isDesktop() ? false : isMobileOpen()));
+
+  createEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, isExpanded() ? "expanded" : "collapsed");
+    } catch {
+      // ignore private-mode storage errors
+    }
+  });
 
   createEffect(() => {
     document.body.style.overflow = effectiveMobileOpen() ? "hidden" : "";

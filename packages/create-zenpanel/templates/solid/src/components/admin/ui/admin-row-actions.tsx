@@ -4,9 +4,11 @@ import type { JSX } from "solid-js";
 const pendingTitle = "Available after you connect your API";
 
 const btnBase =
-  "flex items-center justify-center rounded-lg text-gray-400 transition-colors";
+  "flex items-center justify-center rounded-lg text-gray-500 transition-colors dark:text-gray-400";
 const btnEnabled =
   "hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200";
+const btnDanger =
+  "hover:bg-error-50 hover:text-error-500 dark:hover:bg-error-500/15 dark:hover:text-error-500";
 const btnDisabled = "cursor-not-allowed opacity-70";
 
 type ActionButtonProps = {
@@ -15,6 +17,7 @@ type ActionButtonProps = {
   onClick?: () => void;
   pending?: boolean;
   size?: "sm" | "md";
+  danger?: boolean;
   class?: string;
 } & Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "children" | "class">;
 
@@ -31,9 +34,9 @@ function ActionButton(props: ActionButtonProps) {
         if (enabled()) props.onClick?.();
       }}
       disabled={!enabled()}
-      title={enabled() ? props.label : pendingTitle}
+      title={enabled() ? undefined : pendingTitle}
       aria-label={props.label}
-      class={`${btnBase} ${dim()} ${enabled() ? btnEnabled : btnDisabled} ${props.class ?? ""}`}
+      class={`${btnBase} ${dim()} ${enabled() ? (props.danger ? btnDanger : btnEnabled) : btnDisabled} ${props.class ?? ""}`}
     >
       <Icon class={iconSize()} aria-hidden />
     </button>
@@ -77,6 +80,7 @@ export function AdminRowActions(props: AdminRowActionsProps) {
         label={`Delete ${props.itemLabel}`}
         icon={Trash2}
         onClick={props.onDelete}
+        danger
         pending={props.pending}
         size={props.size}
       />

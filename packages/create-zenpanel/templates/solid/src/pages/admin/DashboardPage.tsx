@@ -5,7 +5,8 @@ import { RecentOrdersTable } from "@/components/admin/dashboard/recent-orders-ta
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { RevenueChart } from "@/components/admin/dashboard/revenue-chart";
 import { StatsCards } from "@/components/admin/dashboard/stats-cards";
-import { AdminLoading } from "@/components/admin/ui/admin-loading";
+import { AdminErrorState } from "@/components/admin/ui/admin-error-state";
+import { AdminDashboardSkeleton } from "@/components/admin/ui/admin-skeletons";
 import { useAdminChatPageContext } from "@/hooks/use-admin-chat-page-context";
 import {
   previewFetchActivity,
@@ -66,7 +67,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
 }
 
 export default function AdminDashboardPage() {
-  const [data] = createResource(fetchDashboardData);
+  const [data, { refetch }] = createResource(fetchDashboardData);
 
   useAdminChatPageContext({
     pageId: "dashboard",
@@ -75,7 +76,7 @@ export default function AdminDashboardPage() {
     description:
       "Analyze metrics, summarize revenue and orders, or get suggestions for your admin workflow.",
     getSnapshot: () => {
-      const stats = data()?.stats;
+      const stats = data.state === "ready" ? data().stats : undefined;
       return stats
         ? {
             totalUsers: stats.totalUsers,
@@ -92,13 +93,15 @@ export default function AdminDashboardPage() {
   });
 
   return (
-    <Show when={!data.loading} fallback={<AdminLoading message="Loading dashboard…" />}>
+    <Show when={!data.loading} fallback={<AdminDashboardSkeleton />}>
       <Show
         when={!data.error}
         fallback={
-          <div class="admin-card admin-card-body text-sm text-error-500">
-            {data.error instanceof Error ? data.error.message : "Failed to load dashboard"}
-          </div>
+          <AdminErrorState
+            title="Couldn't load the dashboard"
+            message={data.error instanceof Error ? data.error.message : "Failed to load dashboard"}
+            onRetry={() => void refetch()}
+          />
         }
       >
         <div class="admin-content space-y-5">

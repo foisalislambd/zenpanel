@@ -2,5 +2,14 @@ import { ResourcePage } from "@/components/admin/shared/resource-page";
 import { adminTransactions } from "@/lib/admin-data/resources";
 
 export default function AdminTransactionsPage() {
-  return <ResourcePage title="Transactions" resourceLabel="transaction" items={adminTransactions} />;
+  return (
+    <ResourcePage
+      title="Transactions"
+      resourceLabel="transaction"
+      items={adminTransactions}
+      searchPlaceholder="Search title, amount, reference..."
+      metaLabel="Amount"
+      statusLabels={{ published: "Settled", draft: "Pending", archived: "Reversed" }}
+    />
+  );
 }

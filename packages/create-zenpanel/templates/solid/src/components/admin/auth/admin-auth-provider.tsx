@@ -14,6 +14,8 @@ type AdminAuthContextValue = {
   loading: boolean;
   login: (username?: string) => Promise<void>;
   logout: () => void;
+  /** Preview: update the signed-in admin's profile fields. */
+  updateProfile: (patch: Partial<Pick<PublicAdmin, "username" | "email">>) => void;
 };
 
 const AdminAuthContext = createContext<AdminAuthContextValue>();
@@ -51,7 +53,19 @@ export function AdminAuthProvider(props: { children: JSX.Element }) {
     }
   }
 
-  const value: AdminAuthContextValue = { admin, loading: false, login, logout };
+  function updateProfile(patch: Partial<Pick<PublicAdmin, "username" | "email">>) {
+    const current = admin();
+    if (!current) return;
+    const next = { ...current, ...patch };
+    setAdmin(next);
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+  }
+
+  const value: AdminAuthContextValue = { admin, loading: false, login, logout, updateProfile };
 
   return <AdminAuthContext.Provider value={value}>{props.children}</AdminAuthContext.Provider>;
 }

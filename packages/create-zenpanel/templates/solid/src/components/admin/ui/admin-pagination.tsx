@@ -1,39 +1,9 @@
+import { pageWindow } from "@/lib/admin-resources";
+import { ADMIN_PAGE_SIZE, ADMIN_PAGE_SIZE_OPTIONS } from "@/lib/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-solid";
-import { For, Show } from "solid-js";
+import { createUniqueId, For, Show } from "solid-js";
 
-export const ADMIN_PAGE_SIZE = 5;
-
-export function slicePage<T>(items: T[], page: number, pageSize = ADMIN_PAGE_SIZE) {
-  const total = items.length;
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  const current = Math.min(Math.max(1, page), pageCount);
-  const start = (current - 1) * pageSize;
-  return {
-    page: current,
-    pageCount,
-    rows: items.slice(start, start + pageSize),
-  };
-}
-
-function pageWindow(page: number, pageCount: number): Array<{ id: string; value: number | "ellipsis" }> {
-  const values: Array<number | "ellipsis"> =
-    pageCount <= 7
-      ? Array.from({ length: pageCount }, (_, index) => index + 1)
-      : (() => {
-          const items: Array<number | "ellipsis"> = [1];
-          const start = Math.max(2, page - 1);
-          const end = Math.min(pageCount - 1, page + 1);
-          if (start > 2) items.push("ellipsis");
-          for (let index = start; index <= end; index += 1) items.push(index);
-          if (end < pageCount - 1) items.push("ellipsis");
-          items.push(pageCount);
-          return items;
-        })();
-  return values.map((value, index) => ({
-    id: value === "ellipsis" ? `ellipsis-${index}` : String(value),
-    value,
-  }));
-}
+export { ADMIN_PAGE_SIZE, slicePage } from "@/lib/pagination";
 
 type AdminPaginationProps = {
   page: number;
@@ -41,18 +11,22 @@ type AdminPaginationProps = {
   total: number;
   pageSize?: number;
   onPageChange: (page: number) => void;
+  /** Show the "Rows" select when provided. */
+  onPageSizeChange?: (size: number) => void;
 };
 
+const button =
+  "inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40";
+const idle =
+  "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/5";
+const active = "bg-brand-500 text-white shadow-sm shadow-brand-500/20";
+
 export function AdminPagination(props: AdminPaginationProps) {
+  const sizeId = createUniqueId();
   const pageSize = () => props.pageSize ?? ADMIN_PAGE_SIZE;
   const start = () => (props.page - 1) * pageSize() + 1;
   const end = () => Math.min(props.page * pageSize(), props.total);
   const items = () => pageWindow(props.page, props.pageCount);
-  const button =
-    "inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40";
-  const idle =
-    "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/5";
-  const active = "bg-brand-500 text-white shadow-sm shadow-brand-500/20";
 
   return (
     <Show when={props.total > 0}>
@@ -60,13 +34,34 @@ export function AdminPagination(props: AdminPaginationProps) {
         aria-label="Pagination"
         class="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800"
       >
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          Showing{" "}
-          <span class="font-medium text-gray-700 dark:text-gray-200">
-            {start()}–{end()}
-          </span>{" "}
-          of <span class="font-medium text-gray-700 dark:text-gray-200">{props.total}</span>
-        </p>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p class="text-sm text-gray-500 dark:text-gray-400" aria-live="polite">
+            Showing{" "}
+            <span class="font-medium text-gray-700 dark:text-gray-200">
+              {start()}–{end()}
+            </span>{" "}
+            of <span class="font-medium text-gray-700 dark:text-gray-200">{props.total}</span>
+          </p>
+          <Show when={props.onPageSizeChange}>
+            <label for={sizeId} class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              Rows
+              <select
+                id={sizeId}
+                value={pageSize()}
+                onChange={(e) => props.onPageSizeChange?.(Number(e.currentTarget.value))}
+                class="h-8 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-700 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+              >
+                <For each={[...ADMIN_PAGE_SIZE_OPTIONS]}>
+                  {(size) => (
+                    <option value={size} selected={size === pageSize()}>
+                      {size}
+                    </option>
+                  )}
+                </For>
+              </select>
+            </label>
+          </Show>
+        </div>
         <div class="flex flex-wrap items-center gap-1.5">
           <button
             type="button"
@@ -75,22 +70,29 @@ export function AdminPagination(props: AdminPaginationProps) {
             onClick={() => props.onPageChange(props.page - 1)}
             aria-label="Previous page"
           >
-            <ChevronLeft class="h-4 w-4" />
+            <ChevronLeft class="h-4 w-4" aria-hidden />
           </button>
           <For each={items()}>
             {(item) => (
               <Show
-                when={item.value !== "ellipsis"}
-                fallback={<span class="px-1 text-sm text-gray-400">…</span>}
+                when={item !== "ellipsis" ? item : false}
+                fallback={
+                  <span class="px-1 text-sm text-gray-400" aria-hidden="true">
+                    …
+                  </span>
+                }
               >
-                <button
-                  type="button"
-                  aria-current={item.value === props.page ? "page" : undefined}
-                  onClick={() => props.onPageChange(item.value as number)}
-                  class={`${button} ${item.value === props.page ? active : idle}`}
-                >
-                  {item.value}
-                </button>
+                {(value) => (
+                  <button
+                    type="button"
+                    aria-label={`Page ${value()}`}
+                    aria-current={value() === props.page ? "page" : undefined}
+                    onClick={() => props.onPageChange(value())}
+                    class={`${button} ${value() === props.page ? active : idle}`}
+                  >
+                    {value()}
+                  </button>
+                )}
               </Show>
             )}
           </For>
@@ -101,7 +103,7 @@ export function AdminPagination(props: AdminPaginationProps) {
             onClick={() => props.onPageChange(props.page + 1)}
             aria-label="Next page"
           >
-            <ChevronRight class="h-4 w-4" />
+            <ChevronRight class="h-4 w-4" aria-hidden />
           </button>
         </div>
       </nav>

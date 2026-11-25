@@ -51,6 +51,13 @@ const REACT_COPY_PATHS = [
   "src/hooks",
   "src/lib/admin-api",
   "src/lib/admin-data",
+  // Framework-agnostic helpers used by the Solid template (skipped when absent).
+  "src/lib/admin-forms.ts",
+  "src/lib/admin-resources.ts",
+  "src/lib/admin-toast.ts",
+  "src/lib/command-palette.ts",
+  "src/lib/dialog.ts",
+  "src/lib/preferences.ts",
   "src/lib/admin-nav.ts",
   "src/lib/admin-ui.ts",
   "src/lib/brand-theme.ts",

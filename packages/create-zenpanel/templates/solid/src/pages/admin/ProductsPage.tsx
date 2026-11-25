@@ -2,5 +2,14 @@ import { ResourcePage } from "@/components/admin/shared/resource-page";
 import { adminProducts } from "@/lib/admin-data/resources";
 
 export default function AdminProductsPage() {
-  return <ResourcePage title="Products" resourceLabel="product" items={adminProducts} />;
+  return (
+    <ResourcePage
+      title="Products"
+      resourceLabel="product"
+      items={adminProducts}
+      searchPlaceholder="Search title, price..."
+      metaLabel="Price"
+      statusLabels={{ published: "Active" }}
+    />
+  );
 }
