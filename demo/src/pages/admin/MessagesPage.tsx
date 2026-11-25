@@ -26,7 +26,6 @@ export default function AdminMessagesPage() {
   const composerRef = useRef<HTMLTextAreaElement>(null);
 
   const active = conversations.find((c) => c.id === activeId) ?? null;
-  const unreadTotal = conversations.reduce((n, c) => n + (c.unread > 0 ? 1 : 0), 0);
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -70,10 +69,7 @@ export default function AdminMessagesPage() {
 
   return (
     <div className="admin-content flex h-full min-h-0 flex-col px-3 py-4 sm:px-4 sm:py-5">
-      <AdminPageHeader
-        title="Messages"
-        description={unreadTotal > 0 ? `${unreadTotal} unread conversation${unreadTotal === 1 ? "" : "s"}` : "You're all caught up"}
-      />
+      <AdminPageHeader title="Messages" />
 
       <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
         <aside

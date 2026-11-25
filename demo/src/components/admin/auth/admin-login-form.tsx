@@ -76,9 +76,6 @@ export function AdminLoginForm() {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-[1.75rem]">
             Sign in
           </h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Welcome back. Sign in to manage {adminConfig.brand.name}.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
