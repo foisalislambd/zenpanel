@@ -167,7 +167,7 @@ export function SecuritySettings() {
     <AdminFormField id={`security-${key}`} label={label} required error={errors[key]} hint={hint}>
       <input
         id={`security-${key}`}
-        type={show ? "text" : "password"}
+        type={(show ? "text" : "password") as "text"}
         value={value}
         onChange={(e) => set(e.currentTarget.value)}
         autoComplete={key === "current" ? "current-password" : "new-password"}

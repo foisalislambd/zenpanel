@@ -43,7 +43,7 @@ export async function createApp(options: CreateAppOptions = {}): Promise<void> {
       placeholder: "my-admin",
       defaultValue: "my-admin",
       validate(value) {
-        const name = value.trim() || "my-admin";
+        const name = (value ?? "").trim() || "my-admin";
         if (!isValidProjectName(toValidPackageName(name))) {
           return "Invalid project name";
         }

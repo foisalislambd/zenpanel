@@ -118,7 +118,7 @@ export function AdminLoginForm() {
               <Lock aria-hidden className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 id="admin-password"
-                type={showPassword ? "text" : "password"}
+                type={(showPassword ? "text" : "password") as "text"}
                 autoComplete="current-password"
                 placeholder="Enter password"
                 value={password}

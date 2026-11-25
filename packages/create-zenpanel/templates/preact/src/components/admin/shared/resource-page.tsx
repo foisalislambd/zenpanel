@@ -546,7 +546,7 @@ function ResourceEditor({
             aria-invalid={Boolean(errors.title)}
             aria-describedby={fieldDescribedBy(`${formId}-title`, errors.title)}
             aria-required
-            type={titleIsEmail ? "email" : "text"}
+            type={(titleIsEmail ? "email" : "text") as "text"}
             autoComplete="off"
             className={cn(adminInputClass, errors.title && adminInputErrorClass)}
             placeholder={titleIsEmail ? "name@example.com" : `e.g. New ${label}`}

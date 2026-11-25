@@ -13,18 +13,18 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@solidjs/router": "^1.0.0",
+    "@solidjs/router": "^1.0.3",
     "clsx": "^2.1.1",
-    "lucide-solid": "^1.56.0",
-    "solid-js": "^1.9.15",
-    "tailwind-merge": "^3.7.0"
+    "lucide-solid": "^1.80.0",
+    "solid-js": "^1.9.20",
+    "tailwind-merge": "^3.7.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^24.13.3",
-    "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0",
-    "vite-plugin-solid": "^2.11.14"
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^24.19.4",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.8",
+    "vite-plugin-solid": "^2.11.17"
   }
 }

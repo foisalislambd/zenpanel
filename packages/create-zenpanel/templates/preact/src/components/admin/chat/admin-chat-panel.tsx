@@ -235,7 +235,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
         />
       )}
 
-      <aside
+      <div
         className={cn(
           "admin-chat-panel admin-content-editor-panel flex flex-col",
           overlay || !isDesktop
@@ -243,7 +243,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
             : "h-full shrink-0",
         )}
         style={{ width: isDesktop && !overlay ? CHAT_PANEL_WIDTH : "min(100vw, 400px)" }}
-        role={overlay || !isDesktop ? "dialog" : undefined}
+        role={overlay || !isDesktop ? "dialog" : "complementary"}
         aria-modal={overlay || !isDesktop ? true : undefined}
         aria-label="AI assistant panel"
       >
@@ -386,7 +386,7 @@ export function AdminChatPanel({ overlay = false }: Props) {
             </div>
           </div>
         </div>
-      </aside>
+      </div>
     </>
   );
 }
