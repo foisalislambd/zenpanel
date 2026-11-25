@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import ActivityFeed from "@/components/admin/dashboard/ActivityFeed.vue";
 import DashboardSidebar from "@/components/admin/dashboard/DashboardSidebar.vue";
 import DashboardWelcome from "@/components/admin/dashboard/DashboardWelcome.vue";
@@ -7,7 +7,8 @@ import RecentOrdersTable from "@/components/admin/dashboard/RecentOrdersTable.vu
 import RecentUsersTable from "@/components/admin/dashboard/RecentUsersTable.vue";
 import RevenueChart from "@/components/admin/dashboard/RevenueChart.vue";
 import StatsCards from "@/components/admin/dashboard/StatsCards.vue";
-import AdminLoading from "@/components/admin/ui/AdminLoading.vue";
+import AdminDashboardSkeleton from "@/components/admin/ui/AdminDashboardSkeleton.vue";
+import AdminErrorState from "@/components/admin/ui/AdminErrorState.vue";
 import { useAdminChatPageContext } from "@/composables/use-admin-chat-page-context";
 import {
   previewFetchActivity,
@@ -68,20 +69,24 @@ async function fetchDashboardData(): Promise<DashboardData> {
 
 const data = ref<DashboardData | null>(null);
 const loading = ref(true);
-const error = ref<unknown>(null);
+const error = ref<string | null>(null);
+const attempt = ref(0);
 
-onMounted(() => {
+watchEffect((onCleanup) => {
+  void attempt.value;
+  let cancelled = false;
+  onCleanup(() => (cancelled = true));
   loading.value = true;
   error.value = null;
   fetchDashboardData()
     .then((result) => {
-      data.value = result;
+      if (!cancelled) data.value = result;
     })
     .catch((err) => {
-      error.value = err;
+      if (!cancelled) error.value = err instanceof Error ? err.message : "Failed to load dashboard";
     })
     .finally(() => {
-      loading.value = false;
+      if (!cancelled) loading.value = false;
     });
 });
 
@@ -112,10 +117,8 @@ useAdminChatPageContext(chatContext);
 </script>
 
 <template>
-  <AdminLoading v-if="loading" message="Loading dashboard…" />
-  <div v-else-if="error" class="admin-card admin-card-body text-sm text-error-500">
-    {{ error instanceof Error ? error.message : "Failed to load dashboard" }}
-  </div>
+  <AdminDashboardSkeleton v-if="loading" />
+  <AdminErrorState v-else-if="error" title="Couldn't load the dashboard" :message="error" @retry="attempt++" />
   <div v-else-if="data" class="admin-content space-y-5">
     <DashboardWelcome />
     <StatsCards :stats="data.stats" />

@@ -4,5 +4,12 @@ import { adminServices } from "@/lib/admin-data/resources";
 </script>
 
 <template>
-  <ResourcePage title="Services" resource-label="service" :items="adminServices" />
+  <ResourcePage
+    title="Services"
+    resource-label="service"
+    :items="adminServices"
+    search-placeholder="Search title, pricing..."
+    meta-label="Pricing"
+    :status-labels="{ published: 'Active' }"
+  />
 </template>

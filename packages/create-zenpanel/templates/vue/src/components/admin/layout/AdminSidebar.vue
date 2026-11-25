@@ -86,7 +86,7 @@ const navGroups = computed(() => {
         aria-label="Close menu"
         @click="sidebar.closeMobileSidebar()"
       >
-        <X class="h-5 w-5" />
+        <X class="h-5 w-5" aria-hidden="true" />
       </button>
     </div>
 
@@ -120,6 +120,7 @@ const navGroups = computed(() => {
       >
         <component
           :is="item.icon"
+          aria-hidden="true"
           :class="[
             'h-[18px] w-[18px] shrink-0',
             isAdminNavActive(route.path, item.href)
@@ -144,19 +145,20 @@ const navGroups = computed(() => {
         ]"
         :title="!showLabels ? 'View site' : undefined"
       >
-        <ExternalLink class="h-5 w-5 shrink-0" />
+        <ExternalLink class="h-5 w-5 shrink-0" aria-hidden="true" />
         <span v-if="showLabels">View site</span>
       </a>
       <RouterLink
         v-else
         :to="siteUrl"
+        @click="sidebar.closeMobileSidebar()"
         :class="[
           'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8',
           !showLabels ? 'justify-center' : '',
         ]"
         :title="!showLabels ? 'View site' : undefined"
       >
-        <ExternalLink class="h-5 w-5 shrink-0" />
+        <ExternalLink class="h-5 w-5 shrink-0" aria-hidden="true" />
         <span v-if="showLabels">View site</span>
       </RouterLink>
 
@@ -168,13 +170,15 @@ const navGroups = computed(() => {
           !showLabels ? 'justify-center' : '',
         ]"
         :aria-label="sidebar.isExpanded ? 'Collapse sidebar' : 'Expand sidebar'"
+        :aria-expanded="sidebar.isExpanded"
+        :title="sidebar.isExpanded ? undefined : 'Expand sidebar'"
         @click="sidebar.toggleSidebar()"
       >
         <template v-if="sidebar.isExpanded">
-          <ChevronLeft class="h-5 w-5 shrink-0" />
+          <ChevronLeft class="h-5 w-5 shrink-0" aria-hidden="true" />
           <span>Collapse</span>
         </template>
-        <ChevronRight v-else class="h-5 w-5 shrink-0" />
+        <ChevronRight v-else class="h-5 w-5 shrink-0" aria-hidden="true" />
       </button>
     </div>
   </aside>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ChevronDown, LogOut, Settings } from "lucide-vue-next";
+import { ChevronDown, LogOut, Settings, SlidersHorizontal } from "lucide-vue-next";
 import { useAdminAuth } from "@/composables/use-admin-auth";
+import { activateMenu } from "@/lib/dialog";
 
 const auth = useAdminAuth();
 const router = useRouter();
@@ -10,36 +11,41 @@ const router = useRouter();
 const open = ref(false);
 const containerRef = ref<HTMLDivElement | null>(null);
 const triggerRef = ref<HTMLButtonElement | null>(null);
-const menuId = `admin-user-menu-${Math.random().toString(36).slice(2)}`;
+const menuRef = ref<HTMLDivElement | null>(null);
+const menuId = useId();
+let release: (() => void) | null = null;
 
 function handleClick(e: MouseEvent) {
-  if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    open.value = false;
-  }
+  if (containerRef.value && !containerRef.value.contains(e.target as Node)) open.value = false;
 }
 
-function handleKeyDown(e: KeyboardEvent) {
-  if (e.key === "Escape") {
-    open.value = false;
-    triggerRef.value?.focus();
+watch(open, async (isOpen) => {
+  release?.();
+  release = null;
+  if (!isOpen) return;
+  await nextTick();
+  if (menuRef.value) {
+    release = activateMenu(menuRef.value, (restoreFocus) => {
+      open.value = false;
+      if (restoreFocus) triggerRef.value?.focus();
+    });
   }
-}
-
-onMounted(() => {
-  document.addEventListener("mousedown", handleClick);
-  document.addEventListener("keydown", handleKeyDown);
 });
 
-onUnmounted(() => {
+onMounted(() => document.addEventListener("mousedown", handleClick));
+onBeforeUnmount(() => {
   document.removeEventListener("mousedown", handleClick);
-  document.removeEventListener("keydown", handleKeyDown);
+  release?.();
 });
 
 function handleLogout() {
   open.value = false;
   auth.logout();
-  router.replace("/admin/login");
+  void router.replace("/admin/login");
 }
+
+const itemClass =
+  "flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5";
 </script>
 
 <template>
@@ -47,15 +53,14 @@ function handleLogout() {
     <button
       ref="triggerRef"
       type="button"
-      class="flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1.5 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
+      class="flex h-9 items-center gap-2 rounded-lg border border-gray-200 bg-white pr-2 pl-1 text-sm font-medium transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-white/5"
       :aria-expanded="open"
       aria-haspopup="menu"
-      :aria-controls="menuId"
+      :aria-controls="open ? menuId : undefined"
+      :aria-label="`Account menu for ${auth.admin?.username ?? 'admin'}`"
       @click="open = !open"
     >
-      <span
-        class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white"
-      >
+      <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-500 text-xs font-semibold text-white">
         {{ auth.admin?.username?.charAt(0)?.toUpperCase() ?? "A" }}
       </span>
       <span class="hidden min-w-0 text-left md:block">
@@ -64,10 +69,7 @@ function handleLogout() {
         </span>
       </span>
       <ChevronDown
-        :class="[
-          'hidden h-4 w-4 shrink-0 text-gray-500 transition md:block',
-          open ? 'rotate-180' : '',
-        ]"
+        :class="['hidden h-4 w-4 shrink-0 text-gray-500 transition md:block', open ? 'rotate-180' : '']"
         aria-hidden="true"
       />
     </button>
@@ -75,23 +77,24 @@ function handleLogout() {
     <div
       v-if="open"
       :id="menuId"
+      ref="menuRef"
       role="menu"
+      aria-label="Account"
       class="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
     >
-      <div class="border-b border-gray-100 px-4 py-3 md:hidden dark:border-gray-800">
-        <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-          {{ auth.admin?.username }}
-        </p>
+      <div class="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+        <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">{{ auth.admin?.username }}</p>
+        <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ auth.admin?.email }}</p>
       </div>
-      <RouterLink
-        to="/admin/settings"
-        role="menuitem"
-        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none dark:text-gray-300 dark:hover:bg-white/5 dark:focus-visible:bg-white/5"
-        @click="open = false"
-      >
+      <RouterLink to="/admin/settings" role="menuitem" :class="itemClass" @click="open = false">
         <Settings class="h-4 w-4" aria-hidden="true" />
-        Settings
+        Account settings
       </RouterLink>
+      <RouterLink to="/admin/settings?tab=preferences" role="menuitem" :class="itemClass" @click="open = false">
+        <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
+        Preferences
+      </RouterLink>
+      <div class="my-1 h-px bg-gray-100 dark:bg-gray-800" role="separator" />
       <button
         type="button"
         role="menuitem"

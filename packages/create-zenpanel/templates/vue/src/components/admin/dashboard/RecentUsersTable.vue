@@ -56,6 +56,9 @@ const providerStyles: Record<string, string> = {
           'admin-scrollbar overflow-x-auto',
           users.length > 0 ? 'hidden md:block' : '',
         ]"
+        tabindex="0"
+        role="region"
+        aria-label="Recent users table"
       >
         <table class="w-full min-w-[600px] text-left text-sm">
           <thead>

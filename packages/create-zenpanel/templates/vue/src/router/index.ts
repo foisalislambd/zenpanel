@@ -17,6 +17,9 @@ import MessagesPage from "@/pages/admin/MessagesPage.vue";
 import NewsletterPage from "@/pages/admin/NewsletterPage.vue";
 import UsersPage from "@/pages/admin/UsersPage.vue";
 import SettingsPage from "@/pages/admin/SettingsPage.vue";
+import NotFoundPage from "@/pages/admin/NotFoundPage.vue";
+import { matchAdminNavItem } from "@/lib/admin-nav";
+import { setDocumentTitle } from "@/lib/preferences";
 
 /** Shared admin route tree - used by router and install-mode example. */
 export const adminRouteIds = [
@@ -34,6 +37,7 @@ export const adminRouteIds = [
   "admin-newsletter",
   "admin-users",
   "admin-settings",
+  "admin-not-found",
 ] as const;
 
 export type AdminRouteId = (typeof adminRouteIds)[number];
@@ -49,7 +53,7 @@ export const router = createRouter({
         {
           path: "login",
           component: AdminAuthLayout,
-          children: [{ path: "", name: "admin-login", component: LoginPage }],
+          children: [{ path: "", name: "admin-login", component: LoginPage, meta: { title: "Sign in" } }],
         },
         {
           path: "",
@@ -80,10 +84,28 @@ export const router = createRouter({
             { path: "newsletter", name: "admin-newsletter", component: NewsletterPage },
             { path: "users", name: "admin-users", component: UsersPage },
             { path: "settings", name: "admin-settings", component: SettingsPage },
+            {
+              path: ":pathMatch(.*)*",
+              name: "admin-not-found",
+              component: NotFoundPage,
+              props: { variant: "admin" },
+              meta: { title: "Page not found" },
+            },
           ],
         },
       ],
     },
-    { path: "/:pathMatch(.*)*", redirect: "/" },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundPage,
+      meta: { title: "Page not found" },
+    },
   ],
+});
+
+/** "Users · ZenPanel" - explicit `meta.title` wins, else the matching nav item. */
+router.afterEach((to) => {
+  const title = typeof to.meta.title === "string" ? to.meta.title : matchAdminNavItem(to.path)?.name;
+  setDocumentTitle(title);
 });

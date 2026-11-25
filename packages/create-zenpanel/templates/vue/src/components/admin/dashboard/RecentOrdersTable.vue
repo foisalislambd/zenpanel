@@ -62,6 +62,9 @@ function statusStyle(status: string) {
           'admin-scrollbar overflow-x-auto',
           orders.length > 0 ? 'hidden md:block' : '',
         ]"
+        tabindex="0"
+        role="region"
+        aria-label="Recent orders table"
       >
         <table class="w-full min-w-[600px] text-left text-sm">
           <thead>

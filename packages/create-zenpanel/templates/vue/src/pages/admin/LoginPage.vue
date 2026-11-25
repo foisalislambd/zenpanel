@@ -7,9 +7,9 @@ const { brand } = adminConfig;
 </script>
 
 <template>
-  <div class="relative grid min-h-dvh w-full lg:grid-cols-2">
-    <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
-      <AdminThemeToggle />
+  <main class="relative grid min-h-dvh w-full lg:grid-cols-2">
+    <div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6 lg:right-auto lg:left-[calc(50%-3.5rem)]">
+      <AdminThemeToggle class="bg-white dark:bg-gray-900" />
     </div>
     <AdminLoginForm />
     <div
@@ -39,6 +39,7 @@ const { brand } = adminConfig;
           <li v-for="item in brand.loginFeatures" :key="item" class="flex items-center gap-3">
             <span
               class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200"
+              aria-hidden="true"
             >
               ✓
             </span>
@@ -47,5 +48,5 @@ const { brand } = adminConfig;
         </ul>
       </div>
     </div>
-  </div>
+  </main>
 </template>

@@ -1,35 +1,38 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref, watchEffect } from "vue";
 import AdminUsersPage from "@/components/admin/users/AdminUsersPage.vue";
-import AdminLoading from "@/components/admin/ui/AdminLoading.vue";
+import AdminErrorState from "@/components/admin/ui/AdminErrorState.vue";
+import AdminTableSkeleton from "@/components/admin/ui/AdminTableSkeleton.vue";
 import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 
 const users = ref<PortalUserRow[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const attempt = ref(0);
 
-onMounted(() => {
+watchEffect((onCleanup) => {
+  void attempt.value;
+  let cancelled = false;
+  onCleanup(() => (cancelled = true));
   loading.value = true;
   error.value = null;
   previewFetchUsers()
     .then((res) => {
-      users.value = res.users;
+      if (!cancelled) users.value = res.users;
     })
     .catch((err) => {
-      error.value = err instanceof Error ? err.message : "Failed to load users";
+      if (!cancelled) error.value = err instanceof Error ? err.message : "Failed to load users";
     })
     .finally(() => {
-      loading.value = false;
+      if (!cancelled) loading.value = false;
     });
 });
 </script>
 
 <template>
-  <AdminLoading v-if="loading" message="Loading users…" />
+  <AdminTableSkeleton v-if="loading" label="Loading users…" />
   <div v-else-if="error" class="admin-content">
-    <div class="admin-card admin-card-body text-sm text-error-500">
-      {{ error }}
-    </div>
+    <AdminErrorState title="Couldn't load users" :message="error" @retry="attempt++" />
   </div>
   <AdminUsersPage v-else :users="users" />
 </template>

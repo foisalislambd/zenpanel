@@ -4,5 +4,10 @@ import { adminBlogPosts } from "@/lib/admin-data/resources";
 </script>
 
 <template>
-  <ResourcePage title="Blog" resource-label="post" :items="adminBlogPosts" />
+  <ResourcePage
+    title="Blog"
+    resource-label="post"
+    :items="adminBlogPosts"
+    search-placeholder="Search title, topic..."
+  />
 </template>

@@ -22,7 +22,7 @@ const enabled = computed(() => Boolean(props.onClick) && !props.pending);
   <button
     type="button"
     :disabled="!enabled"
-    :title="enabled ? label : 'Available after you connect your API'"
+    :title="enabled ? undefined : 'Available after you connect your API'"
     :class="[
       'inline-flex h-9 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white',
       enabled

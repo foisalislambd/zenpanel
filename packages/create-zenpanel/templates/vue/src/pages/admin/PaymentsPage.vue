@@ -4,5 +4,12 @@ import { adminPayments } from "@/lib/admin-data/resources";
 </script>
 
 <template>
-  <ResourcePage title="Payments" resource-label="payment" :items="adminPayments" />
+  <ResourcePage
+    title="Payments"
+    resource-label="payment"
+    :items="adminPayments"
+    search-placeholder="Search title, provider, amount..."
+    meta-label="Amount"
+    :status-labels="{ published: 'Completed', draft: 'Pending', archived: 'Closed' }"
+  />
 </template>

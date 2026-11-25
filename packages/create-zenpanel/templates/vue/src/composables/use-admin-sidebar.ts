@@ -3,6 +3,15 @@ import { useIsDesktop } from "@/composables/use-is-desktop";
 
 export const SIDEBAR_WIDTH_EXPANDED = 260;
 export const SIDEBAR_WIDTH_COLLAPSED = 80;
+const SIDEBAR_STORAGE_KEY = "zenpanel-sidebar";
+
+function readExpanded() {
+  try {
+    return localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "collapsed";
+  } catch {
+    return true;
+  }
+}
 
 export type AdminSidebarContext = {
   isExpanded: boolean;
@@ -18,11 +27,19 @@ export const AdminSidebarKey: InjectionKey<AdminSidebarContext> = Symbol("admin-
 
 export function provideAdminSidebar() {
   const isDesktop = useIsDesktop();
-  const isExpanded = ref(true);
+  const isExpanded = ref(readExpanded());
   const isMobileOpen = ref(false);
 
   const effectiveExpanded = computed(() => (isDesktop.value ? isExpanded.value : true));
   const effectiveMobileOpen = computed(() => (isDesktop.value ? false : isMobileOpen.value));
+
+  watch(isExpanded, (value) => {
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, value ? "expanded" : "collapsed");
+    } catch {
+      // ignore private-mode storage errors
+    }
+  });
 
   watch(effectiveMobileOpen, (open) => {
     document.body.style.overflow = open ? "hidden" : "";

@@ -8,6 +8,8 @@ export type AdminAuthContext = {
   loading: boolean;
   login: (username?: string) => Promise<void>;
   logout: () => void;
+  /** Preview: update the signed-in admin's profile fields. */
+  updateProfile: (patch: Partial<Pick<PublicAdmin, "username" | "email">>) => void;
 };
 
 export const AdminAuthKey: InjectionKey<AdminAuthContext> = Symbol("admin-auth");
@@ -45,6 +47,16 @@ export function provideAdminAuth() {
     }
   }
 
+  function updateProfile(patch: Partial<Pick<PublicAdmin, "username" | "email">>) {
+    if (!admin.value) return;
+    admin.value = { ...admin.value, ...patch };
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(admin.value));
+    } catch {
+      // ignore
+    }
+  }
+
   const ctx: AdminAuthContext = {
     get admin() {
       return admin.value;
@@ -52,6 +64,7 @@ export function provideAdminAuth() {
     loading: false,
     login,
     logout,
+    updateProfile,
   };
 
   provide(AdminAuthKey, ctx);
