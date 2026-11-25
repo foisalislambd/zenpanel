@@ -1,6 +1,7 @@
 import { AdminLoginForm } from "@/components/admin/auth/admin-login-form";
 import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
 import { adminConfig } from "@/config/admin.config";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 function BrandPanel({ className = "" }: { className?: string }) {
   const { brand } = adminConfig;
@@ -28,7 +29,7 @@ function BrandPanel({ className = "" }: { className?: string }) {
         <ul className="mx-auto mt-8 w-fit space-y-3 text-left text-sm text-brand-100/85">
           {brand.loginFeatures.map((item) => (
             <li key={item} className="flex items-center gap-3">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/30 text-xs text-brand-200" aria-hidden>
                 ✓
               </span>
               {item}
@@ -41,13 +42,14 @@ function BrandPanel({ className = "" }: { className?: string }) {
 }
 
 export default function AdminLoginPage() {
+  useDocumentTitle("Sign in");
   return (
-    <div className="relative grid min-h-dvh w-full lg:grid-cols-2">
-      <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
-        <AdminThemeToggle />
+    <main className="relative grid min-h-dvh w-full lg:grid-cols-2">
+      <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6 lg:right-auto lg:left-[calc(50%-3.5rem)]">
+        <AdminThemeToggle className="bg-white dark:bg-gray-900" />
       </div>
       <AdminLoginForm />
       <BrandPanel className="hidden min-h-dvh lg:flex" />
-    </div>
+    </main>
   );
 }

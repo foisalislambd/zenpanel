@@ -5,7 +5,8 @@ import { RecentOrdersTable } from "@/components/admin/dashboard/recent-orders-ta
 import { RecentUsersTable } from "@/components/admin/dashboard/recent-users-table";
 import { RevenueChart } from "@/components/admin/dashboard/revenue-chart";
 import { StatsCards } from "@/components/admin/dashboard/stats-cards";
-import { AdminLoading } from "@/components/admin/ui/admin-loading";
+import { AdminErrorState } from "@/components/admin/ui/admin-error-state";
+import { AdminDashboardSkeleton } from "@/components/admin/ui/admin-skeleton";
 import { useAdminChatPageContext } from "@/hooks/use-admin-chat-page-context";
 import {
   previewFetchActivity,
@@ -47,6 +48,7 @@ export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useAdminChatPageContext({
     pageId: "dashboard",
@@ -98,15 +100,23 @@ export default function AdminDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   if (loading) {
-    return <AdminLoading message="Loading dashboard…" />;
+    return <AdminDashboardSkeleton />;
   }
 
   if (error) {
     return (
-      <div className="admin-card admin-card-body text-sm text-error-500">{error}</div>
+      <AdminErrorState
+        title="Couldn't load the dashboard"
+        message={error}
+        onRetry={() => {
+          setError(null);
+          setLoading(true);
+          setAttempt((n) => n + 1);
+        }}
+      />
     );
   }
 

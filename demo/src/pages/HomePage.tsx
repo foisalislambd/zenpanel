@@ -1,3 +1,4 @@
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { adminConfig } from "@/config/admin.config";
 import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
 import { ArrowRight, BookOpen, LayoutDashboard } from "lucide-react";
@@ -19,6 +20,7 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 export default function HomePage() {
+  useDocumentTitle("Open-source admin UI shell");
   return (
     <main className="relative flex min-h-dvh flex-col overflow-hidden">
       <div

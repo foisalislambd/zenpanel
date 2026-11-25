@@ -7,6 +7,10 @@ export default function AdminServiceOrdersPage() {
       title="Service orders"
       resourceLabel="order"
       items={adminServiceOrders}
+      titleLabel="Order"
+      metaLabel="Amount"
+      searchPlaceholder="Search customer, service, order ID..."
+      statusLabels={{ published: "Completed", draft: "Pending", archived: "Refunded" }}
     />
   );
 }

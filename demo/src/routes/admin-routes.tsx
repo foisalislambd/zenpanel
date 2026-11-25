@@ -15,6 +15,7 @@ import ServicesPage from "@/pages/admin/ServicesPage";
 import SettingsPage from "@/pages/admin/SettingsPage";
 import TransactionsPage from "@/pages/admin/TransactionsPage";
 import UsersPage from "@/pages/admin/UsersPage";
+import NotFoundPage from "@/pages/admin/NotFoundPage";
 import { Route } from "react-router-dom";
 
 /** Shared admin route tree - used by App and install-mode example. */
@@ -45,6 +46,7 @@ export const zenPanelAdminRoute = (
       <Route path="newsletter" element={<NewsletterPage />} />
       <Route path="users" element={<UsersPage />} />
       <Route path="settings" element={<SettingsPage />} />
+      <Route path="*" element={<NotFoundPage variant="admin" />} />
     </Route>
   </Route>
 );

@@ -15,6 +15,8 @@ type AdminAuthContextValue = {
   loading: boolean;
   login: (username?: string) => Promise<void>;
   logout: () => void;
+  /** Preview: update the signed-in admin's profile fields. */
+  updateProfile: (patch: Partial<Pick<PublicAdmin, "username" | "email">>) => void;
 };
 
 const AdminAuthContext = createContext<AdminAuthContextValue | null>(null);
@@ -52,9 +54,22 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const updateProfile = useCallback((patch: Partial<Pick<PublicAdmin, "username" | "email">>) => {
+    setAdmin((current) => {
+      if (!current) return current;
+      const next = { ...current, ...patch };
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }, []);
+
   const value = useMemo(
-    () => ({ admin, loading: false, login, logout }),
-    [admin, login, logout],
+    () => ({ admin, loading: false, login, logout, updateProfile }),
+    [admin, login, logout, updateProfile],
   );
 
   return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;

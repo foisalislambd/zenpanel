@@ -88,7 +88,7 @@ export function AdminSidebar() {
                   index() > 0 ? <div class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800" /> : null
                 }
               >
-                <p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500">
+                <p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
                   {group.section}
                 </p>
               </Show>

@@ -8,6 +8,8 @@ export default function AdminServicesPage() {
       resourceLabel="service"
       items={adminServices}
       searchPlaceholder="Search title, pricing..."
+      metaLabel="Pricing"
+      statusLabels={{ published: "Active" }}
     />
   );
 }

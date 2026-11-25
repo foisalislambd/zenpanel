@@ -88,7 +88,7 @@ export function AdminSidebar() {
         {groupNavItems(adminNavItems).map((group, index) => (
           <div key={group.section} className="flex flex-col gap-1">
             {showLabels ? (
-              <p className="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500">
+              <p className="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
                 {group.section}
               </p>
             ) : (

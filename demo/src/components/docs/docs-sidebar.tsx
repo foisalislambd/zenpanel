@@ -12,7 +12,7 @@ export function DocsSidebar({ onNavigate, className }: Props) {
     <nav className={cn("space-y-8", className)} aria-label="Documentation">
       {docsNav.map((section) => (
         <div key={section.title}>
-          <p className="px-3 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+          <p className="px-3 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
             {section.title}
           </p>
           <ul className="mt-2 space-y-0.5">

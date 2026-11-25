@@ -8,6 +8,8 @@ export default function AdminPaymentsPage() {
       resourceLabel="payment"
       items={adminPayments}
       searchPlaceholder="Search title, provider, amount..."
+      metaLabel="Amount"
+      statusLabels={{ published: "Completed", draft: "Pending", archived: "Closed" }}
     />
   );
 }

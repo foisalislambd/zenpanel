@@ -1,18 +1,6 @@
+import { ADMIN_PAGE_SIZE, ADMIN_PAGE_SIZE_OPTIONS } from "@/lib/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-export const ADMIN_PAGE_SIZE = 5;
-
-export function slicePage<T>(items: T[], page: number, pageSize = ADMIN_PAGE_SIZE) {
-  const total = items.length;
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  const current = Math.min(Math.max(1, page), pageCount);
-  const start = (current - 1) * pageSize;
-  return {
-    page: current,
-    pageCount,
-    rows: items.slice(start, start + pageSize),
-  };
-}
+import { useId } from "react";
 
 function pageWindow(page: number, pageCount: number): Array<number | "ellipsis"> {
   if (pageCount <= 7) {
@@ -34,6 +22,8 @@ type AdminPaginationProps = {
   total: number;
   pageSize?: number;
   onPageChange: (page: number) => void;
+  /** Show a "Rows per page" select when provided. */
+  onPageSizeChange?: (size: number) => void;
 };
 
 export function AdminPagination({
@@ -42,7 +32,9 @@ export function AdminPagination({
   total,
   pageSize = ADMIN_PAGE_SIZE,
   onPageChange,
+  onPageSizeChange,
 }: AdminPaginationProps) {
+  const sizeId = useId();
   if (total === 0) return null;
 
   const start = (page - 1) * pageSize + 1;
@@ -59,14 +51,32 @@ export function AdminPagination({
       aria-label="Pagination"
       className="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800"
     >
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        Showing{" "}
-        <span className="font-medium text-gray-700 dark:text-gray-200">
-          {start}–{end}
-        </span>{" "}
-        of{" "}
-        <span className="font-medium text-gray-700 dark:text-gray-200">{total}</span>
-      </p>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400" aria-live="polite">
+          Showing{" "}
+          <span className="font-medium text-gray-700 dark:text-gray-200">
+            {start}–{end}
+          </span>{" "}
+          of <span className="font-medium text-gray-700 dark:text-gray-200">{total}</span>
+        </p>
+        {onPageSizeChange && (
+          <label htmlFor={sizeId} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            Rows
+            <select
+              id={sizeId}
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="h-8 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-700 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+            >
+              {ADMIN_PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
       <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
@@ -75,17 +85,18 @@ export function AdminPagination({
           onClick={() => onPageChange(page - 1)}
           aria-label="Previous page"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" aria-hidden />
         </button>
         {items.map((item, index) =>
           item === "ellipsis" ? (
-            <span key={`ellipsis-${index}`} className="px-1 text-sm text-gray-400">
+            <span key={`ellipsis-${index}`} className="px-1 text-sm text-gray-400" aria-hidden>
               …
             </span>
           ) : (
             <button
               key={item}
               type="button"
+              aria-label={`Page ${item}`}
               aria-current={item === page ? "page" : undefined}
               onClick={() => onPageChange(item)}
               className={`${button} ${item === page ? active : idle}`}
@@ -101,7 +112,7 @@ export function AdminPagination({
           onClick={() => onPageChange(page + 1)}
           aria-label="Next page"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-4 w-4" aria-hidden />
         </button>
       </div>
     </nav>

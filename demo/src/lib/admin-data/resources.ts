@@ -219,5 +219,20 @@ export const adminPayments: AdminResource[] = [
 ];
 
 /** Empty until you connect your API - not tagged in the shared list UI demo. */
-export const adminServiceOrders: AdminResource[] = [];
-export const adminNewsletter: AdminResource[] = [];
+export const adminServiceOrders: AdminResource[] = [
+  { id: "ORD-1048", title: "Acme Corp · Website redesign", status: "published", updatedAt: daysAgo(0), meta: "$2,400 · Paid" },
+  { id: "ORD-1047", title: "TechFlow Ltd · SEO audit", status: "published", updatedAt: daysAgo(1), meta: "$450 · Paid" },
+  { id: "ORD-1046", title: "GreenLeaf Studio · Brand identity", status: "draft", updatedAt: daysAgo(2), meta: "$1,800 · Awaiting payment" },
+  { id: "ORD-1045", title: "Nova Digital · Mobile app dev", status: "published", updatedAt: daysAgo(4), meta: "$5,200 · Paid" },
+  { id: "ORD-1044", title: "Pixel Works · Logo design", status: "archived", updatedAt: daysAgo(9), meta: "$350 · Refunded" },
+  { id: "ORD-1043", title: "Brightline Co · Landing page", status: "published", updatedAt: daysAgo(12), meta: "$900 · Paid" },
+];
+
+export const adminNewsletter: AdminResource[] = [
+  { id: "sub-1", title: "olivia.park@example.com", status: "published", updatedAt: daysAgo(0), meta: "Weekly digest · Website" },
+  { id: "sub-2", title: "marco.rossi@example.com", status: "published", updatedAt: daysAgo(2), meta: "Product updates · Checkout" },
+  { id: "sub-3", title: "aisha.khan@example.com", status: "draft", updatedAt: daysAgo(3), meta: "Pending confirmation" },
+  { id: "sub-4", title: "lena.schmidt@example.com", status: "published", updatedAt: daysAgo(6), meta: "Weekly digest · Blog" },
+  { id: "sub-5", title: "tom.baker@example.com", status: "archived", updatedAt: daysAgo(15), meta: "Unsubscribed" },
+  { id: "sub-6", title: "yuki.tanaka@example.com", status: "published", updatedAt: daysAgo(21), meta: "All updates · Website" },
+];

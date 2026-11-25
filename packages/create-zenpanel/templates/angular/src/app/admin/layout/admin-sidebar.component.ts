@@ -72,7 +72,7 @@ import { IconComponent } from '@/app/shared/icon.component';
           <div class="flex flex-col gap-1">
             @if (showLabels()) {
               <p
-                class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500"
+                class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400"
               >
                 {{ group.section }}
               </p>

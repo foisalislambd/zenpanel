@@ -61,6 +61,9 @@ export function RecentUsersTable({
 
           <div
             className={`admin-scrollbar overflow-x-auto ${users.length > 0 ? "hidden md:block" : ""}`}
+            tabIndex={0}
+            role="region"
+            aria-label="Recent users table"
           >
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead>

@@ -14,8 +14,8 @@ const quickLinks = [
   { name: "Manage projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Manage services", href: "/admin/services", icon: Briefcase },
   { name: "View messages", href: "/admin/messages", icon: MessageCircle },
-  { name: "Write blog post", href: "/admin/blog", icon: Newspaper },
-  { name: "Add product", href: "/admin/products", icon: Package },
+  { name: "Write blog post", href: "/admin/blog?new=1", icon: Newspaper },
+  { name: "Add product", href: "/admin/products?new=1", icon: Package },
   { name: "Manage users", href: "/admin/users", icon: Users },
 ];
 
@@ -73,7 +73,7 @@ export function DashboardSidebar({ usersByProvider, totalUsers }: Props) {
                   <span className="capitalize text-gray-600 dark:text-gray-400">{provider}</span>
                   <span className="font-medium tabular-nums text-gray-900 dark:text-white">
                     {count.toLocaleString()}
-                    <span className="ml-1 text-xs font-normal text-gray-400">{pct}%</span>
+                    <span className="ml-1 text-xs font-normal text-gray-500 dark:text-gray-400">{pct}%</span>
                   </span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">

@@ -8,6 +8,8 @@ export default function AdminCategoriesPage() {
       resourceLabel="category"
       items={adminCategories}
       searchPlaceholder="Search title, items..."
+      metaLabel="Items"
+      statusLabels={{ published: "Visible", draft: "Hidden" }}
     />
   );
 }

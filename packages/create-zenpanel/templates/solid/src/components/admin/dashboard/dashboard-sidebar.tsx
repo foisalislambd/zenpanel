@@ -78,7 +78,7 @@ export function DashboardSidebar(props: Props) {
                     <span class="capitalize text-gray-600 dark:text-gray-400">{provider}</span>
                     <span class="font-medium tabular-nums text-gray-900 dark:text-white">
                       {count.toLocaleString()}
-                      <span class="ml-1 text-xs font-normal text-gray-400">{pct}%</span>
+                      <span class="ml-1 text-xs font-normal text-gray-500 dark:text-gray-400">{pct}%</span>
                     </span>
                   </div>
                   <div class="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">

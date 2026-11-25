@@ -58,6 +58,9 @@ export function RecentOrdersTable({ orders }: { orders: RecentOrder[] }) {
 
           <div
             className={`admin-scrollbar overflow-x-auto ${orders.length > 0 ? "hidden md:block" : ""}`}
+            tabIndex={0}
+            role="region"
+            aria-label="Recent orders table"
           >
             <table className="w-full min-w-[600px] text-left text-sm">
               <thead>

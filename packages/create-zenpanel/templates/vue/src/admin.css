@@ -7,6 +7,11 @@
   background-color: #0c111d;
 }
 
+/* Portaled overlays (dialogs, drawers, command palette) */
+.admin-portal {
+  font-family: var(--font-admin-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 .admin-main {
   height: 100dvh;
   width: 100%;
@@ -250,57 +255,311 @@
 }
 
 @layer utilities {
-  :where(.dark .admin-shell) .text-gray-600 {
+  :where(.dark .admin-shell, .dark .admin-portal) .text-gray-600 {
     color: #738196;
   }
 
-  :where(.dark .admin-shell) .text-gray-500 {
+  :where(.dark .admin-shell, .dark .admin-portal) .text-gray-500 {
     color: #8f9aab;
   }
 
-  :where(.dark .admin-shell) .text-gray-400 {
+  :where(.dark .admin-shell, .dark .admin-portal) .text-gray-400 {
     color: #b4bcc8;
   }
 
-  :where(.dark .admin-shell) .text-gray-300 {
+  :where(.dark .admin-shell, .dark .admin-portal) .text-gray-300 {
     color: #dce1e8;
   }
 
-  :where(.dark .admin-shell) .dark\:text-gray-600 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:text-gray-600 {
     color: #738196;
   }
 
-  :where(.dark .admin-shell) .dark\:text-gray-500 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:text-gray-500 {
     color: #8f9aab;
   }
 
-  :where(.dark .admin-shell) .dark\:text-gray-400 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:text-gray-400 {
     color: #b4bcc8;
   }
 
-  :where(.dark .admin-shell) .dark\:text-gray-300 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:text-gray-300 {
     color: #dce1e8;
   }
 
-  :where(.dark .admin-shell) .fill-gray-500 {
+  :where(.dark .admin-shell, .dark .admin-portal) .fill-gray-500 {
     fill: #8f9aab;
   }
 
-  :where(.dark .admin-shell) .fill-gray-400 {
+  :where(.dark .admin-shell, .dark .admin-portal) .fill-gray-400 {
     fill: #b4bcc8;
   }
 
-  :where(.dark .admin-shell) .dark\:fill-gray-500 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:fill-gray-500 {
     fill: #8f9aab;
   }
 
-  :where(.dark .admin-shell) .dark\:fill-gray-400 {
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:fill-gray-400 {
     fill: #b4bcc8;
   }
 
-  :where(.dark .admin-shell) .placeholder\:text-gray-400::placeholder,
-  :where(.dark .admin-shell) .dark\:placeholder\:text-gray-500::placeholder,
-  :where(.dark .admin-shell) .dark\:placeholder\:text-gray-400::placeholder {
+  :where(.dark .admin-shell, .dark .admin-portal) .placeholder\:text-gray-400::placeholder,
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:placeholder\:text-gray-500::placeholder,
+  :where(.dark .admin-shell, .dark .admin-portal) .dark\:placeholder\:text-gray-400::placeholder {
     color: #a3adbe;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Buttons - shared by dialogs, toolbars and forms.
+   ------------------------------------------------------------------------- */
+.admin-btn {
+  display: inline-flex;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .admin-btn {
+    height: 2.25rem;
+  }
+}
+
+.admin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.admin-btn-primary {
+  background-color: #465fff;
+  color: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(70, 95, 255, 0.2);
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  background-color: #3641f5;
+}
+
+.admin-btn-secondary {
+  border: 2px solid #e4e7ec;
+  background-color: #ffffff;
+  color: #344054;
+}
+
+.admin-btn-secondary:hover:not(:disabled) {
+  background-color: #f9fafb;
+  color: #101828;
+}
+
+.dark .admin-btn-secondary {
+  border-color: #344054;
+  background-color: transparent;
+  color: #dce1e8;
+}
+
+.dark .admin-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.admin-btn-danger {
+  background-color: #d92d20;
+  color: #ffffff;
+}
+
+.admin-btn-danger:hover:not(:disabled) {
+  background-color: #b42318;
+}
+
+.admin-btn-danger-ghost {
+  color: #d92d20;
+}
+
+.admin-btn-danger-ghost:hover:not(:disabled) {
+  background-color: #fef3f2;
+}
+
+.dark .admin-btn-danger-ghost {
+  color: #f97066;
+}
+
+.dark .admin-btn-danger-ghost:hover:not(:disabled) {
+  background-color: rgba(240, 68, 56, 0.12);
+}
+
+/* ---------------------------------------------------------------------------
+   Keyboard focus - visible ring on every interactive control in the shell.
+   ------------------------------------------------------------------------- */
+:where(.admin-shell, .admin-portal, .admin-docs) :is(a, button, [role="button"], [role="tab"], summary, select, [tabindex]):focus-visible {
+  outline: 2px solid #465fff;
+  outline-offset: 2px;
+}
+
+:where(.admin-shell, .admin-portal, .admin-docs) :is(input, textarea, select):focus-visible {
+  outline: none;
+}
+
+.admin-skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background-color: #465fff;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  transition: transform 0.15s ease;
+}
+
+.admin-skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Skeletons, overlays, toasts
+   ------------------------------------------------------------------------- */
+.admin-skeleton {
+  background: linear-gradient(90deg, #f2f4f7 25%, #e4e7ec 37%, #f2f4f7 63%);
+  background-size: 400% 100%;
+  animation: admin-shimmer 1.4s ease infinite;
+}
+
+.dark .admin-skeleton {
+  background: linear-gradient(90deg, #1d2939 25%, #283447 37%, #1d2939 63%);
+  background-size: 400% 100%;
+}
+
+@keyframes admin-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.admin-overlay {
+  animation: admin-fade-in 0.15s ease-out;
+}
+
+.admin-dialog {
+  animation: admin-dialog-in 0.18s ease-out;
+}
+
+.admin-drawer {
+  animation: admin-drawer-in 0.22s ease-out;
+}
+
+.admin-toast {
+  animation: admin-dialog-in 0.2s ease-out;
+}
+
+@keyframes admin-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes admin-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes admin-drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+/* Switch (settings toggles) */
+.admin-switch {
+  position: relative;
+  display: inline-flex;
+  height: 1.5rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: #d0d5dd;
+  transition: background-color 0.15s ease;
+}
+
+.admin-switch[aria-checked="true"] {
+  background-color: #465fff;
+}
+
+.admin-switch::after {
+  content: "";
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  height: 1.125rem;
+  width: 1.125rem;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.admin-switch[aria-checked="true"]::after {
+  transform: translateX(1.25rem);
+}
+
+.dark .admin-switch {
+  background-color: #344054;
+}
+
+.dark .admin-switch[aria-checked="true"] {
+  background-color: #465fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell *,
+  .admin-shell *::before,
+  .admin-shell *::after,
+  .admin-docs * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Error text: #f04438 is only 3.6:1 on white - darken in light mode for WCAG AA,
+   lighten slightly in dark mode. */
+.admin-shell .text-error-500,
+.admin-portal .text-error-500 {
+  color: #d92d20;
+}
+
+.dark .admin-shell .text-error-500,
+.dark .admin-portal .text-error-500 {
+  color: #f97066;
+}
+
+/* Success text: #039855 is 3.5:1 on the success-50 badge - use a deeper green. */
+.admin-shell .text-success-600,
+.admin-portal .text-success-600 {
+  color: #027a48;
+}
+
+.dark .admin-shell .text-success-600,
+.dark .admin-portal .text-success-600 {
+  color: #32d583;
 }

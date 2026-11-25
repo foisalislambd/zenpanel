@@ -186,7 +186,7 @@ export function mountAdminLayout(options = {}) {
         ${groupNavItems(adminNavItems)
           .map((group, index) => {
             const heading = showLabels
-              ? `<p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-400 uppercase dark:text-gray-500">${escapeHtml(group.section)}</p>`
+              ? `<p class="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">${escapeHtml(group.section)}</p>`
               : index > 0
                 ? `<div class="mx-2 my-1 h-px bg-gray-200 dark:bg-gray-800" aria-hidden="true"></div>`
                 : "";

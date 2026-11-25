@@ -1,8 +1,9 @@
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import HomePage from "@/pages/HomePage";
+import NotFoundPage from "@/pages/admin/NotFoundPage";
 import { zenPanelAdminRoute } from "@/routes/admin-routes";
 import { zenPanelDocsRoute } from "@/routes/docs-routes";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { getBase } from "vite-basepath/runtime";
 
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           {zenPanelDocsRoute}
           {zenPanelAdminRoute}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

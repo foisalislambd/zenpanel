@@ -11,13 +11,16 @@ import {
   useAdminSidebar,
 } from "@/context/admin-sidebar-context";
 import { cn } from "@/lib/cn";
-import { normalizePathname } from "@/lib/admin-nav";
+import { matchAdminNavItem, normalizePathname } from "@/lib/admin-nav";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Outlet, useLocation } from "react-router-dom";
 
 export function AdminDashboardLayout() {
   const { pathname } = useLocation();
   const path = normalizePathname(pathname);
   const isFullBleedPage = path === "/admin/messages";
+  const navItem = matchAdminNavItem(path);
+  useDocumentTitle(navItem?.name);
   const { isExpanded, isDesktop } = useAdminSidebar();
   const { isOpen: isChatOpen, isDesktop: isChatDesktop } = useAdminChatPanel();
 
@@ -33,6 +36,9 @@ export function AdminDashboardLayout() {
   return (
     <AdminGuard>
       <AdminChatRouteBridge />
+      <a href="#admin-main" className="admin-skip-link">
+        Skip to content
+      </a>
       <div className="admin-shell admin-main flex h-dvh w-full overflow-hidden">
         <div
           className="hidden shrink-0 transition-[width] duration-300 ease-in-out lg:block"
@@ -47,7 +53,10 @@ export function AdminDashboardLayout() {
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             <AdminHeader />
             <main
+              id="admin-main"
+              tabIndex={-1}
               className={cn(
+                "focus:outline-none",
                 "admin-scrollbar min-h-0 flex-1",
                 isFullBleedPage
                   ? "overflow-hidden"

@@ -58,7 +58,7 @@ export default function DocsIntroductionPage() {
       <div className="mt-5 space-y-6">
         {docsNav.map((section) => (
           <div key={section.title}>
-            <p className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+            <p className="text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
               {section.title}
             </p>
             <ul className="mt-2 divide-y divide-gray-200 overflow-hidden rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-800">

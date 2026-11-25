@@ -2,6 +2,8 @@ import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
 import { DocsPager } from "@/components/docs/docs-pager";
 import { DocsSidebar } from "@/components/docs/docs-sidebar";
 import { adminConfig } from "@/config/admin.config";
+import { docsNav } from "@/config/docs-nav";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -9,14 +11,22 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 export function DocsLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const [lastPath, setLastPath] = useState(location.pathname);
+  const current = docsNav.flatMap((s) => s.items).find((i) => i.href === location.pathname);
+  useDocumentTitle(current ? `${current.title} - Docs` : "Docs");
+
+  // Close the mobile menu on navigation (state reset during render, no effect).
+  if (lastPath !== location.pathname) {
+    setLastPath(location.pathname);
+    setMobileOpen(false);
+  }
 
   useEffect(() => {
-    setMobileOpen(false);
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
   return (
-    <div className="min-h-dvh bg-[#f7f8fb] text-gray-900 dark:bg-gray-950 dark:text-white">
+    <div className="admin-docs min-h-dvh bg-[#f7f8fb] text-gray-900 dark:bg-gray-950 dark:text-white">
       <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-white/90 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/90">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -24,6 +34,7 @@ export function DocsLayout() {
               type="button"
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 lg:hidden dark:border-gray-800 dark:text-gray-300"
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((open) => !open)}
             >
               {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -34,7 +45,7 @@ export function DocsLayout() {
               </span>
               <span className="text-sm font-semibold tracking-tight">
                 {adminConfig.brand.name}
-                <span className="ml-1.5 font-normal text-gray-400">Docs</span>
+                <span className="ml-1.5 font-normal text-gray-500 dark:text-gray-400">Docs</span>
               </span>
             </Link>
           </div>

@@ -1,5 +1,6 @@
 import { AdminUsersPage } from "@/components/admin/users/admin-users-page";
-import { AdminLoading } from "@/components/admin/ui/admin-loading";
+import { AdminErrorState } from "@/components/admin/ui/admin-error-state";
+import { AdminTableSkeleton } from "@/components/admin/ui/admin-skeleton";
 import { previewFetchUsers, type PortalUserRow } from "@/lib/admin-api";
 import { useEffect, useState } from "react";
 
@@ -7,6 +8,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<PortalUserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,16 +29,24 @@ export default function UsersPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   if (loading) {
-    return <AdminLoading message="Loading users…" />;
+    return <AdminTableSkeleton label="Loading users…" />;
   }
 
   if (error) {
     return (
       <div className="admin-content">
-        <div className="admin-card admin-card-body text-sm text-error-500">{error}</div>
+        <AdminErrorState
+          title="Couldn't load users"
+          message={error}
+          onRetry={() => {
+            setError(null);
+            setLoading(true);
+            setAttempt((n) => n + 1);
+          }}
+        />
       </div>
     );
   }

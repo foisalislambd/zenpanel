@@ -4,12 +4,29 @@ import { AdminThemeToggle } from "@/components/admin/ui/admin-theme-toggle";
 import { useAdminChatPanel } from "@/context/admin-chat-panel-context";
 import { useAdminSidebar } from "@/context/admin-sidebar-context";
 import { cn } from "@/lib/cn";
-import { Menu, PanelRightOpen, Search, X } from "lucide-react";
+import { Menu, Search, Sparkles, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { AdminCommandPalette } from "@/components/admin/layout/admin-command-palette";
 import { Link } from "react-router-dom";
+
+const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 
 export function AdminHeader() {
   const { isMobileOpen, isDesktop, toggleMobileSidebar } = useAdminSidebar();
   const { isOpen: isChatOpen, togglePanel: toggleChatPanel } = useAdminChatPanel();
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const closePalette = useCallback(() => setPaletteOpen(false), []);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <header className="admin-topbar sticky top-0 z-30 w-full bg-white dark:bg-gray-900">
@@ -17,14 +34,14 @@ export function AdminHeader() {
         <button
           type="button"
           onClick={toggleMobileSidebar}
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${isDesktop ? "lg:hidden" : ""}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5 ${isDesktop ? "lg:hidden" : ""}`}
           aria-label={!isDesktop && isMobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={!isDesktop ? isMobileOpen : undefined}
         >
           {!isDesktop && isMobileOpen ? (
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden />
           ) : (
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5" aria-hidden />
           )}
         </button>
 
@@ -38,42 +55,50 @@ export function AdminHeader() {
         </Link>
 
         <div className="hidden flex-1 lg:block lg:max-w-lg">
-          <label className="relative block">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <input
-              type="search"
-              disabled
-              placeholder="Search"
-              className="h-10 w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 py-2 pr-4 pl-10 text-sm text-gray-500 placeholder:text-gray-400 dark:border-gray-800 dark:bg-white/5 dark:text-gray-500"
-              aria-label="Search"
-              aria-describedby="admin-search-hint"
-            />
-            <span id="admin-search-hint" className="sr-only">
-              Global search will be available after you connect your backend API.
-            </span>
-          </label>
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="flex h-9 w-full items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 pr-2 pl-3 text-sm text-gray-500 transition hover:border-gray-300 hover:bg-white dark:border-gray-800 dark:bg-white/5 dark:text-gray-400 dark:hover:border-gray-700"
+            aria-label="Search pages and actions"
+            aria-keyshortcuts="Control+K Meta+K"
+          >
+            <Search className="h-4 w-4 shrink-0 text-gray-400" aria-hidden />
+            <span className="flex-1 text-left">Search pages and actions…</span>
+            <kbd className="rounded-md border border-gray-200 bg-white px-1.5 py-0.5 text-[11px] font-medium text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+              {isMac ? "⌘" : "Ctrl"} K
+            </kbd>
+          </button>
         </div>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <button
             type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 lg:hidden dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5"
+            aria-label="Search pages and actions"
+          >
+            <Search className="h-4 w-4" aria-hidden />
+          </button>
+          <button
+            type="button"
             onClick={toggleChatPanel}
             className={cn(
-              "flex h-10 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
+              "flex h-9 items-center gap-2 rounded-lg border px-2.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
               isChatOpen
                 ? "border-brand-300 bg-brand-50 text-brand-700 dark:border-brand-500/40 dark:bg-brand-500/10 dark:text-brand-300"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/5",
             )}
-            aria-label="Toggle AI assistant"
+            aria-label={isChatOpen ? "Close AI assistant" : "Open AI assistant"}
             aria-expanded={isChatOpen}
           >
-            <PanelRightOpen className="h-4 w-4" aria-hidden />
+            <Sparkles className="h-4 w-4" aria-hidden />
             <span className="hidden sm:inline">AI</span>
           </button>
           <AdminThemeToggle />
           <AdminUserMenu />
         </div>
       </div>
+      <AdminCommandPalette open={paletteOpen} onClose={closePalette} />
     </header>
   );
 }

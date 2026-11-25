@@ -1,18 +1,43 @@
-import { AccountSettings } from "@/components/admin/settings/account-settings";
+import { AccountSettings, SecuritySettings, SettingsCard } from "@/components/admin/settings/account-settings";
+import { PreferencesSettings } from "@/components/admin/settings/preferences-settings";
 import { AdminPageHeader } from "@/components/admin/layout/admin-page-header";
 import { cn } from "@/lib/cn";
-import { useId, useState } from "react";
+import { useId, useRef, type KeyboardEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const tabs = [
   { id: "account", label: "Account" },
-  { id: "site", label: "Branding" },
+  { id: "security", label: "Security" },
+  { id: "preferences", label: "Preferences" },
+  { id: "branding", label: "Branding" },
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
 
 export default function AdminSettingsPage() {
-  const [activeTab, setActiveTab] = useState<TabId>("account");
+  const [params, setParams] = useSearchParams();
+  const requested = params.get("tab");
+  const activeTab: TabId = tabs.some((t) => t.id === requested) ? (requested as TabId) : "account";
   const baseId = useId();
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  function select(id: TabId, focus = false) {
+    setParams(id === "account" ? {} : { tab: id }, { replace: true });
+    if (focus) tabRefs.current[id]?.focus();
+  }
+
+  function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    const index = tabs.findIndex((t) => t.id === activeTab);
+    let next = -1;
+    if (e.key === "ArrowRight") next = (index + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = tabs.length - 1;
+    if (next >= 0) {
+      e.preventDefault();
+      select(tabs[next].id, true);
+    }
+  }
 
   return (
     <div className="admin-content space-y-6">
@@ -21,25 +46,29 @@ export default function AdminSettingsPage() {
       <div
         role="tablist"
         aria-label="Settings sections"
-        className="flex flex-wrap gap-2 border-b border-gray-200 pb-1 dark:border-gray-800"
+        onKeyDown={onKeyDown}
+        className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto border-b border-gray-200 px-1 dark:border-gray-800"
       >
         {tabs.map((tab) => {
           const selected = activeTab === tab.id;
           return (
             <button
               key={tab.id}
+              ref={(el) => {
+                tabRefs.current[tab.id] = el;
+              }}
               type="button"
               role="tab"
               id={`${baseId}-${tab.id}`}
               aria-selected={selected}
               aria-controls={`${baseId}-panel-${tab.id}`}
               tabIndex={selected ? 0 : -1}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => select(tab.id)}
               className={cn(
-                "rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
+                "-mb-[2px] shrink-0 border-b-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
                 selected
-                  ? "bg-brand-500 text-white"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/8",
+                  ? "border-brand-500 text-brand-600 dark:text-brand-400"
+                  : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white",
               )}
             >
               {tab.label}
@@ -48,33 +77,32 @@ export default function AdminSettingsPage() {
         })}
       </div>
 
-      <div
-        role="tabpanel"
-        id={`${baseId}-panel-account`}
-        aria-labelledby={`${baseId}-account`}
-        hidden={activeTab !== "account"}
-      >
-        <AccountSettings />
-      </div>
-
-      <div
-        role="tabpanel"
-        id={`${baseId}-panel-site`}
-        aria-labelledby={`${baseId}-site`}
-        hidden={activeTab !== "site"}
-        className="admin-card admin-card-body space-y-3"
-      >
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-          Branding & navigation
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Edit{" "}
-          <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10">
-            src/config/admin.config.ts
-          </code>{" "}
-          to customize the panel name, logo letter, sidebar links, and login page copy.
-        </p>
-      </div>
+      {tabs.map((tab) => (
+        <div
+          key={tab.id}
+          role="tabpanel"
+          id={`${baseId}-panel-${tab.id}`}
+          aria-labelledby={`${baseId}-${tab.id}`}
+          hidden={activeTab !== tab.id}
+          tabIndex={0}
+          className="focus:outline-none"
+        >
+          {activeTab === tab.id && tab.id === "account" && <AccountSettings />}
+          {activeTab === tab.id && tab.id === "security" && <SecuritySettings />}
+          {activeTab === tab.id && tab.id === "preferences" && <PreferencesSettings />}
+          {activeTab === tab.id && tab.id === "branding" && (
+            <SettingsCard title="Branding & navigation" description="Panel name, logo letter, sidebar links and login copy.">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Edit{" "}
+                <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10">src/config/admin.config.ts</code>{" "}
+                to customize the panel name, logo letter, sidebar links, and login page copy. Colors live in{" "}
+                <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-white/10">src/index.css</code> (
+                <code className="text-xs">--color-brand-*</code>).
+              </p>
+            </SettingsCard>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

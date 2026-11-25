@@ -7,6 +7,11 @@ export default function AdminNewsletterPage() {
       title="Newsletter"
       resourceLabel="subscriber"
       items={adminNewsletter}
+      titleLabel="Email"
+      titleIsEmail
+      metaLabel="Preferences"
+      searchPlaceholder="Search email, source..."
+      statusLabels={{ published: "Subscribed", draft: "Pending", archived: "Unsubscribed" }}
     />
   );
 }

@@ -10,6 +10,7 @@ import {
 
 export const SIDEBAR_WIDTH_EXPANDED = 260;
 export const SIDEBAR_WIDTH_COLLAPSED = 80;
+const SIDEBAR_STORAGE_KEY = "zenpanel-sidebar";
 
 type SidebarContextValue = {
   isExpanded: boolean;
@@ -25,7 +26,21 @@ const SidebarContext = createContext<SidebarContextValue | null>(null);
 
 export function AdminSidebarProvider({ children }: { children: React.ReactNode }) {
   const isDesktop = useIsDesktop();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "collapsed";
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, isExpanded ? "expanded" : "collapsed");
+    } catch {
+      // ignore private-mode storage errors
+    }
+  }, [isExpanded]);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const effectiveExpanded = isDesktop ? isExpanded : true;

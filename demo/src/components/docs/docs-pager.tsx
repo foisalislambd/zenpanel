@@ -15,7 +15,7 @@ export function DocsPager() {
           to={prev.href}
           className="group flex flex-col rounded-xl border border-gray-200 px-4 py-4 transition hover:border-brand-300 hover:bg-brand-50/40 dark:border-gray-800 dark:hover:border-brand-700 dark:hover:bg-brand-950/30"
         >
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
             <ArrowLeft className="h-3.5 w-3.5" />
             Previous
           </span>
@@ -31,7 +31,7 @@ export function DocsPager() {
           to={next.href}
           className="group flex flex-col rounded-xl border border-gray-200 px-4 py-4 text-right transition hover:border-brand-300 hover:bg-brand-50/40 sm:items-end dark:border-gray-800 dark:hover:border-brand-700 dark:hover:bg-brand-950/30"
         >
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
             Next
             <ArrowRight className="h-3.5 w-3.5" />
           </span>

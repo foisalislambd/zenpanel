@@ -8,6 +8,8 @@ export default function AdminTransactionsPage() {
       resourceLabel="transaction"
       items={adminTransactions}
       searchPlaceholder="Search title, amount, reference..."
+      metaLabel="Amount"
+      statusLabels={{ published: "Settled", draft: "Pending", archived: "Reversed" }}
     />
   );
 }

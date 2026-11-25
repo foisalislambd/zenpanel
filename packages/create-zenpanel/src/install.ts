@@ -49,10 +49,13 @@ const REACT_COPY_PATHS = [
   "src/lib/admin-api",
   "src/lib/admin-data",
   "src/lib/admin-nav.ts",
+  "src/lib/admin-ui.ts",
   "src/lib/brand-theme.ts",
   "src/lib/cn.ts",
   "src/lib/delay.ts",
   "src/lib/format.ts",
+  "src/lib/pagination.ts",
+  "src/lib/sort.ts",
   "src/admin.css",
   "src/zenpanel-admin-routes.example.tsx",
 ] as const;
