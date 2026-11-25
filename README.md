@@ -30,6 +30,18 @@ npm create zenpanel@latest
   <em>Dark mode</em>
 </p>
 
+<details>
+<summary><strong>More screens</strong> - command palette, users, messages, mobile</summary>
+<br />
+
+| Command palette (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd>) | Users |
+| --- | --- |
+| <img src="docs/images/command-palette.png" alt="Command palette listing pages and actions" /> | <img src="docs/images/users-table.png" alt="Users table with filters, sorting and pagination" /> |
+| **Messages** | **Mobile (dark)** |
+| <img src="docs/images/messages.png" alt="Messages inbox with an open conversation and reply box" /> | <p align="center"><img src="docs/images/mobile-dashboard.png" alt="Dashboard on a phone in dark mode" width="260" /></p> |
+
+</details>
+
 ---
 
 ## Table of contents

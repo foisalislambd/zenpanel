@@ -35,3 +35,11 @@ npm create zenpanel@latest
 | Light | Dark |
 | --- | --- |
 | ![Light dashboard](./images/light-panel-image.png) | ![Dark dashboard](./images/dark-panel-image.png) |
+
+| Command palette | Users |
+| --- | --- |
+| ![Command palette](./images/command-palette.png) | ![Users table](./images/users-table.png) |
+
+| Messages | Mobile (dark) |
+| --- | --- |
+| ![Messages inbox](./images/messages.png) | <img src="./images/mobile-dashboard.png" alt="Mobile dashboard in dark mode" width="260" /> |
