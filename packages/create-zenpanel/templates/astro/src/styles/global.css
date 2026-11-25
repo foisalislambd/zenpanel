@@ -8,6 +8,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
+  --default-border-width: 2px;
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --font-sans: "Geist", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
@@ -58,4 +59,9 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/* Thicker Lucide outline icons for UI visibility (default stroke is 2). */
+svg.lucide {
+  stroke-width: 2.5;
 }
